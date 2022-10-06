@@ -1,0 +1,76 @@
+<html>
+
+<script>
+//accept user input for a variable called n
+var n = prompt("Enter a number");
+
+// create a n x n matrix
+var matrix = new Array(n);
+for (var i = 0; i < n; i++) {
+    matrix[i] = new Array(n);
+}
+
+
+//fill the matrix with 0s
+for (var i = 0; i < n; i++) {
+    for (var j = 0; j < n; j++) {
+        matrix[i][j] = 0;
+    }
+}
+
+
+
+
+
+
+
+console.table(matrix);
+//for loop from 0 to n
+function checkListY(y){
+    for (var i = 0; i < n; i++) {
+        if(matrix[i][y] == 1){
+            return true;
+        }
+    }
+    return false;
+}
+
+//a function to check if  ther is a 1 in a list in matrix
+function checkListX(x) {
+    return matrix[x].includes(1);
+   
+   
+}
+function checkListDiagonals(x,y){
+    checkDiagonal(x,y,true,true);
+    checkDiagonal(x,y,true,false);
+    checkDiagonal(x,y,false,true);
+    checkDiagonal(x,y,false,false);
+
+}
+function checkDiagonal(x,y,xPositive,yPositive){
+    while (x>=0 && y>=0 && x < n && y < n){
+        if(matrix[x][y] == 1){
+            return true;
+        }
+        if xPositive x++;
+        else x--;
+        if yPositive y++;
+        else y--;
+        
+    }
+    return false;
+      
+    
+
+}
+
+</script>
+
+<h1>
+
+
+</h1>
+
+
+</html>
