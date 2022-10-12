@@ -3,22 +3,17 @@
 <script>
 //n and matrix is a global var
 
-function createArray(){
+
+function createArray(n){
+   var matrix = new Array(n);
     for (var i = 0; i < n; i++) {
         matrix[i] = new Array(n);
+        matrix[i] = matrix[i].fill(0);
     }
+  return matrix;
 }
 
-function fillArray(){
-    //fill the matrix with 0s
-    for (var i = 0; i < n; i++) {
-        for (var j = 0; j < n; j++) {
-            matrix[i][j] = 0;
-        }
-    }
-}
-
-function checkSolved(){
+function checkSolved(matrix,n){
   //fill the matrix with 0s
   var counter = 0;
   for (var i = 0; i < n; i++) {
@@ -36,7 +31,7 @@ function checkSolved(){
 }
 
 //for loop from 0 to n
-function checkListY(y){
+function checkListY(y,matrix,n){
     for (var i = 0; i < n; i++) {
         if(matrix[i][y] == 1){
             return false;
@@ -46,22 +41,22 @@ function checkListY(y){
 }
 
 //a function to check if  ther is a 1 in a list in matrix
-function checkListX(x) {
+function checkListX(x,matrix) {
     return !matrix[x].includes(1);
    
    
 }
-function checkListDiagonals(x,y){
-    if( checkDiagonal(x,y,true,true) &&
-        checkDiagonal(x,y,true,false) &&
-        checkDiagonal(x,y,false,true) &&
-        checkDiagonal(x,y,false,false)){            
+function checkListDiagonals(x,y,matrix,n){
+    if( checkDiagonal(x,y,true,true,matrix,n) &&
+        checkDiagonal(x,y,true,false,matrix,n) &&
+        checkDiagonal(x,y,false,true,matrix,n) &&
+        checkDiagonal(x,y,false,false,matrix,n)){            
         return true;
     } else {
         return false;
     }
 }
-function checkDiagonal(x,y,xPositive,yPositive){
+function checkDiagonal(x,y,xPositive,yPositive,matrix,n){
     while (x>=0 && y>=0 && x < n && y < n){
         if(matrix[x][y] == 1){
             return false;
@@ -75,17 +70,19 @@ function checkDiagonal(x,y,xPositive,yPositive){
     return true;
 }
 
-function check(x,y){
-    if( checkListX(x) &&
-      checkListY(y) && checkListDiagonals(x,y)){
+function check(x,y,matrix,n){
+    if( checkListX(x,matrix,n) &&
+      checkListY(y,matrix,n) && checkListDiagonals(x,y,matrix,n)){
         return true;
     } else {
         return false;
     }
 }
 
-function main(){
- while(!checkSolved()){
+function main(n){
+ var matrix = createArray(n);
+ while(!checkSolved(matrix,n)){
+  matrix = createArray(n);
    for ( var y = 0; y < n; y++){
       var placed = [];
       var notPlaced = true;
@@ -95,7 +92,7 @@ function main(){
           //console.log('x',x);
           //console.log('placed array',placed);
           if (!placed.includes(x)){
-              if(check(x,y)){
+              if(check(x,y,matrix,n)){
                   //console.log('placed',x,y);
                   matrix[x][y] = 1;    
                   notPlaced = false;
@@ -109,20 +106,19 @@ function main(){
           }
       }
    }
+   console.info('potential');
+    console.table(matrix);
  }
+  return matrix;
 }
 
 // init
 //accept user input for a variable called n
-var n = 5;
+var number = 5;
+console.log('Number',number)
 
 // create a n x n matrix
-var matrix = new Array(n);
-createArray();
-fillArray();
-console.info('before');
-console.table(matrix);
-main();
+var matrix = main(number);
 console.info('after')
 console.table(matrix);
 </script>
