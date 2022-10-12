@@ -2,6 +2,7 @@
 
 <script>
 //n and matrix is a global var
+
 function createArray(){
     for (var i = 0; i < n; i++) {
         matrix[i] = new Array(n);
@@ -15,6 +16,23 @@ function fillArray(){
             matrix[i][j] = 0;
         }
     }
+}
+
+function checkSolved(){
+  //fill the matrix with 0s
+  var counter = 0;
+  for (var i = 0; i < n; i++) {
+    for (var j = 0; j < n; j++) {
+        if(matrix[i][j] == 1){
+          counter += 1;
+        }
+        if(counter >= n){
+          // solved!
+          return true;
+        }
+    }
+  }
+  return false;
 }
 
 //for loop from 0 to n
@@ -67,28 +85,30 @@ function check(x,y){
 }
 
 function main(){
- for ( var y = 0; y < n; y++){
-    var placed = [];
-    var notPlaced = true;
-    //console.log('y',y);
-    while (notPlaced){
-        var x = Math.floor(Math.random() * n); //0-1 * n as math.random gives a number between 0-1
-        //console.log('x',x);
-        //console.log('placed array',placed);
-        if (!placed.includes(x)){
-            if(check(x,y)){
-                //console.log('placed',x,y);
-                matrix[x][y] = 1;    
-                notPlaced = false;
-            } else {
-                placed.push(x);
-                //console.log('placed array',placed);
-            }
-        } else if(placed.length >= n){
-          notPlaced = false;
-          //console.table(matrix);
-        }
-    }
+ while(!checkSolved()){
+   for ( var y = 0; y < n; y++){
+      var placed = [];
+      var notPlaced = true;
+      //console.log('y',y);
+      while (notPlaced){
+          var x = Math.floor(Math.random() * n); //0-1 * n as math.random gives a number between 0-1
+          //console.log('x',x);
+          //console.log('placed array',placed);
+          if (!placed.includes(x)){
+              if(check(x,y)){
+                  //console.log('placed',x,y);
+                  matrix[x][y] = 1;    
+                  notPlaced = false;
+              } else {
+                  placed.push(x);
+                  //console.log('placed array',placed);
+              }
+          } else if(placed.length >= n){
+            notPlaced = false;
+            //console.table(matrix);
+          }
+      }
+   }
  }
 }
 
