@@ -79,10 +79,47 @@ function check(x,y,matrix,n){
     }
 }
 
+function placeQueen(matrix,n){
+    
+    var x = prompt("Enter row number");
+    var y = prompt("Enter col number");
+    if(check(x,y,matrix,n)){
+        matrix[x][y] = 1;
+        return matrix;
+    }
+    else{
+        alert("Cant do that!");
+        return placeQueen(matrix,n);
+    }
+
+}
+function preFillQueens(matrix,n){
+    preFillNum = prompt("How many queens do you want to prefill?");
+    if (preFillNum > n || preFillNum < 0){
+        alert("Cant do that!");
+        return preFillQueens(matrix,n);
+    }
+    else if (preFillQueens == 0){
+        return matrix;
+    }
+    else{
+        for (var i = 0; i < preFillNum; i++) {
+          matrix = placeQueen(matrix,n);
+        }
+    }
+   
+return matrix;
+}
+
 function main(n){
- var matrix = createArray(n);
+ 
+var startMatrix = preFillQueens(createArray(n),n);
+var matrix = startMatrix;
+
  while(!checkSolved(matrix,n)){
-  matrix = createArray(n);
+    console.info('startpotential');
+    console.table(startMatrix);
+  matrix  = startMatrix;
    for ( var y = 0; y < n; y++){
       var placed = [];
       var notPlaced = true;
@@ -123,10 +160,17 @@ console.info('after')
 console.table(matrix);
 </script>
 
-<h1>
-
-
-</h1>
+<body>
+    <ul id="list"></ul>
+    <script>
+        var list = document.getElementById("list");
+        for (var i = 0; i < matrix.length; i++) {
+            var li = document.createElement("li");
+            li.appendChild(document.createTextNode(matrix[i]));
+            list.appendChild(li);
+        }
+    </script>
+</body>
 
 
 </html>
