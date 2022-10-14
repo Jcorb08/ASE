@@ -1,0 +1,163 @@
+<html>
+
+<script>
+//n and matrix is a global var
+var solutionList = [];
+
+var n = prompt("Enter n");
+
+var matrix = new Array(n);
+for (var i = 0; i < n; i++) {
+        matrix[i] = new Array(n);
+        matrix[i] = matrix[i].fill(0);
+    }
+ 
+
+
+
+
+
+function checkSolved(matrix,n){
+  //fill the matrix with 0s
+  var counter = 0;
+  for (var i = 0; i < n; i++) {
+    for (var j = 0; j < n; j++) {
+        if(matrix[i][j] == 1||2){
+          counter += 1;
+        }
+        if(counter >= n){
+          // solved!
+          return true;
+        }
+    }
+  }
+  return false;
+}
+
+//for loop from 0 to n
+function checkListY(y,matrix,n){
+    for (var i = 0; i < n; i++) {
+        if(matrix[i][y] == 1||2){
+            return false;
+        }
+    }
+    return true;
+}
+
+//a function to check if  ther is a 1 in a list in matrix
+function checkListX(x,matrix) {
+    return !matrix[x].includes(1||2);
+   
+   
+}
+function checkListDiagonals(x,y,matrix,n){
+    if( checkDiagonal(x,y,true,true,matrix,n) &&
+        checkDiagonal(x,y,true,false,matrix,n) &&
+        checkDiagonal(x,y,false,true,matrix,n) &&
+        checkDiagonal(x,y,false,false,matrix,n)){            
+        return true;
+    } else {
+        return false;
+    }
+}
+function checkDiagonal(x,y,xPositive,yPositive,matrix,n){
+    while (x>=0 && y>=0 && x < n && y < n){
+        if(matrix[x][y] == 1||2){
+            return false;
+        }
+        if (xPositive) x++;
+        else x--;
+        if (yPositive) y++;
+        else y--;
+        
+    }
+    return true;
+}
+
+function check(x,y,matrix,n){
+    if( checkListX(x,matrix,n) &&
+      checkListY(y,matrix,n) && checkListDiagonals(x,y,matrix,n)){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function placeQueen(matrix,n){
+    
+    var x = prompt("Enter row number");
+    var y = prompt("Enter col number");
+    if(check(x,y,matrix,n)){
+        matrix[x][y] = 2;
+        return matrix;
+    }
+    else{
+        alert("Cant do that!");
+        return placeQueen(matrix,n);
+    }
+
+}
+function preFillQueens(matrix,n){
+    var preFillNum = prompt("How many queens do you want to prefill?");
+    if (preFillNum > n || preFillNum < 0){
+        alert("Cant do that!");
+        return preFillQueens(matrix,n);
+    }
+    else if (preFillQueens == 0){
+        return matrix;
+    }
+    else{
+        for (var i = 0; i < preFillNum; i++) {
+          matrix = placeQueen(matrix,n);
+        }
+    }
+   
+return matrix;
+}
+
+function main(matrix,n){
+    var x = 0;
+    var y = 0;
+    var counter = 0;
+    var solved = false;
+    while(!solved){//while not solved
+        if(check(x,y,matrix,n)){//if the spot is valid
+            matrix[x][y] = 1;//place a queen
+            counter += 1;//increase counter
+            if(counter >= n){//if counter is greater than n
+                solved = true;
+                return matrix;
+            }
+            x += 1;//move to next row
+            y = 0;//reset col
+        }
+        else{//if the spot is not valid
+            y += 1;//move to next col
+            if(y >= n){//if y is greater than n
+                y = 0;//reset col
+                x -= 1;//move to previous row
+                counter -= 1;//decrease counter
+                matrix[x][y] = 0;//remove queen
+            }
+        }
+    }
+    //add matrix to solutionList
+    solutionList.push(matrix);
+}
+
+//set n
+
+preFillQueens(matrix,n);
+main(matrix,n);
+
+console.log(solutionList);
+
+
+</script>
+
+<body>
+ 
+</body>
+
+
+</html>
