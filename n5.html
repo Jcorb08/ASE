@@ -2,68 +2,72 @@
 
 <script>
 var n =0;
+var preplacedqueensNum =0;
 
 const MakeBoards = board => {
-  let result = [];
+  let result = [];//array of boards
   
-  for(let col = 0; col < board.length; col++) {
-        let newRow = new Array(board.length).fill('0');
-        newRow[board[col]] = '1';
-        result.push(newRow.join(''));
+  for(let col = 0; col < board.length; col++) {//for each column
+        let newRow = new Array(board.length).fill('0');//make a new row
+        newRow[board[col]] = '1';//put a queen in the row
+        result.push(newRow.join(''));//add the row to the board
     
   }
   
-  return result;
+  return result;//return the array of boards
 
 }
 
 function solveN(n){
 //var solveN = function(n){
   
-  const result = [];
+  const result = [];//array of boards
   
-  const dfs = (i, n, oneDBoard) => {
+  const dfs = (i, n, oneDBoard) => {//i is the row, oneDBoard is the board
     
-    let lastQ = i - 1;
+    let lastQ = i - 1;//last queen
     
-    for(let prevQ = 0; prevQ < lastQ; prevQ++){
+    for(let prevQ = 0; prevQ < lastQ; prevQ++){//check all previous queens
       
-      if(oneDBoard[prevQ] === oneDBoard[lastQ]) return;
+      if(oneDBoard[prevQ] === oneDBoard[lastQ]) return; //same column
 
 
       
-      let rowDiff = Math.abs(prevQ - lastQ);
-      let colDiff = Math.abs(oneDBoard[prevQ]-oneDBoard[lastQ]);
+      let rowDiff = Math.abs(prevQ - lastQ);//row difference
+      let colDiff = Math.abs(oneDBoard[prevQ]-oneDBoard[lastQ]);//column difference
       
-      if (rowDiff === colDiff) return;
+      if (rowDiff === colDiff) return;//same diagonal
     }
     
-    if(i === n){
-      result.push(oneDBoard.slice());
+    if(i === n){//if we are at the end of the board
+      result.push(oneDBoard.slice());//add the board to the result
       return;
     }
     
-    for(let col = 0; col < n; col++){
+    for(let col = 0; col < n; col++){//for each column
       
-        oneDBoard.push(col);
-      dfs(i + 1, n, oneDBoard);
-      oneDBoard.pop();
+        oneDBoard.push(col);//add the column to the board
+      dfs(i + 1, n, oneDBoard);//recurse
+      oneDBoard.pop();//remove the column from the board
     }
   }
-  dfs(0,n,[]);
-    return result.map(board => MakeBoards(board));
+  dfs(0,n,[]);//start at row 0
+    return result.map(board => MakeBoards(board));//return the result
 };
 
 
 //solveN(n);
 
-console.log(solveN(n));
+//console.log(solveN(n));
+function prePlaceQueens(n){
+preplacedqueensNum = parseInt( prompt('how many queens do you want to preplace?'));
 
-
+}
 </script>
 
 <button onclick="n = parseInt( prompt('Enter n'))">set n</button>
 <button onclick="solveN(n);console.log(solveN(n))">solve</button>
+<button onclick="prePlaceQueens(n)">preplace queens</button>
 
 
 
