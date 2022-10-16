@@ -122,7 +122,8 @@ function frontEndSetup(){
 
 function reset(){
   var button = document.getElementById('setup');
-  n=0;
-  prePlaced= new Array();
+  n = 0;
+  prePlaced = new Array();
   button.textContent = "Set N";
+  result.textContent = "";
 }
