@@ -1,0 +1,70 @@
+<html>
+
+<script>
+var n =0;
+
+const MakeBoards = board => {
+  let result = [];
+  
+  for(let col = 0; col < board.length; col++) {
+        let newRow = new Array(board.length).fill('0');
+        newRow[board[col]] = '1';
+        result.push(newRow.join(''));
+    
+  }
+  
+  return result;
+
+}
+
+function solveN(n){
+//var solveN = function(n){
+  
+  const result = [];
+  
+  const dfs = (i, n, oneDBoard) => {
+    
+    let lastQ = i - 1;
+    
+    for(let prevQ = 0; prevQ < lastQ; prevQ++){
+      
+      if(oneDBoard[prevQ] === oneDBoard[lastQ]) return;
+
+
+      
+      let rowDiff = Math.abs(prevQ - lastQ);
+      let colDiff = Math.abs(oneDBoard[prevQ]-oneDBoard[lastQ]);
+      
+      if (rowDiff === colDiff) return;
+    }
+    
+    if(i === n){
+      result.push(oneDBoard.slice());
+      return;
+    }
+    
+    for(let col = 0; col < n; col++){
+      
+        oneDBoard.push(col);
+      dfs(i + 1, n, oneDBoard);
+      oneDBoard.pop();
+    }
+  }
+  dfs(0,n,[]);
+    return result.map(board => MakeBoards(board));
+};
+
+
+//solveN(n);
+
+console.log(solveN(n));
+
+
+</script>
+
+<button onclick="n = parseInt( prompt('Enter n'))">set n</button>
+<button onclick="solveN(n);console.log(solveN(n))">solve</button>
+
+
+
+</html>
