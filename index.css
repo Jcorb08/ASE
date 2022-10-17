@@ -27,13 +27,13 @@
 
 #box{
  
-margin: auto;
-width: 16.1%;
-border: 5px solid #FFFF00;
+position: absolute;
+left: 50%;
+top: 50%;
+transform: translate(-50%, -50%);
+border: 5px;
 padding: 10px;
-position: center;
-    position: bottom;
-top: 100%;    
+height: 200px;
     
     
     
