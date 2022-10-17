@@ -1,0 +1,40 @@
++body{
+    background-color: gray;
+}
+
+#setup {
+    background-color: red;
+  border: none;
+  color: white;
+  padding: 25px 42px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+#reset {
+    background-color: blue;
+  border: none;
+  color: white;
+  padding: 25px 42px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+
+#box{
+ 
+margin: auto;
+width: 16.1%;
+border: 5px solid #FFFF00;
+padding: 10px;
+position: center;
+    position: bottom;
+top: 100%;    
+    
+    
+    
+}
