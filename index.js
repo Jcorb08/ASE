@@ -114,6 +114,10 @@ function frontEndSetup(){
   } else {
     //solve
     var solved = JSON.stringify(solveN(n));
+    // no solution?
+    if (solved == '[]') {
+      solved = 'No Solution Found!';
+    }
     var result = document.getElementById('result');
     result.textContent = solved;
     console.log(solved);
