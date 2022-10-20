@@ -4,40 +4,50 @@ Repository for Advanced Software Engineering Group 3.
 
 ## Group Members
 - Abdullah Mohammed 
-    - No contact as of 14/10
+    - No contact as of 20/10
 - Aditya Pradip Kadam
 - Gurwinder Singh 
-    - No contact as of 14/10
+    - No contact as of 20/10
 - John Kola-Fabiyi
 - Joseph Corbett
 - Mbana Azorbo 
+- Moses Babalola 
 - Robert Ryan
 
 ## Sprints
-1. Currently need to create a solution to N Queens Problem
-2.
+1. Create a solution to N Queens Problem - _completed_. See [here](https://users.sussex.ac.uk/~jc812/ase/task-2/).
+2. Create a solution to Pentomino Problem
 
 ## Organisation Plan
-- Group leader still to be elected
-- Roles in group need to be sorted out
-    - For first sprint (rough)
-        - Mbana, John 
-            - Sorting out front end output to html
-        - Robert, Aditya, Joe
-            - Sorting out logic on backend
-            - Checking for queens etc.
-        - Robert, Joe
-            - First for a single solve using simple while
-            - Allowing input for queens before solve
-        - Aditya
-            - Solving for all solutions using depth first search
-        - Joe
-            - Write up a project plan
-            - Setup Discord server and Github repository
+- Group leader - Joseph Corbett
+- Frontend Design 
+    - Mbana Azorbo 
+        - main role
+    - John Kola-Fabiyi 
+        - sub role
+- Frontend Development
+    - Moses Babalola 
+        - main role
+    - John Kola-Fabiyi 
+        - main role
+    - Mbana Azorbo 
+        - sub role
+- Backend 
+    - Robert Ryan
+        - main role
+    - Aditya Pradip Kadam
+        - sub role
+- Testing & Deployment
+    - Aditya Pradip Kadam
+        - main role
+    - Joseph Corbett
+        - sub role
 
 ## Development Plan
-- Currently using a simple HTML document running JavaScript for logic. 
-- Later plans are to Learn and Implement the project using [React](https://reactjs.org/), as we can build from underlying code
+- The first sprint used a simple HTML document running JavaScript for logic. 
+- For the second sprint it was a discussion between [React](https://reactjs.org/) and [Angular](https://angular.io/), with the ultimate decision being Angular, as Moses had used this before, and was confident he could mentor the frontend devlopment team to achieve a solution.
+    - The advantages of this solution is that our backend devlopment team don't need to learn Angular and can code in pure JavaScript.
+    - This can be automatically tested on push, using [Github Actions](https://docs.github.com/en/actions), and then using continous deployment we can automatically upload this to the webspace. 
 
 ## Conflict Resolution Plan
 - Reaction to work slipping / not going to schedule
