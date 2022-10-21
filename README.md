@@ -51,6 +51,7 @@ Repository for Advanced Software Engineering Group 3.
 
 ## Conflict Resolution Plan
 - Reaction to work slipping / not going to schedule
+    - Tasks will be set via the [Project Camban board](https://github.com/users/Jcorb08/projects/1), and will be moved along as they are completed.
     - Discussion needs to be had with team member as to current status, what seems to be the problem, and what help they need from us. 
         - If problem persists and it is starting to affect grade, a different task more adequent to the team members skills will be issued and the task will be rescheduled to a new team member. 
         - If the team member is not responding to any discussion after an adequate amount of time (1 week), then the assumption will be made that they have dropped out of the group.
