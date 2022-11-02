@@ -1,20 +1,3 @@
-//main
-
-
-
-
-
-var polySolver = new PolyominoSolver();
-
-displayBoard();
-
-function solvePoly() {
-    var solutions = polySolver.solve();
-    var firstSolution = solutions[0];
-
-} 
-
-
 //shape
 /**
  * A shape that takes part in a Polyomino puzzle.
@@ -277,18 +260,228 @@ restore() {
 
 }
 
+//constrains
+class Choice extends TableNode {
+    constructor(desc){
+        this.actives = 0;
+        this.description = desc;
+        this.rowChain.enumerable = false;
+    }
+
+    choose(hiddenNodes){
+        this.forEachSatisfiedConstraint(function(constraint) {
+            constraint.satisfy(hiddenNodes);
+        });
+    }
+
+    remove(hiddenNodes) {
+        this.hideFromColumn(hiddenNodes);
+        this.forEachSatisfiedConstraint(function(constraint, constraintLink) {
+            constraintLink.hideFromColumn(hiddenNodes);
+        });
+    }
+
+    satisfies(constraint) {
+        var TableNode = require('./TableNode.js');
+        var node = new TableNode(this, constraint);
+        node.addToHeadersChains();
+        return node;
+    }
+
+    forEachSatisfiedConstraint(func) {
+        this.forEachColumn(function(constraintLink) {
+            var constraint = constraintLink.columnHeader;
+            return func(constraint, constraintLink);
+        });
+    }
+
+    toString() {
+        return this.description + "?";
+    }
+
+
+}
+
+//choice
+class Constraint extends TableNode {
+    constructor(desc){
+        this.actives = 0;
+        this.description = desc;
+        //this.optional = false;
+        this.colChain.enumerable = false;
+    }
+
+    satisfy(removedNodes) {
+        this.hideFromRow(removedNodes);
+        this.forEachSatisfyingChoice(function(choice) {
+            choice.remove(removedNodes);
+        });
+    }
+
+    forEachSatisfyingChoice(func) {
+        this.forEachRow(function(choiceLink){
+            var choice = choiceLink.rowHeader;
+            return func(choice, choiceLink);
+        });
+    }
+
+    toString() {
+        return this.description + "(" + this.actives + ")!";
+    }
+}
+
+//network
+class Network extends TableNode {
+    constructor(){
+        this.rowChain.enumerable = false;
+        this.colChain.enumerable = false;
+        this.constraints = {};
+    }
+
+    makeOptional(constraintName) {
+        var constraint = this.ensureConstraint(constraintName);
+        if (constraint.optional == false) {
+            constraint.optional = true;
+            this.add(null, constraintName);
+        }
+    }
+
+    add(choiceDescription, constraintDescription) {
+        var Choice = require('./Choice.js');
+        var Constraint = require('./Constraint.js');
+        var choice = new Choice(choiceDescription);
+        choice.colChain.spliceInto(this.colChain.previous);
+        var TableNode = require('./TableNode.js');
+        for (var i=1; i<arguments.length; ++i) {
+            var constraint = arguments[i];
+            if (constraint == null) throw new Error('constraint may not be null');
+            if (constraint instanceof Constraint == false) {
+                constraint = this.ensureConstraint(constraint);
+            }
+            choice.satisfies(constraint);
+        }
+        return choice;
+    }
+
+    ensureConstraint(constraintName) {
+        var Constraint = require('./Constraint.js');
+        var constraint = this.constraints[constraintName];
+        if (constraint == undefined) {
+            constraint = new Constraint(constraintName);
+            this.constraints[constraintName] = constraint;
+            constraint.rowChain.spliceInto(this.rowChain.previous);
+        }
+        return constraint;
+    }
+
+    isSolved() {
+        return this.rowChain.next == this.rowChain;
+    }
+
+    minConstraint(){
+        var minConstraint = null;
+        var count = null;
+        this.forEachColumn(function(constraint) {
+            if (count == null || count > constraint.actives) {
+                minConstraint = constraint;
+                count = minConstraint.actives;
+                if (count == 0) return false;
+            }
+        });
+        return minConstraint;
+    }
+
+    solve(maxSolutions, maxRunTime) {
+        var result = solve(this, maxSolutions ? maxSolutions : null, getBlankSolutions(), [], maxRunTime ? new Date().getTime() + maxRunTime : undefined);
+        result.info.endTime = new Date().getTime();
+        return result;
+    }
+
+    solveOnce(maxRunTime) {
+        var result = solve(this, 1, getBlankSolutions(), [], maxRunTime ? new Date().getTime() + maxRunTime : undefined);
+        result.info.endTime = new Date().getTime();
+        return result[0];
+    }
+
+    toString() {
+        var result = "";
+        this.forEachRow(function(rowHeader) {
+            result += rowHeader.toString();
+            rowHeader.forEachColumn(function(node) {
+                result+="\t"+node.toString();
+            });
+            result+="\n";
+        });
+        return result;
+    }
+
+}
 
 //solve it
 
+function restoreAll(hidden) {
+    for (var i = 0; i < hidden.length; ++i) {
+        hidden[i].restore();
+    }
+}
 
+function getBlankSolutions() {
+    var solutions = [];
+    solutions.info = {
+            ranOutOfTime: false,
+            foundMaxSolutions: false,
+            backtrackings: 0,
+            startTime: new Date().getTime()
+    };
+    return solutions;
+}
 
-//constrains
-
-//choice
-
-//network
+function solve(network, maxSolutions, solutions, tryingChoices, latestTime) {
+    if (solutions.info.ranOutOfTime && latestTime != null && latestTime < new Date().getTime()) {
+        solutions.info.ranOutOfTime = true;
+        return solutions;
+    }
+    // Find the constraint with the fewest choices that could satisfy it.
+    // (This heuristic should reduce the maximum branching).
+    var constraint = network.minConstraint();
+    if (constraint == null) {
+        // there are no constraints left - it's a solution
+        solutions.push(tryingChoices);
+    } else if (constraint.actives == 0) {
+        // there are no choices that will satisfy a constraint, we have to give up this line of inquiry.
+        solutions.info.backtrackings ++;
+    } else {
+        // no solution yet - search for one...
+        constraint.forEachSatisfyingChoice(function(choiceToTry) {
+            if (solutions.info.ranOutOfTime && latestTime != null && latestTime < new Date().getTime()) {
+                solutions.info.ranOutOfTime = true;
+                return false;
+            }
+            var trying = tryingChoices.slice();
+            if (choiceToTry.description != null) trying.push(choiceToTry.description);
+            var hidden = [];
+            choiceToTry.choose(hidden);
+            solve(network, maxSolutions, solutions, trying, latestTime);
+            restoreAll(hidden);
+            if (maxSolutions != null && solutions.length >= maxSolutions) {
+                solutions.info.foundMaxSolutions = true;
+                return false;
+            }
+        });
+    }
+    return solutions;
+}
 
 //finish main
+var polySolver = new PolyominoSolver();
+
+displayBoard();
+
+function solvePoly() {
+    var solutions = polySolver.solve();
+    var firstSolution = solutions[0];
+
+} 
 
 //they are all subclasses of tablenode
 
