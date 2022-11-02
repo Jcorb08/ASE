@@ -2,7 +2,7 @@
 /**
  * A shape that takes part in a Polyomino puzzle.
  */
-class Shape{
+ class Shape{
     constructor(color, points){
         this.color = color;
         this.fills = fills;
@@ -263,6 +263,7 @@ restore() {
 //constrains
 class Choice extends TableNode {
     constructor(desc){
+        super();
         this.actives = 0;
         this.description = desc;
         this.rowChain.enumerable = false;
@@ -305,6 +306,7 @@ class Choice extends TableNode {
 //choice
 class Constraint extends TableNode {
     constructor(desc){
+        super();
         this.actives = 0;
         this.description = desc;
         //this.optional = false;
@@ -333,6 +335,7 @@ class Constraint extends TableNode {
 //network
 class Network extends TableNode {
     constructor(){
+        super();
         this.rowChain.enumerable = false;
         this.colChain.enumerable = false;
         this.constraints = {};
@@ -473,15 +476,17 @@ function solve(network, maxSolutions, solutions, tryingChoices, latestTime) {
 }
 
 //finish main
-var polySolver = new PolyominoSolver();
+var polySolver = new PolynomioSolver();
 
-displayBoard();
+//displayBoard();
 
 function solvePoly() {
     var solutions = polySolver.solve();
     var firstSolution = solutions[0];
-
+    return firstSolution;
 } 
+
+console.log(solvePoly())
 
 //they are all subclasses of tablenode
 
