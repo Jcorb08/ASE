@@ -72,16 +72,20 @@ class ShapeChoices{
     this.setUpChoices();
     }
 
+       
         setUpShapes() {
-        this.shapes.push(new Shape("#f00", [{x:0,y:0},{x:1,y:0},{x:2,y:0},{x:3,y:0},{x:4,y:0}])); // straight to right
-        this.shapes.push(new Shape("#0f0", [{x:0,y:0},{x:0,y:1},{x:0,y:2},{x:0,y:3},{x:0,y:4}])); // straight to bottom
-        this.shapes.push(new Shape("#00f", [{x:0,y:0},{x:1,y:0},{x:1,y:1},{x:2,y:1},{x:2,y:2}])); // L
-        this.shapes.push(new Shape("#ff0", [{x:0,y:0},{x:0,y:1},{x:1,y:1},{x:1,y:2},{x:2,y:2}])); // reverse L
-        this.shapes.push(new Shape("#f0f", [{x:0,y:0},{x:1,y:0},{x:2,y:0},{x:1,y:1},{x:2,y:1}])); // T
-        this.shapes.push(new Shape("#0ff", [{x:0,y:0},{x:1,y:0},{x:2,y:0},{x:0,y:1},{x:1,y:1}])); // reverse T
-        this.shapes.push(new Shape("#fff", [{x:0,y:0},{x:1,y:0},{x:0,y:1},{x:1,y:1},{x:2,y:1}])); // square
-        this.shapes.push(new Shape("#888", [{x:0,y:0},{x:1,y:0},{x:2,y:0},{x:1,y:1},{x:2,y:1},{x:2,y:2}])); // Z
-        this.shapes.push(new Shape("#888", [{x:0,y:0},{x:1,y:0},{x:2,y:0},{x:0,y:1},{x:1,y:1},{x:0,y:2}])); // reverse Z
+        this.shapes.push(new Shape("#f00", [{x:0,y:0},{x:0,y:1},{x:1,y:1},{x:2,y:1},{x:2,y:0}])); // Red c chape
+        this.shapes.push(new Shape("#0f0", [{x:0,y:0},{x:1,y:0},{x:2,y:0},{x:2,y:1},{x:3,y:1}])); // dark pink wiggle
+        this.shapes.push(new Shape("#00f", [{x:0,y:0},{x:0,y:1},{x:1,y:1},{x:1,y:2},{x:2,y:1}])); // light pink branch
+        this.shapes.push(new Shape("#ff0", [{x:0,y:0},{x:1,y:0},{x:2,y:0},{x:1,y:1}])); // dark blue triangle
+        this.shapes.push(new Shape("#f0f", [{x:0,y:0},{x:1,y:0},{x:2,y:0},{x:1,y:1},{x:3,y:0}])); // yellow P
+        this.shapes.push(new Shape("#0ff", [{x:0,y:0},{x:1,y:0},{x:2,y:0},{x:1,y:1},{x:2,y:1}])); // Purple b 
+        this.shapes.push(new Shape("#fff", [{x:0,y:0},{x:1,y:0},{x:1,y:1},{x:2,y:1}])); // Dark Purple s
+        this.shapes.push(new Shape("#888", [{x:0,y:0},{x:0,y:1},{x:0,y:2},{x:1,y:2},])); // Light green short L
+        this.shapes.push(new Shape("#888", [{x:0,y:0},{x:0,y:1},{x:0,y:2},{x:1,y:2},{x:2,y:2}])); // large orenge right angle
+        this.shapes.push(new Shape("#888", [{x:0,y:0},{x:0,y:1},{x:1,y:0},{x:2,y:0},{x:3,y:0}])); // long green L
+        this.shapes.push(new Shape("#888", [{x:0,y:0},{x:0,y:1},{x:1,y:0}])); // small orenge right angle
+        this.shapes.push(new Shape("#888", [{x:0,y:0},{x:1,y:0},{x:1,y:1},{x:2,y:1},{x:2,y:2}])); // light blue w
             }
 
 
