@@ -5,15 +5,15 @@
  class Shape{
     constructor(color, points){
         this.color = color;
-        this.fills = fills;
+        this.points = points;
     }  
     inBounds(x, y, boundX, boundY) {
         return x >= 0 && x < boundX && y >= 0 && y < boundY;
     }
     overflows(placedX, placedY, boundX, boundY) {
-        for (var i = 0; i < this.fills.length; ++i) {
-            var checkX = placedX + this.fills[i].x;
-            var checkY = placedY + this.fills[i].y;
+        for (var i = 0; i < this.points.length; ++i) {
+            var checkX = placedX + this.points[i].x;
+            var checkY = placedY + this.points[i].y;
             if ( ! this.inBounds(checkX, checkY, boundX, boundY)) return true;
         }
         return false;
@@ -23,7 +23,7 @@
 
 //shape choice class
 
-class ShapeChoices{
+class ShapeChoice{
     constructor(idx, shape, posx, posy){
         this.idx = idx;
         this.shape = shape;
@@ -91,11 +91,11 @@ class ShapeChoices{
                         var placedY = Math.floor(cell / this.y);
                         if (shape.overflows(placedX, placedY, this.x, this.y) == false) {
                             // this shape can be placed at this location.
-                            // work out what constraints it fills.
+                            // work out what constraints it points.
                             // one for each cell it covers;
                             var addArg = [new ShapeChoice(shapeIdx, this.shapes[shapeIdx], placedX, placedY), this.shapeConstraints[shapeIdx]];
-                            for (var pointIdx = 0; pointIdx < shape.fills.length; ++pointIdx) {
-                                var p = shape.fills[pointIdx];
+                            for (var pointIdx = 0; pointIdx < shape.points.length; ++pointIdx) {
+                                var p = shape.points[pointIdx];
                                 var cellNo = (p.x + placedX) + (p.y + placedY) * this.x;
                                 addArg.push(this.cellConstraints[cellNo]);
                             }
@@ -283,7 +283,6 @@ class Choice extends TableNode {
     }
 
     satisfies(constraint) {
-        var TableNode = require('./TableNode.js');
         var node = new TableNode(this, constraint);
         node.addToHeadersChains();
         return node;
@@ -350,11 +349,8 @@ class Network extends TableNode {
     }
 
     add(choiceDescription, constraintDescription) {
-        var Choice = require('./Choice.js');
-        var Constraint = require('./Constraint.js');
         var choice = new Choice(choiceDescription);
         choice.colChain.spliceInto(this.colChain.previous);
-        var TableNode = require('./TableNode.js');
         for (var i=1; i<arguments.length; ++i) {
             var constraint = arguments[i];
             if (constraint == null) throw new Error('constraint may not be null');
@@ -367,7 +363,6 @@ class Network extends TableNode {
     }
 
     ensureConstraint(constraintName) {
-        var Constraint = require('./Constraint.js');
         var constraint = this.constraints[constraintName];
         if (constraint == undefined) {
             constraint = new Constraint(constraintName);
