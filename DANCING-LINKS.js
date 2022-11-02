@@ -112,70 +112,6 @@ class ShapeChoices{
         }
 
  
-
-
-//tablenode
-
-class TableNode{
-
-    constructor(rowHeader,columnHeader){
-
-        this.rowHeader = rowHeader;
-        this.columnHeader = columnHeader;
-        var self = this;
-		var listener = {
-				onNodeHidden: function onNodeHidden(node) {
-					if (node == self.rowChain) {
-						if (self.rowHeader != null) self.rowHeader.actives--;
-					} else if (node == self.colChain) {
-						if (self.columnHeader != null) self.columnHeader.actives--;
-					}
-				},
-				onNodeRestored: function onNodeRestored(node) {
-					if (node == self.rowChain) {
-						if (self.rowHeader != null) self.rowHeader.actives ++;
-					} else if (node == self.colChain) {
-						if (self.columnHeader != null) self.columnHeader.actives ++;
-					}
-				},
-				onNodeSpliced: function(node) {this.onNodeRestored(node);}
-		}
-    }
-
-   forEachColumn(func) {
-		this.rowChain.forEach(func);
-	}
-
-    addToHeadersChains() {
-		if (this.rowHeader != null) {
-			this.rowChain.spliceInto(this.rowHeader.rowChain.previous);
-		}
-		if (this.columnHeader != null) {
-			this.colChain.spliceInto(this.columnHeader.colChain.previous);
-		}
-	}
-
-    forEachRow(func) {
-		this.colChain.forEach(func);
-	}
-
-    hideFromColumn(hiddenNodes) {
-		hiddenNodes.push(this.colChain);
-		this.colChain.hide();
-	}
-
-    hideFromRow(hiddenNodes) {
-		hiddenNodes.push(this.rowChain);
-		this.rowChain.hide();
-	}
-
-    toString = function() {
-		return "{" + this.rowHeader +" x " + this.columnHeader +"}"; 
-	}
-
-    
-}
-
 //circularList
 
 var guid = 0;
@@ -258,6 +194,70 @@ restore() {
     }
 }
 
+}
+
+//tablenode
+
+class TableNode{
+
+    constructor(rowHeader,columnHeader){
+
+        this.rowHeader = rowHeader;
+        this.columnHeader = columnHeader;
+        var self = this;
+		var listener = {
+				onNodeHidden: function onNodeHidden(node) {
+					if (node == self.rowChain) {
+						if (self.rowHeader != null) self.rowHeader.actives--;
+					} else if (node == self.colChain) {
+						if (self.columnHeader != null) self.columnHeader.actives--;
+					}
+				},
+				onNodeRestored: function onNodeRestored(node) {
+					if (node == self.rowChain) {
+						if (self.rowHeader != null) self.rowHeader.actives ++;
+					} else if (node == self.colChain) {
+						if (self.columnHeader != null) self.columnHeader.actives ++;
+					}
+				},
+				onNodeSpliced: function(node) {this.onNodeRestored(node);}
+		}
+        this.rowChain = new CircularList(this, listener);
+		this.colChain = new CircularList(this, listener);
+    }
+
+   forEachColumn(func) {
+		this.rowChain.forEach(func);
+	}
+
+    addToHeadersChains() {
+		if (this.rowHeader != null) {
+			this.rowChain.spliceInto(this.rowHeader.rowChain.previous);
+		}
+		if (this.columnHeader != null) {
+			this.colChain.spliceInto(this.columnHeader.colChain.previous);
+		}
+	}
+
+    forEachRow(func) {
+		this.colChain.forEach(func);
+	}
+
+    hideFromColumn(hiddenNodes) {
+		hiddenNodes.push(this.colChain);
+		this.colChain.hide();
+	}
+
+    hideFromRow(hiddenNodes) {
+		hiddenNodes.push(this.rowChain);
+		this.rowChain.hide();
+	}
+
+    toString = function() {
+		return "{" + this.rowHeader +" x " + this.columnHeader +"}"; 
+	}
+
+    
 }
 
 //constrains
