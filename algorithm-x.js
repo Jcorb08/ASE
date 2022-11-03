@@ -24,7 +24,7 @@ class Board {
         //build basic board and store in full board, this doesn't change so we can rapid reset
         this.fullBoard = this.buildBoard();
         console.log('Full Board');
-        console.table(this.fullBoard);
+        console.log(this.fullBoard);
         // the board we will change
         this.board = this.fullBoard;
         // column count to come
@@ -48,28 +48,33 @@ class Board {
         //build the board i.e. al x matrix
         // 5 * 11 + 12 = 55 + 12 = 67 columns
         var matrix = new Array();
-        var oneRow = new Array((this.x * this.y) + this.IDColumns).fill(0);
         this.shapes.forEach(shape => {
             var allPlaced = false;
             var rotationCount = 0;
             var colCount = 0;
             while(!allPlaced){
                 // check we can add shape in
-                if((colCount + shape.coords[rotationCount].length - 1) >= (this.x * this.y)){
-                    var tempRow = oneRow;
-                    tempRow[shape.arrayID] = '1';
+                if((colCount + shape.coords[rotationCount].length - 1) <= (this.x * this.y)){
+                    var tempRow = new Array((this.x * this.y) + this.IDColumns).fill(0);
+                    // add in shape id
+                    tempRow[shape.arrayID] = 1;
+                    // concat shape into matrix
                     Array.prototype.splice.apply(tempRow,[colCount,shape.coords[rotationCount].length].concat(shape.coords[rotationCount]));
+                    //console.log(tempRow);
+                    //push
                     matrix.push(tempRow); //push to the matrix
+                    // go along once
                     colCount++;
                 } else {
                     //when hits 55
                     rotationCount++;
-                    if(rotationCount > Shape.coords.length){
+                    if(rotationCount > shape.coords.length-1){
                         // next shape
                         allPlaced = true;
                     }
                 }
             }
+           // console.table(matrix)
         });
         return matrix;
     }
@@ -77,6 +82,7 @@ class Board {
     prePlace(prePlace){
         // accept input from frontend
         //remove the rows we don't need as the shapes are fixed
+        // edits this.board
     }
 
     // run when solve clicked
