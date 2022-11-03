@@ -81,6 +81,11 @@ class Board {
 
     prePlace(prePlace){
         // accept input from frontend
+
+        //find the first place of 'A' then take out all that conflicts
+
+        // remove rows via algorithmX functionality but not the actually function
+
         //remove the rows we don't need as the shapes are fixed
         // edits this.board
     }
@@ -97,6 +102,13 @@ class Board {
 
     convertOutput(solutions){
         //take board and change to frontend output
+
+        // one solution is 12 rows one for each shape
+        // those rows all cover the entirelist
+
+        // A 
+
+        // map 1s to A etc. once figured out what letter it corrosponds to
     }
 
     reset(){
@@ -112,6 +124,10 @@ class Board {
 // our recursive alogrithmX function
 // takes the current board, the max solutions to find, the current found solutions, and max time it can take
 function alogrithmX(board, maxSolutions, solutions, latestTime){
+    // if taken two long or solutions.length-1 = maxSolutions return solutions i.e. exit out
+
+
+    // rob don't worry about keeping track just delete and return solutions
 
 }
 
