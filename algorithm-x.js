@@ -3,6 +3,8 @@ class Shape{
         // the letter A-L
         this.id = id;
         // represented as 0-11 for the algorithmX array
+
+        // change to take x and y as inputs
         this.arrayID = 55 + (this.id.charCodeAt(0) - 65); // -'A' to get 0
         // define coords here how you said rob, the pattern in a 1d array
         // represented as 11110001
@@ -109,13 +111,39 @@ class Board {
     }
 
     prePlace(prePlace){
-        // accept input from frontend
+        // accept input from frontend - 5 * 11 0 or A-L
+
+        //use .flat(); https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat 
+
+        // 5*11 -> 1d length 55 A-L or 0
+        var setOfVars = new Set(prePlace.flat());
+        setOfVars.delete(0); //remove 0s
+        var shapesToBePrePlaced = Array.from(setOfVars); //['A','B'...]
+        var firstIndexes = new Array();
+        // first indexes in order of shapes to be preplaced so 'A','B'... but the number they come in list so e.g. 12
+        shapesToBePrePlaced.forEach(shape => {
+            firstIndexes.push(prePlace.flat().findIndex((element) => {element == shape}));
+       });
+       // convert to 1s so we can check the rows don't conflict with this
+       var rowCheckConflicts = prePlace.flatMap((element) => {element != 0 ? 1 : 0});
 
         //find the first place of 'A' then take out all that conflicts
-
         // remove rows via algorithmX functionality but not the actually function
-
         //remove the rows we don't need as the shapes are fixed
+       this.board = this.board.filter(row => {
+            //if in shapestobepreplaced and firstIndex is not equal to first indexes -> remove
+            var id = this.getLetterFromRow(row);
+            if(shapesToBePrePlaced.includes(id) && row.findIndex((element) => element == 1) == firstIndexes[shapesToBePrePlaced.indexOf(id)]){
+                // remove all 'A's if been preplaced and not the same config as the preplaced
+                return false;
+            } else if (!row.slice(0,(this.x * this.y)-1).every((element,index) => {element == 0 || (element == 1 && element != rowCheckConflicts[index])})){
+                //if the 0-54 has one element that is the same as rowCheckConflicts -> then we know it will be deleted so we remove it
+                return false;
+            } else {
+                //keep the node
+                return true;
+            }
+       });
         // edits this.board
     }
 
@@ -129,6 +157,20 @@ class Board {
         return this.convertOutput(alogrithmX(this, maxSolutions ? maxSolutions : null, [], maxRunTime ? new Date().getTime() + maxRunTime : undefined));
     }
 
+    getLetterFromRow(row){
+        //55 + (this.id.charCodeAt(0) - 65); // -'A' to get 0
+        // slice row to get id part, find 1 and add 65 (A)
+        return String.fromCharCode((row.slice(this.x * this.y).indexOf(1)) + 65);
+    }
+
+    convert1Dto2D(array){
+        newArray = [];
+        // 1d length 55
+        // 2d length 11 * 5
+        while(array.length) newArray.push(array.splice(0,this.y));
+        return newArray;
+    }
+
     convertOutput(solutions){
         //take board and change to frontend output
 
@@ -138,6 +180,22 @@ class Board {
         // A 
 
         // map 1s to A etc. once figured out what letter it corrosponds to
+        var output = new Array();
+        solutions.forEach(solution => {
+            //fill temp with 0s and set to length 55
+            var tempSolution = new Array(this.x * this.y).fill(0);
+            solution.forEach(row => {
+                // grab id from row 
+                var id = this.getLetterFromRow(row);
+                //slice array to only board and map 1s to id
+                var shapeInBoard = row.slice(0,(this.x * this.y)-1).map(val => {val == 1 ? id : val});
+                //concat into tempSolution if == 0 then good to overwrite
+                tempSolution.map((element, index) => {element == 0 ? shapeInBoard[index] : element});
+            });
+            //convert 1d to 2d array and push
+            output.push(this.convert1Dto2D(tempSolution));
+        });
+        return output;
     }
 
     reset(){
