@@ -23,6 +23,8 @@ class Board {
         this.IDColumns = this.shapes.length;
         //build basic board and store in full board, this doesn't change so we can rapid reset
         this.fullBoard = this.buildBoard();
+        console.log('Full Board');
+        console.table(this.fullBoard);
         // the board we will change
         this.board = this.fullBoard;
         // column count to come
@@ -52,15 +54,24 @@ class Board {
             var rotationCount = 0;
             var colCount = 0;
             while(!allPlaced){
-                var tempRow = oneRow;
-                tempRow[shape.arrayID] = '1';
-                Array.prototype.splice.apply(tempRow,[colCount,shape.coords[rotationCount].length].concat(shape.coords[rotationCount]));
-                matrix.push(tempRow); //push to the matrix
-                colCount++;
-                //when hits 55
-
+                // check we can add shape in
+                if((colCount + shape.coords[rotationCount].length - 1) >= (this.x * this.y)){
+                    var tempRow = oneRow;
+                    tempRow[shape.arrayID] = '1';
+                    Array.prototype.splice.apply(tempRow,[colCount,shape.coords[rotationCount].length].concat(shape.coords[rotationCount]));
+                    matrix.push(tempRow); //push to the matrix
+                    colCount++;
+                } else {
+                    //when hits 55
+                    rotationCount++;
+                    if(rotationCount > Shape.coords.length){
+                        // next shape
+                        allPlaced = true;
+                    }
+                }
             }
         });
+        return matrix;
     }
 
     prePlace(prePlace){
@@ -97,3 +108,7 @@ class Board {
 function alogrithmX(board, maxSolutions, solutions, latestTime){
 
 }
+
+
+// main for now
+var boardObject = new Board(5,11);
