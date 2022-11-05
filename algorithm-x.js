@@ -29,8 +29,10 @@ class Board {
         console.log(this.fullBoard);
         // the board we will change
         this.board = this.fullBoard;
+        // 0-54 array of counts to keep track of num of 1s
         // column count to come
         // this.colCount = [] array of length 55
+        this.dfs = 0;
     }
 
     createShapes(){
@@ -133,7 +135,7 @@ class Board {
        this.board = this.board.filter(row => {
             //if in shapestobepreplaced and firstIndex is not equal to first indexes -> remove
             var id = this.getLetterFromRow(row);
-            if(shapesToBePrePlaced.includes(id) && row.findIndex((element) => element == 1) == firstIndexes[shapesToBePrePlaced.indexOf(id)]){
+            if(shapesToBePrePlaced.includes(id) && row.findIndex((element) => element == 1) != firstIndexes[shapesToBePrePlaced.indexOf(id)]){
                 // remove all 'A's if been preplaced and not the same config as the preplaced
                 return false;
             } else if (!row.slice(0,(this.x * this.y)-1).every((element,index) => {element == 0 || (element == 1 && element != rowCheckConflicts[index])})){
@@ -144,6 +146,7 @@ class Board {
                 return true;
             }
        });
+
         // edits this.board
     }
 
@@ -154,7 +157,7 @@ class Board {
             this.prePlace(prePlace);
         }
         //run algoritmX return solutions
-        return this.convertOutput(alogrithmX(this, maxSolutions ? maxSolutions : null, [], maxRunTime ? new Date().getTime() + maxRunTime : undefined));
+        return this.convertOutput(alogrithmX(this, maxSolutions ? maxSolutions : null, [[]], maxRunTime ? new Date().getTime() + maxRunTime : undefined));
     }
 
     getLetterFromRow(row){
@@ -205,15 +208,91 @@ class Board {
 
     }
 
+    calculateColCount(){
+        //current board is just board
+        var columns = new Array((this.x * this.y))
+        var tempBoard = this.board.slice(0,(this.x * this.y)-1);
+        tempBoard.forEach(row => {
+            row.forEach((column, index) => {
+                if (column == 1){
+                    columns[index]++;
+                }
+            });
+        });
+        return columns;
+    }
+
+    returnFirstRowWithColX(colOfLowestSum){
+        var count = 0;
+        this.board.forEach((row,index) => {
+            if (row[colOfLowestSum] == 1){
+                if (this.dfs == count){
+                    return index;
+                } else {
+                    count++;
+                }
+            }
+        });
+    }
 
 }
 
 // our recursive alogrithmX function
 // takes the current board, the max solutions to find, the current found solutions, and max time it can take
-function alogrithmX(board, maxSolutions, solutions, latestTime){
+function alogrithmX(boardObject, maxSolutions, solutions, latestTime){
     // if taken two long or solutions.length-1 = maxSolutions return solutions i.e. exit out
 
+    //  row col-> 0 1 2 ... 54 55 - 67
+    //   0            0            
+    //   1            1
+    //   2            1
+    //  ...
 
+    // 1. if matrix no columns at all success!
+    // return board
+    if (boardObject.board.every((element) => {element.length == 0})){
+        
+        return solutions;
+    }
+    
+    // 2. choose a column with the lowest sum - least amount of ones 
+    var colOfLowestSum = Math.min(...boardObject.calculateColCount());
+
+    if (colOfLowestSum == 0){
+        //fail :(
+        return solutions;
+    }
+
+    // 3. select any of those rows with lowest sum column - push to temp solution
+    var firstRowFound = boardObject.board[boardObject.returnFirstRowWithColX(colOfLowestSum)];
+
+    // if(solutions[solutions.length-1] >= boardObject.shapes.length){
+    //     solutions.push(new Array());
+    // }
+    solutions[solutions.length-1].push(firstRowFound);
+    var columnsThatHave1sInFirstRow = new Array();
+    firstRowFound.forEach((element,index) => {
+        if(element == 1){
+            columnsThatHave1sInFirstRow.push(index);
+        }
+    });
+
+    // remove whole row if column is 1
+    // if 0 remove just that column
+    boardObject.board.forEach((row,index) => {
+        for (let i = 0; i < columnsThatHave1sInFirstRow.length; index++) {
+            if (row[columnsThatHave1sInFirstRow[i]] == 1){
+                //remove whole row
+                boardObject.board = boardObject.board.slice(0, index).concat(boardObject.board.slice(-index));
+                break;
+            } else {
+                //remove just col
+                row = row.slice(0, columnsThatHave1sInFirstRow[i]).concat(row.slice(-columnsThatHave1sInFirstRow[i]));
+            }
+        }
+    });
+
+    return alogrithmX(boardObject, maxSolutions,solutions,latestTime);
     // rob don't worry about keeping track just delete and return solutions
 
 }
