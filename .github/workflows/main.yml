@@ -13,6 +13,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '10.x'
+    - name: Switch to Angular Folder
+    - run: cd fe-polysphere/
     - name: Install npm dependencies
       run: npm install
     - name: Run build task
