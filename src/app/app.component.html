@@ -1,0 +1,23 @@
+<mat-toolbar color="primary">
+  {{title}}
+</mat-toolbar>
+<div class="content">
+  <div class="row">
+    <div class="col-md-4 offset-md-4">
+      <app-shape></app-shape>
+    </div>
+  </div>
+  <div fxLayout="row wrap" fxLayoutGap="16px grid">
+    <div fxFlex="20%">
+      <app-selection></app-selection>
+    </div>
+
+    <div fxFlex="60%" style="text-align: center;">
+      <app-board></app-board>
+    </div>
+
+    <div fxFlex="20%">
+      <app-control></app-control>
+    </div>
+  </div>
+</div>

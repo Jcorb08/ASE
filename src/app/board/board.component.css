@@ -1,0 +1,19 @@
+mat-card {
+  margin: 1rem !important;
+}
+
+mat-card-content {
+  height: 400px;
+}
+* {
+  font-family: 'Press Start 2P', cursive;
+}
+
+.grid {
+  /* display: grid; */
+  grid-template-columns: 320px 200px;
+}
+
+.game-board {
+  border: solid 2px;
+}
