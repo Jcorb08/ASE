@@ -20,4 +20,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         npm install
-        npm run ng -- deploy --base-href=/the-repositoryname/ --name="Displayed Username" --email="mail@example.org" --no-silent
+        npm run ng deploy --repo=https://github.com/Jcorb08/ASE --name="Jcorb08" --email="jc812@sussex.ac.uk" --no-silent
