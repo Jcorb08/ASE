@@ -104,7 +104,7 @@ export class SelectionComponent implements OnInit {
     this.sharedService.currentCtx.subscribe(board => this.currentCtx = board);
 
     this.resetGame();
-    this.solution = solveX();
+    this.solution = solveX(undefined,1,undefined);
     console.log(this.solution, 'this.board')
     this.solution.forEach((row, y) => {
       row.forEach((value, x) => {
@@ -142,9 +142,24 @@ export class SelectionComponent implements OnInit {
   solvePuzzle(){
     let alphabet = "abcdefghijklmnopqrstuvwxyz"
     this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
-
+    console.log(this.board, this.sharedService.getBoard());
+    var prePlaceTest = new Array();
+    for (let index = 0; index < 5; index++) {
+        //const element = array[index];
+        var tempRow = [...new Array(11).fill(0)];
+        if (index == 0) {
+            tempRow[0] = 'K';
+        } else if(index == 1) {
+            tempRow[0] = 'K';
+            tempRow[1] = 'K';
+        }
+        prePlaceTest.push(tempRow);
+    }
     this.resetGame();
-    this.solution = solveX();
+
+    this.solution = solveX(prePlaceTest,1,undefined);
+    console.log(this.solution, 'this.board')
+    
     this.solution.forEach((row, y) => {
       row.forEach((value, x) => {
         Object.entries(value).forEach(([key, item]) => {

@@ -432,21 +432,7 @@ function alogrithmX(boardObject, maxSolutions, solutions, tempSolution, latestTi
 
 
 // main for now
-export function solveX (){
+export function solveX (prePlace,maxSolutions,maxRunTime){
     boardObject = new Board(5,11);                
-    prePlaceTest = new Array();
-    for (let index = 0; index < boardObject.x; index++) {
-        //const element = array[index];
-        var tempRow = [...new Array(boardObject.y).fill(0)];
-        if (index == 0) {
-            tempRow[0] = 'A';
-            tempRow[1] = 'A';
-            tempRow[2] = 'A';
-        } else if(index == 1) {
-            tempRow[0] = 'A';
-            tempRow[2] = 'A';
-        }
-        prePlaceTest.push(tempRow);
-    }
-    return boardObject.solve(prePlaceTest,1,undefined)
+    return boardObject.solve(prePlace,maxSolutions,maxRunTime);
 }
