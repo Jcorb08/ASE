@@ -6,6 +6,8 @@ import { HtmlElementService } from '../services/htmlElement.service';
 import { IPiece, Piece } from '../services/piece.component';
 import { SharedService } from '../services/shared.service';
 import { solveX } from '../../assets/js/algorithmX'
+import { AnyCnameRecord } from 'dns';
+import { COLS, ROWS } from '../services/constants';
 
 @Component({
   selector: 'app-selection',
@@ -16,10 +18,12 @@ export class SelectionComponent implements OnInit {
 
   private nextSubscription: Subscription;
   private nextElement: ElementRef<HTMLCanvasElement>;
+  alphabet = "abcdefghijklmnopqrstuvwxyz"
   next: Piece;
   currentTetris: Piece;
   board: number[][];
   solution: string[][];
+  refinePreplace: string[][];
   solutionPieces: Piece[] = [];
   currentPiece: Piece;
   currentCtx: CanvasRenderingContext2D;
@@ -140,30 +144,33 @@ export class SelectionComponent implements OnInit {
   }
 
   solvePuzzle(){
-    let alphabet = "abcdefghijklmnopqrstuvwxyz"
+    this.sharedService.currentTetris.subscribe(piece =>{
+      if(piece) this.refinePreplace =  this.refinePrePlaceTest(piece.shape)
+    });
     this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
-    console.log(this.board, this.sharedService.getBoard());
-    var prePlaceTest = new Array();
-    for (let index = 0; index < 5; index++) {
-        //const element = array[index];
-        var tempRow = [...new Array(11).fill(0)];
-        if (index == 0) {
-            tempRow[0] = 'K';
-        } else if(index == 1) {
-            tempRow[0] = 'K';
-            tempRow[1] = 'K';
-        }
-        prePlaceTest.push(tempRow);
-    }
-    this.resetGame();
+    this.sharedService.setReset(true);
 
-    this.solution = solveX(prePlaceTest,1,undefined);
-    console.log(this.solution, 'this.board')
+    // let prePlaceTest = new Array()
+    // for (let index = 0; index < 5; index++) {
+    //     //const element = array[index];
+    //     var tempRow = [...new Array(11).fill(0)];
+    //     if (index == 0) {
+    //         tempRow[0] = 'K';
+    //     } else if(index == 1) {
+    //         tempRow[0] = 'K';
+    //         tempRow[1] = 'K';
+    //     }
+    //     prePlaceTest.push(tempRow);
+    // }
+    // console.log(prePlaceTest, 'prePlaceTest');
+    
+    this.solution = solveX(this.refinePreplace, 1, undefined);
+    console.log(this.solution, 'this.solution')
     
     this.solution.forEach((row, y) => {
       row.forEach((value, x) => {
         Object.entries(value).forEach(([key, item]) => {
-          this.board[x][Number(key)] = alphabet.indexOf(item.toLowerCase())+1;
+          this.board[x][Number(key)] = this.alphabet.indexOf(item.toLowerCase())+1;
         });
       });
     });
@@ -172,5 +179,28 @@ export class SelectionComponent implements OnInit {
     this.sharedService.setGameSolved(true)
   }
 
+  refinePrePlaceTest(shape: number[][]){
+    let refinePreplace = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+    shape.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if(value > 0){
+          refinePreplace[y][x] = this.alphabet[value-1].toUpperCase();
+        }
+      });
+    });
+    return refinePreplace;
+  }
+
+  // removeZeroLineColumn(shape: any){
+  //   let pivot = (a: any) => a[0].map((_: any, i: any) => a.map((b: any) => b[i]))
+  //   let rotated = pivot(shape)
+  //   let filtered = rotated.filter((row: any) => !row.every((v: any) => v == 0 || v == '0'))
+  //   return pivot(filtered)
+  // }
+
+  // removeZeroLineRow(shape: any){
+  //   let filtered = shape.filter((row: any) => !row.every((v: any) => v == 0 || v == '0'))
+  //   return filtered
+  // }
 
 }
