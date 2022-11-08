@@ -30,7 +30,8 @@ export class BoardComponent implements OnInit {
   board: number[][];
   _piece: Piece;
   piece: Piece;
-  next: Piece;
+  next: Piece;  
+  gameSolved: boolean = false;
 
   constructor(private gameService: GameService,
     private htmlService: HtmlElementService,
@@ -49,6 +50,7 @@ export class BoardComponent implements OnInit {
   }
 
   initBoard() {
+    this.sharedService.setGameSolved(false);
     const res = this.canvas.nativeElement.getContext('2d');
     if (!res || !(res instanceof CanvasRenderingContext2D)) {
         throw new Error('Failed to get 2D initBoard context');

@@ -24,6 +24,7 @@ export class SharedService {
 
   private board: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
+  private gameSolved: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private refresh: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private reset: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -33,6 +34,14 @@ export class SharedService {
     this.currentTetris = this.tetrisPiece.asObservable();
     this.currentCtx = this.shapeCtx.asObservable();
     this.currentCtxNext = this.shapeCtxNext.asObservable();
+  }
+
+  public getGameSolved(): Observable<boolean> {
+    return this.gameSolved.asObservable();
+  }
+
+  public setGameSolved(value: boolean): void {
+    this.gameSolved.next(value);
   }
 
   public getRefresh(): Observable<boolean> {

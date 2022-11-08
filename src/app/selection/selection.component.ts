@@ -24,6 +24,7 @@ export class SelectionComponent implements OnInit {
   currentPiece: Piece;
   currentCtx: CanvasRenderingContext2D;
   currentCtxNext: CanvasRenderingContext2D;
+  gameSolved: boolean;
 
   constructor(private gameService: GameService,
     private htmlService: HtmlElementService,
@@ -72,7 +73,9 @@ export class SelectionComponent implements OnInit {
     this.sharedService.currentCtx.subscribe(canvas => this.currentCtx = canvas);
     this.sharedService.currentTetris.subscribe(piece => this.currentTetris = piece);
     this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
+    this.sharedService.getGameSolved().subscribe(solve => this.gameSolved = solve);
 
+    if (this.gameSolved) this.resetGame()
     if (this.currentTetris) this.freezeLastShape()
     new BoardComponent(this.gameService, this.htmlService, this.sharedService).submit(this.currentPiece, this.currentCtx)
   }
@@ -90,6 +93,7 @@ export class SelectionComponent implements OnInit {
   }
 
   resetGame(){
+    this.sharedService.updateTetris(null as unknown as Piece)
     this.sharedService.setReset(true);
   }
 
@@ -141,7 +145,6 @@ export class SelectionComponent implements OnInit {
 
     this.resetGame();
     this.solution = solveX();
-    console.log(this.solution, 'this.board')
     this.solution.forEach((row, y) => {
       row.forEach((value, x) => {
         Object.entries(value).forEach(([key, item]) => {
@@ -149,10 +152,9 @@ export class SelectionComponent implements OnInit {
         });
       });
     });
-    console.log(this.board);
     this.sharedService.setBoard(this.board)
     new BoardComponent(this.gameService, this.htmlService, this.sharedService).drawBoard()
-    
+    this.sharedService.setGameSolved(true)
   }
 
 
