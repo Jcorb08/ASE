@@ -5,6 +5,7 @@ import { GameService } from '../services/game.service';
 import { HtmlElementService } from '../services/htmlElement.service';
 import { IPiece, Piece } from '../services/piece.component';
 import { SharedService } from '../services/shared.service';
+import { solveX } from '../../assets/js/algorithmX'
 
 @Component({
   selector: 'app-selection',
@@ -18,6 +19,8 @@ export class SelectionComponent implements OnInit {
   next: Piece;
   currentTetris: Piece;
   board: number[][];
+  solution: string[][];
+  solutionPieces: Piece[] = [];
   currentPiece: Piece;
   currentCtx: CanvasRenderingContext2D;
   currentCtxNext: CanvasRenderingContext2D;
@@ -47,7 +50,7 @@ export class SelectionComponent implements OnInit {
     this.sharedService.currentCtxNext.subscribe(canvas => this.currentCtxNext = canvas);
 
     // this.currentPiece = this.next ;
-    this.next = new Piece(this.currentCtxNext, this.currentPiece, true, mode);
+    this.next = new Piece(this.currentCtxNext, this.currentPiece, true, {s: mode, x: 0, y: 0});
     this.next.drawNext(this.currentCtxNext);
 
     this.sharedService.updateShape(this.next)
@@ -89,5 +92,68 @@ export class SelectionComponent implements OnInit {
   resetGame(){
     this.sharedService.setReset(true);
   }
+
+  solvePuzzle_old(){
+    let alphabet = "abcdefghijklmnopqrstuvwxyz"
+    let foundPieces: string[] = [] ;
+    this.solutionPieces = [];
+    this.sharedService.currentCtx.subscribe(board => this.currentCtx = board);
+
+    this.resetGame();
+    this.solution = solveX();
+    console.log(this.solution, 'this.board')
+    this.solution.forEach((row, y) => {
+      row.forEach((value, x) => {
+        Object.entries(value).forEach(([key, item]) => {
+          if(foundPieces.indexOf(item) == -1){
+            this.solutionPieces.push(
+              new Piece(
+                this.currentCtx, 
+                {}, 
+                true, 
+                {s: (alphabet.indexOf(item.toLowerCase())+1).toString(), x: Number(key), y: x}
+              ) 
+            )
+            foundPieces.push(item)
+          }
+        });
+      });
+    });
+    this.submitPieces_old();
+  }
+
+  submitPieces_old(){
+    this.solutionPieces.forEach((row, y) => {
+      this.sharedService.currentCtx.subscribe(canvas => this.currentCtx = canvas);
+      this.sharedService.currentTetris.subscribe(piece => this.currentTetris = piece);
+      this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
+
+      if (this.currentTetris) this.freezeLastShape()
+      console.log(row, 'submitPieces');
+      
+      new BoardComponent(this.gameService, this.htmlService, this.sharedService).submitPieces(row, this.currentCtx)
+    });
+  }
+
+  solvePuzzle(){
+    let alphabet = "abcdefghijklmnopqrstuvwxyz"
+    this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
+
+    this.resetGame();
+    this.solution = solveX();
+    console.log(this.solution, 'this.board')
+    this.solution.forEach((row, y) => {
+      row.forEach((value, x) => {
+        Object.entries(value).forEach(([key, item]) => {
+          this.board[x][Number(key)] = alphabet.indexOf(item.toLowerCase())+1;
+        });
+      });
+    });
+    console.log(this.board);
+    this.sharedService.setBoard(this.board)
+    new BoardComponent(this.gameService, this.htmlService, this.sharedService).drawBoard()
+    
+  }
+
 
 }

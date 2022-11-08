@@ -10,8 +10,6 @@ import {
   ROWS,
   COLORS,
   COLORSLIGHTER,
-  LINES_PER_LEVEL,
-  LEVEL,
   COLORSDARKER
 } from './../services/constants';
 import { Piece, IPiece } from './../services/piece.component';
@@ -33,8 +31,6 @@ export class BoardComponent implements OnInit {
   _piece: Piece;
   piece: Piece;
   next: Piece;
-  paused: boolean;
-  gameStarted: boolean;
 
   constructor(private gameService: GameService,
     private htmlService: HtmlElementService,
@@ -70,7 +66,6 @@ export class BoardComponent implements OnInit {
   }
 
   play() {
-    this.gameStarted = true;
     this.resetGame();
   }
 
@@ -79,9 +74,28 @@ export class BoardComponent implements OnInit {
     this.sharedService.getBoard().subscribe(bd => this.board = bd);
     this.ctx = ctx;
     this.piece = new Piece(ctx, piece, false)
-    if (this.gameService.valid(this.piece, this.board)) {
+    if(this.gameService.valid(this.piece, this.board)) {
       this.draw(this.piece)
       this.sharedService.setRefresh(true);
+      this.sharedService.updateTetris(this.piece)
+      this.sharedService.updateCtx(this.ctx)
+    }
+    
+  }
+
+  submitPieces(piece: Piece, ctx: CanvasRenderingContext2D){
+    // this.sharedService.currentTetris.subscribe(piece => this.piece = piece);
+    this.sharedService.getBoard().subscribe(bd => this.board = bd);
+    this.ctx = ctx;
+    this.piece = piece
+    let counter = 0
+    while (this.gameService.valid(this.piece, this.board) == false) {
+      const p = this.sharedService.rotateShape(this.piece)
+      this.piece.move(p);
+      if(counter++ == 1000) break;
+    }
+    if(this.gameService.valid(this.piece, this.board)) {
+      this.draw(this.piece)
       this.sharedService.updateTetris(this.piece)
       this.sharedService.updateCtx(this.ctx)
     }
@@ -125,7 +139,6 @@ export class BoardComponent implements OnInit {
 
   resetGame() {
     this.board = this.getEmptyBoard();
-    this.paused = false;
     this.addOutlines();
     this.sharedService.setBoard(this.board);
   }
@@ -188,6 +201,8 @@ export class BoardComponent implements OnInit {
   }
 
   drawBoard() {
+    if(!this.board) this.sharedService.getBoard().subscribe((board) => this.board = board);
+    if(!this.ctx) this.sharedService.currentCtx.subscribe(canvas => this.ctx = canvas);
     this.board.forEach((row, y) => {
       row.forEach((value, x) => {
         if (value > 0) {

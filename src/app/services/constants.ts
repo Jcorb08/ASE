@@ -1,7 +1,7 @@
 export const COLS = 11;
 export const ROWS = 5;
-export const BLOCK_SIZE = 70;
-export const LINES_PER_LEVEL = 10;
+export const BLOCK_SIZE = 50;
+export const LINES_PER_LEVEL = 2;
 export const COLORS = [
   'none',
   'rgba(0, 255, 255)',
@@ -28,8 +28,8 @@ export const COLORSLIGHTER= [
   'rgba(255, 132, 132)',
   'rgba(255, 195, 255)',
   'rgba(195, 0, 255)',
-  'rgba(195, 255, 0)',
-  'rgba(0, 255, 195)',
+  'rgba(195, 255, 132)',
+  'rgba(132, 255, 195)',
   'rgba(195, 255, 255)'
 ];
 export const COLORSDARKER= [
@@ -43,9 +43,9 @@ export const COLORSDARKER= [
   'rgba(132, 0, 0)',
   'rgba(255, 65, 255)',
   'rgba(65, 0, 255)',
-  'rgba(65, 255, 0)',
-  'rgba(0, 255, 65)',
-  'rgba(65, 255, 255)'
+  'rgba(65, 132, 0)',
+  'rgba(0, 132, 65)',
+  'rgba(65, 132, 132)'
 ];
 export const SHAPES = [
   [],

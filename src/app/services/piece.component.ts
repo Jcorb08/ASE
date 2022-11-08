@@ -18,7 +18,7 @@ export class Piece implements IPiece {
   constructor(private ctx: CanvasRenderingContext2D,
     private _piece: any = {},
     private _spawn: boolean = true,
-    private _mode: string = 'random') {
+    private _mode: {s: string, x: number, y: number} = {s: 'random', x: 0, y: 0}) {
     if (_spawn) {
       this.spawn();
     }
@@ -34,18 +34,21 @@ export class Piece implements IPiece {
 
   spawn() {
     let typeId;
-    if(this._mode == 'random'){
+    if(this._mode.s == 'random'){
       typeId = this.randomizeTetrominoType(COLORS.length - 1);
     }
+    else if(isNaN(+this._mode.s) == false){
+      typeId = Number(this._mode.s);
+    }
     else{
-      typeId = this.nextTetrominoType(this._mode, SHAPES.indexOf(this._piece.shape), COLORS.length - 1)
+      typeId = this.nextTetrominoType(this._mode.s, SHAPES.indexOf(this._piece.shape), COLORS.length - 1)
     }
     this.shape = SHAPES[typeId];
     this.color = COLORS[typeId];
     this.colorLighter = COLORSLIGHTER[typeId];
     this.colorDarker = COLORSDARKER[typeId];
-    this.x = COLS - this.shape.length - 1//typeId === 4 ? 4 : 3;
-    this.y = ROWS - this.shape[0].length - 1;
+    this.x = this._mode.x //COLS - this.shape.length - 1//typeId === 4 ? 4 : 3;
+    this.y = this._mode.y //ROWS - this.shape[0].length - 1;
   }
 
   private add3D(ctx: CanvasRenderingContext2D, x: number, y: number): void {
@@ -81,7 +84,7 @@ export class Piece implements IPiece {
   }
 
   private addNextShadow(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-   ctx.fillStyle = 'black';
+    ctx.fillStyle = 'black';
     ctx.fillRect(x, y, 1.025, 1.025);
   }
 
@@ -138,5 +141,19 @@ export class Piece implements IPiece {
     if(mode == '-') currentType--;
     if(currentType < 1 || currentType > noOfTypes) return this.randomizeTetrominoType(noOfTypes)
     return currentType
+  }
+
+  drawResult() {
+    this.shape.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if (value > 0) {
+          this.ctx.fillStyle = this.color;
+          const currentX = this.x + x;
+          const currentY = this.y + y;
+          this.ctx.fillRect(currentX, currentY, 1, 1);
+          this.add3D(this.ctx, currentX, currentY);
+        }
+      });
+    });
   }
 }
