@@ -1,1 +1,1 @@
-export declare function solveX();
+export declare function solveX(prePlace,maxSolutions,maxRunTime);
