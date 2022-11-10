@@ -1,8 +1,3 @@
-//export declare function solveX(prePlace,maxSolutions,maxRunTime);
-
-//var boardObject;
-//var prePlaceTest;
-
 class Shape{
     constructor(id,coords,arrayLength){
         // the letter A-L
@@ -19,28 +14,130 @@ class Shape{
 }
 
 class Node {
-    constructor(){
-        //linked list connectors
+
+    //Connected Nodes
+    protected left: Node;
+    protected right: Node;
+    protected top: Node;
+    protected bottom: Node;
+    protected column: Node;
+
+    //Activated
+    protected activated: boolean;
+
+    //IDs
+    protected rowID: number;
+    protected columnID: number;
+
+    //Setters
+    public setLeft(left: Node){
         this.left = left;
+    }
+    public setRight(right: Node){
         this.right = right;
+    }
+    public setTop(top: Node){
         this.top = top;
-        this.down = down;
+    }
+    public setBottom(bottom: Node){
+        this.bottom = bottom;
+    }
+    public setColumn(column: Node){
         this.column = column;
+    }
+    public setActivated(activated: boolean){
+        this.activated = activated;
+    }
+    //Getters
+    public getLeft(): Node{
+        return this.left;
+    }
+    public getRight(): Node{
+        return this.right;
+    }
+    public getTop(): Node{
+        return this.top;
+    }
+    public getBottom(): Node{
+        return this.bottom;
+    }
+    public getColumn(): Node{
+        return this.column;
+    }
+    public getActivated(): boolean{
+        return this.activated;
+    }
+    public getColumnID(): number{
+        return this.columnID;
+    }
+    public getRowID(): number{
+        return this.rowID;
+    }
 
-        // ids
+    //Construct
+    constructor(activated: boolean, rowID: number, columnID: number){
+        this.activated = activated;
         this.rowID = rowID;
-        this.colID = colID;
+        this.columnID = columnID;
+    }
 
-        //count
-        this.nodeCount = nodecount;
+    //cover a given node
+    public cover(targetNode: Node){
+        //pointer to header column
+        var columnNode: ColumnHeader = targetNode.getColumn();
 
-        // activated
-        this.activate = activated;
+        //unlink column header from its neighbours
+        columnNode.getLeft().setRight(columnNode.getRight());
+        columnNode.getRight().setLeft(columnNode.getLeft());
+
+        //move down column and remove each row
+        //by traversing right
+        for (let row = columnNode.getBottom(); row != columnNode; row = row.getBottom()) {
+            for (let rightNode = row.getRight(); rightNode != row; rightNode = rightNode.getRight()) {
+                rightNode.getTop().setBottom(rightNode.getBottom());
+                rightNode.getBottom().setTop(rightNode.getTop());
+                //get column and decrease nodeCount
+                rightNode.getColumn().setNodeCount(rightNode.getColumn().getNodeCount()-1);
+            }
+            
+        }
+    }
+
+    //uncover a given node
+    public uncover(targetNode: Node){
 
     }
-    
-    activate(){
 
+}
+
+class ColumnHeader extends Node {
+    private nodeCount: number;
+
+    constructor(activated: boolean, rowID: number, columnID: number){
+        super(activated,rowID,columnID);
+        this.nodeCount = 0;
+    }
+    //Setters
+    public setNodeCount(nodeCount: number){
+        this.nodeCount = nodeCount;
+    }
+    //Getters
+    public getNodeCount(): number{
+        return this.nodeCount;
+    }
+
+    //get min Column
+    public getMinColumn(): ColumnHeader{
+        var minColumn: ColumnHeader = this.getRight();
+        var currentColumn: ColumnHeader = this.getRight().getRight();
+        do {
+            if(currentColumn.getNodeCount() < minColumn.getNodeCount()){
+                minColumn = currentColumn;
+            }
+            currentColumn = currentColumn.getRight();
+        } while(currentColumn != this);
+
+        return minColumn;
     }
 }
 
@@ -71,50 +168,96 @@ export class Board {
 
     createShapes(){
         //create the objects
-        this.shapes.push(new Shape('A',[[1,1,1,0,0,0,0,0,0,0,0,1,0,1],[1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1],
-                                        [1,0,1,0,0,0,0,0,0,0,0,1,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1]],this.x * this.y));
 
-        this.shapes.push(new Shape('B',[[0,0,1,1,0,0,0,0,0,0,0,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1],
-                                        [0,1,1,1,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        // needs more rotations/flips...
+        this.shapes.push(new Shape('A',[[0,1,2,11,13],[0,1,11,22,23]],this.x * this.y));
 
-        this.shapes.push(new Shape('C',[[0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1],[0,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1],
-                                        [1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],[0,0,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        this.shapes.push(new Shape('B',[[2,3,11,12,13],[0,11,12,23,34]],this.x * this.y));
 
-        this.shapes.push(new Shape('D',[[0,1,0,0,0,0,0,0,0,0,0,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],
-                                        [1,1,1,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        // this.shapes.push(new Shape('A',[[1,1,1,0,0,0,0,0,0,0,0,1,0,1],[1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1],
+        //                                [1,0,1,0,0,0,0,0,0,0,0,1,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1]],this.x * this.y));
 
-        this.shapes.push(new Shape('E',[[0,1,0,0,0,0,0,0,0,0,0,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],
-                                        [1,1,1,1,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        // this.shapes.push(new Shape('B',[[0,0,1,1,0,0,0,0,0,0,0,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1],
+        //                                [0,1,1,1,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
 
-        this.shapes.push(new Shape('F',[[0,1,1,0,0,0,0,0,0,0,0,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,1],
-                                        [1,1,1,0,0,0,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        // this.shapes.push(new Shape('C',[[0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1],[0,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1],
+        //                                 [1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],[0,0,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
 
-        this.shapes.push(new Shape('G',[[0,1,1,0,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]
-                                        ],this.x * this.y));
+        // this.shapes.push(new Shape('D',[[0,1,0,0,0,0,0,0,0,0,0,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],
+        //                                 [1,1,1,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
 
-        this.shapes.push(new Shape('H',[[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],[1,1,1,0,0,0,0,0,0,0,0,0,0,1],
-                                        [0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,1]],this.x * this.y));
+        // this.shapes.push(new Shape('E',[[0,1,0,0,0,0,0,0,0,0,0,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],
+        //                                 [1,1,1,1,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
 
-        this.shapes.push(new Shape('I',[[1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],[0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,1],
-                                        [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1],[1,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        // this.shapes.push(new Shape('F',[[0,1,1,0,0,0,0,0,0,0,0,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,1],
+        //                                 [1,1,1,0,0,0,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
 
-        this.shapes.push(new Shape('J',[[1,0,0,0,0,0,0,0,0,0,0,1,1,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],
-                                        [1,1,1,1,0,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1]],this.x * this.y));
+        // this.shapes.push(new Shape('G',[[0,1,1,0,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]
+        //                                 ],this.x * this.y));
 
-        this.shapes.push(new Shape('K',[[1,0,0,0,0,0,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,0,0,0,0,1],
-                                        [1,1,0,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,1]],this.x * this.y));
+        // this.shapes.push(new Shape('H',[[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],[1,1,1,0,0,0,0,0,0,0,0,0,0,1],
+        //                                 [0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,1]],this.x * this.y));
 
-        this.shapes.push(new Shape('L',[[1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1],[0,0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1],
-                                        [1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1],[0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        // this.shapes.push(new Shape('I',[[1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],[0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,1],
+        //                                 [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1],[1,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+
+        // this.shapes.push(new Shape('J',[[1,0,0,0,0,0,0,0,0,0,0,1,1,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],
+        //                                 [1,1,1,1,0,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1]],this.x * this.y));
+
+        // this.shapes.push(new Shape('K',[[1,0,0,0,0,0,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,0,0,0,0,1],
+        //                                 [1,1,0,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,1]],this.x * this.y));
+
+        // this.shapes.push(new Shape('L',[[1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1],[0,0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1],
+        //                                 [1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1],[0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
 
 
         
+    }
+
+
+    buildLinkedBoard(){
+        var matrix = new Array();
+        var tempColRow = new Array((this.x * this.y) + this.numOfIDColumns);
+        //columns
+        tempColRow.forEach((element,index) => {
+            element = new ColumnHeader(index);
+        });
+        //shapes
+        this.shape.forEach(element => {
+            var allPlaced = false;
+            var rotationCount = 0;
+            var colCount = 0;
+            while(!allPlaced){
+                // check we can add shape in
+                if((colCount + shape.coords[rotationCount].length - 1) < (this.x * this.y)){
+                    const tempRow = new Array((this.x * this.y) + this.numOfIDColumns);
+                    shape.coords[rotationCount].forEach(element => {
+                        //create Nodes for that row
+                    });
+                    // go along once
+                    colCount++;
+                } else {
+                    //when hits 55
+                    colCount = 0;
+                    rotationCount++;
+                    if(rotationCount > shape.coords.length-1){
+                        // next shape
+                        //console.log('colCount',colCount);
+                        //console.log('rotationCount',rotationCount);
+                        allPlaced = true;
+                    }
+                }
+            }
+        });
+
+
     }
 
     buildBoard(){
         //build the board i.e. al x matrix
         // 5 * 11 + 12 = 55 + 12 = 67 columns
         var matrix = new Array();
+        //board: number[][];
         //console.log('Shapes',this.shapes);
         this.shapes.forEach(shape => {
             var allPlaced = false;
