@@ -1,161 +1,30 @@
-class Shape{
-    constructor(id,coords,arrayLength){
-        // the letter A-L
-        this.id = id;
-        // represented as 0-11 for the algorithmX array
-
-        // change to take x and y as inputs
-        this.arrayID = arrayLength + (this.id.charCodeAt(0) - 65); // -'A' to get 0
-        // define coords here how you said rob, the pattern in a 1d array
-        // represented as 11110001
-        // a list of them rotated clockwise
-        this.coords = coords;
-    }
-}
-
-class Node {
-
-    //Connected Nodes
-    protected left: Node;
-    protected right: Node;
-    protected top: Node;
-    protected bottom: Node;
-    protected column: Node;
-
-    //Activated
-    protected activated: boolean;
-
-    //IDs
-    protected rowID: number;
-    protected columnID: number;
-
-    //Setters
-    public setLeft(left: Node){
-        this.left = left;
-    }
-    public setRight(right: Node){
-        this.right = right;
-    }
-    public setTop(top: Node){
-        this.top = top;
-    }
-    public setBottom(bottom: Node){
-        this.bottom = bottom;
-    }
-    public setColumn(column: Node){
-        this.column = column;
-    }
-    public setActivated(activated: boolean){
-        this.activated = activated;
-    }
-    //Getters
-    public getLeft(): Node{
-        return this.left;
-    }
-    public getRight(): Node{
-        return this.right;
-    }
-    public getTop(): Node{
-        return this.top;
-    }
-    public getBottom(): Node{
-        return this.bottom;
-    }
-    public getColumn(): Node{
-        return this.column;
-    }
-    public getActivated(): boolean{
-        return this.activated;
-    }
-    public getColumnID(): number{
-        return this.columnID;
-    }
-    public getRowID(): number{
-        return this.rowID;
-    }
-
-    //Construct
-    constructor(activated: boolean, rowID: number, columnID: number){
-        this.activated = activated;
-        this.rowID = rowID;
-        this.columnID = columnID;
-    }
-
-    //cover a given node
-    public cover(targetNode: Node){
-        //pointer to header column
-        var columnNode: ColumnHeader = targetNode.getColumn();
-
-        //unlink column header from its neighbours
-        columnNode.getLeft().setRight(columnNode.getRight());
-        columnNode.getRight().setLeft(columnNode.getLeft());
-
-        //move down column and remove each row
-        //by traversing right
-        for (let row = columnNode.getBottom(); row != columnNode; row = row.getBottom()) {
-            for (let rightNode = row.getRight(); rightNode != row; rightNode = rightNode.getRight()) {
-                rightNode.getTop().setBottom(rightNode.getBottom());
-                rightNode.getBottom().setTop(rightNode.getTop());
-                //get column and decrease nodeCount
-                rightNode.getColumn().setNodeCount(rightNode.getColumn().getNodeCount()-1);
-            }
-            
-        }
-    }
-
-    //uncover a given node
-    public uncover(targetNode: Node){
-
-    }
-
-}
-
-class ColumnHeader extends Node {
-    private nodeCount: number;
-
-    constructor(activated: boolean, rowID: number, columnID: number){
-        super(activated,rowID,columnID);
-        this.nodeCount = 0;
-    }
-    //Setters
-    public setNodeCount(nodeCount: number){
-        this.nodeCount = nodeCount;
-    }
-    //Getters
-    public getNodeCount(): number{
-        return this.nodeCount;
-    }
-
-    //get min Column
-    public getMinColumn(): ColumnHeader{
-        var minColumn: ColumnHeader = this.getRight();
-        var currentColumn: ColumnHeader = this.getRight().getRight();
-        do {
-            if(currentColumn.getNodeCount() < minColumn.getNodeCount()){
-                minColumn = currentColumn;
-            }
-            currentColumn = currentColumn.getRight();
-        } while(currentColumn != this);
-
-        return minColumn;
-    }
-}
+import { Shape } from './shape';
+import { Node, ColumnHeader } from './node';
 
 //test
 export class Board {
+
+    private x:number;
+    private y:number;
+    private shapes: Shape[];
+    private numOfIDColumns: number;
+    private colIDs: ColumnHeader[];
+    private fullBoard: Node[][];
+    private board: Node[][];
+
     constructor(x,y){
         // 5 * 11
         this.x = x;
         this.y = y;
         // all the shapes to iterate through when making the board
-        this.shapes = [];
+        this.shapes = this.createShapes();
         //add shapes to the array
-        this.createShapes();
+
         this.numOfIDColumns = this.shapes.length;
         // 0-54 array of counts to keep track of num of 1s
         // column count to come
         // this.colCount = [] array of length 55
-        this.colIDs = [...Array((this.x * this.y) + this.numOfIDColumns).keys()];
+        //this.colIDs = [...Array((this.x * this.y) + this.numOfIDColumns).keys()];
         //console.log(this.colIDs);
         //build basic board and store in full board, this doesn't change so we can rapid reset
         this.fullBoard = this.buildBoard();
@@ -166,13 +35,13 @@ export class Board {
 
     }
 
-    createShapes(){
+    createShapes(): Shape[]{
         //create the objects
-
+        var shapes: Shape[] = [];
         // needs more rotations/flips...
-        this.shapes.push(new Shape('A',[[0,1,2,11,13],[0,1,11,22,23]],this.x * this.y));
+        shapes.push(new Shape('A',[[0,1,2,11,13],[0,1,11,22,23]],this.x * this.y));
 
-        this.shapes.push(new Shape('B',[[2,3,11,12,13],[0,11,12,23,34]],this.x * this.y));
+        shapes.push(new Shape('B',[[2,3,11,12,13],[0,11,12,23,34]],this.x * this.y));
 
         // this.shapes.push(new Shape('A',[[1,1,1,0,0,0,0,0,0,0,0,1,0,1],[1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1],
         //                                [1,0,1,0,0,0,0,0,0,0,0,1,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1]],this.x * this.y));
@@ -211,27 +80,28 @@ export class Board {
         //                                 [1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1],[0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
 
 
-        
+        return shapes;
     }
 
 
-    buildLinkedBoard(){
+    buildLinkedBoard(): Node[][]{
         var matrix = new Array();
         var tempColRow = new Array((this.x * this.y) + this.numOfIDColumns);
         //columns
         tempColRow.forEach((element,index) => {
-            element = new ColumnHeader(index);
+            element = new ColumnHeader(true,0,index);
         });
         //shapes
-        this.shape.forEach(element => {
+        // row then starts from 1
+        this.shapes.forEach(element => {
             var allPlaced = false;
             var rotationCount = 0;
             var colCount = 0;
             while(!allPlaced){
                 // check we can add shape in
-                if((colCount + shape.coords[rotationCount].length - 1) < (this.x * this.y)){
+                if((colCount + element.getCoords()[rotationCount].length - 1) < (this.x * this.y)){
                     const tempRow = new Array((this.x * this.y) + this.numOfIDColumns);
-                    shape.coords[rotationCount].forEach(element => {
+                    element.getCoords()[rotationCount].forEach(element => {
                         //create Nodes for that row
                     });
                     // go along once
@@ -240,7 +110,7 @@ export class Board {
                     //when hits 55
                     colCount = 0;
                     rotationCount++;
-                    if(rotationCount > shape.coords.length-1){
+                    if(rotationCount > element.getCoords().length-1){
                         // next shape
                         //console.log('colCount',colCount);
                         //console.log('rotationCount',rotationCount);
@@ -248,51 +118,50 @@ export class Board {
                     }
                 }
             }
-        });
-
-
-    }
-
-    buildBoard(){
-        //build the board i.e. al x matrix
-        // 5 * 11 + 12 = 55 + 12 = 67 columns
-        var matrix = new Array();
-        //board: number[][];
-        //console.log('Shapes',this.shapes);
-        this.shapes.forEach(shape => {
-            var allPlaced = false;
-            var rotationCount = 0;
-            var colCount = 0;
-            while(!allPlaced){
-                // check we can add shape in
-                if((colCount + shape.coords[rotationCount].length - 1) < (this.x * this.y)){
-                    const tempRow = new Array((this.x * this.y) + this.numOfIDColumns).fill(0);
-                    // add in shape id
-                    tempRow[shape.arrayID] = 1;
-                    // concat shape into matrix
-                    Array.prototype.splice.apply(tempRow,[colCount,shape.coords[rotationCount].length].concat(shape.coords[rotationCount]));
-                    //tempRow = tempRow.splice(colCount,shape.coords[rotationCount].length,shape.coords[rotationCount]).flat();
-                    //console.log(colCount, rotationCount, tempRow);
-                    //push
-                    matrix.push([...tempRow]); //push to the matrix
-                    // go along once
-                    colCount++;
-                } else {
-                    //when hits 55
-                    colCount = 0;
-                    rotationCount++;
-                    if(rotationCount > shape.coords.length-1){
-                        // next shape
-                        //console.log('colCount',colCount);
-                        //console.log('rotationCount',rotationCount);
-                        allPlaced = true;
-                    }
-                }
-            }
-           // console.table(matrix)
         });
         return matrix;
     }
+
+    // buildBoard(){
+    //     //build the board i.e. al x matrix
+    //     // 5 * 11 + 12 = 55 + 12 = 67 columns
+    //     var matrix = new Array();
+    //     //board: number[][];
+    //     //console.log('Shapes',this.shapes);
+    //     this.shapes.forEach(shape => {
+    //         var allPlaced = false;
+    //         var rotationCount = 0;
+    //         var colCount = 0;
+    //         while(!allPlaced){
+    //             // check we can add shape in
+    //             if((colCount + shape.coords[rotationCount].length - 1) < (this.x * this.y)){
+    //                 const tempRow = new Array((this.x * this.y) + this.numOfIDColumns).fill(0);
+    //                 // add in shape id
+    //                 tempRow[shape.getArrayID()] = 1;
+    //                 // concat shape into matrix
+    //                 Array.prototype.splice.apply(tempRow,[colCount,shape.coords[rotationCount].length].concat(shape.coords[rotationCount]));
+    //                 //tempRow = tempRow.splice(colCount,shape.coords[rotationCount].length,shape.coords[rotationCount]).flat();
+    //                 //console.log(colCount, rotationCount, tempRow);
+    //                 //push
+    //                 matrix.push([...tempRow]); //push to the matrix
+    //                 // go along once
+    //                 colCount++;
+    //             } else {
+    //                 //when hits 55
+    //                 colCount = 0;
+    //                 rotationCount++;
+    //                 if(rotationCount > shape.coords.length-1){
+    //                     // next shape
+    //                     //console.log('colCount',colCount);
+    //                     //console.log('rotationCount',rotationCount);
+    //                     allPlaced = true;
+    //                 }
+    //             }
+    //         }
+    //        // console.table(matrix)
+    //     });
+    //     return matrix;
+    // }
 
     prePlace(prePlace){
         // accept input from frontend - 5 * 11 0 or A-L
@@ -308,7 +177,7 @@ export class Board {
         shapesToBePrePlaced.forEach(shape => {
             var shapeRowTemp = [...new Array()];
             // push id
-            shapeRowTemp.push((shape.charCodeAt(0) - 65) + 55);
+            shapeRowTemp.push(((shape as String).charCodeAt(0) - 65) + 55);
             //push shape placements
             prePlace.flat().forEach((element,index) => {
                 if(typeof element === 'string'){
@@ -321,52 +190,52 @@ export class Board {
        // convert to 1s so we can check the rows don't conflict with this and add idColumns
        //console.log('flat',prePlace.flat());
        const tempSolution = new Array();
-       buildShapeRows.forEach((columnsToRemove)=>{
-            //filterboard
-            const filteredBoard = [];
-            boardObject.board.forEach((row) => {
-                // if one of columnsToRemove = 1 in row then remove
-                if (!columnsToRemove.some((element) => row[element] === 1)) {
-                    //remove columns
-                    //console.log(index,row);
-                    filteredBoard.push(row.filter((columns, index) => !columnsToRemove.includes(index)));
-                };
-                //console.log(row[columnsToRemove[0]]);
-            });
-            this.board = [...filteredBoard];
-            // remove cols
-            const filteredIDs = [];
-            const selectedIDs = [];
-            this.colIDs.forEach((element,index) => {
-                if (columnsToRemove.includes(index)) {
-                    //console.log(element,true);
-                    selectedIDs.push(element);
-                } else {
-                    filteredIDs.push(element);
-                }
-            });
-            //push to temp
-            tempSolution.push([...selectedIDs]);
-            this.colIDs = [...filteredIDs];
-        });
+    //    buildShapeRows.forEach((columnsToRemove)=>{
+    //         //filterboard
+    //         const filteredBoard = [];
+    //         this.board.forEach((row) => {
+    //             // if one of columnsToRemove = 1 in row then remove
+    //             if (!columnsToRemove.some((element) => row[element] === 1)) {
+    //                 //remove columns
+    //                 //console.log(index,row);
+    //                 filteredBoard.push(row.filter((columns, index) => !columnsToRemove.includes(index)));
+    //             };
+    //             //console.log(row[columnsToRemove[0]]);
+    //         });
+    //         this.board = [...filteredBoard];
+    //         // remove cols
+    //         const filteredIDs = [];
+    //         const selectedIDs = [];
+    //         this.colIDs.forEach((element,index) => {
+    //             if (columnsToRemove.includes(index)) {
+    //                 //console.log(element,true);
+    //                 selectedIDs.push(element);
+    //             } else {
+    //                 filteredIDs.push(element);
+    //             }
+    //         });
+    //         //push to temp
+    //         tempSolution.push([...selectedIDs]);
+    //         this.colIDs = [...filteredIDs];
+    //     });
         // edits this.board
         return tempSolution;
     }
 
     getBlankSolutions() {
-        var solutions = new Array();
-        solutions.info = {
+        var info = {
+                solutions: Array(),
                 ranOutOfTime: false,
                 foundMaxSolutions: false,
                 dfs: 0
         };
-        return solutions;
+        return info;
     }
 
     // run when solve clicked
     solve(prePlace,maxSolutions,maxRunTime){
         // run prePlace if set
-        var tempSolution = [];
+        var tempSolution: Node[] = [];
         if (prePlace !== undefined){
             tempSolution = [...this.prePlace(prePlace)];
         }
