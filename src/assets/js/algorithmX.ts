@@ -8,7 +8,7 @@ export class Board {
     private y:number;
     private shapes: Shape[];
     private numOfIDColumns: number;
-    private colIDs: ColumnHeader[];
+    //private colIDs: ColumnHeader[];
     private fullBoard: Node[][];
     private board: Node[][];
 
@@ -39,9 +39,9 @@ export class Board {
         //create the objects
         var shapes: Shape[] = [];
         // needs more rotations/flips...
-        shapes.push(new Shape('A',[[0,1,2,11,13],[0,1,11,22,23]],this.x * this.y));
+        shapes.push(new Shape(1,[[0,1,2,11,13],[0,1,11,22,23]],this.x * this.y));
 
-        shapes.push(new Shape('B',[[2,3,11,12,13],[0,11,12,23,34]],this.x * this.y));
+        shapes.push(new Shape(2,[[2,3,11,12,13],[0,11,12,23,34]],this.x * this.y));
 
         // this.shapes.push(new Shape('A',[[1,1,1,0,0,0,0,0,0,0,0,1,0,1],[1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1],
         //                                [1,0,1,0,0,0,0,0,0,0,0,1,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1]],this.x * this.y));
@@ -84,15 +84,36 @@ export class Board {
     }
 
 
-    buildLinkedBoard(): Node[][]{
+    buildBoard(): Node[][]{
+        //build the board i.e. al x matrix
+        // 5 * 11 + 12 = 55 + 12 = 67 columns
         var matrix = new Array();
-        var tempColRow = new Array((this.x * this.y) + this.numOfIDColumns);
-        //columns
-        tempColRow.forEach((element,index) => {
+        const tempColRow = new Array((this.x * this.y) + this.numOfIDColumns);
+        //make columns and push to first row
+        tempColRow.forEach((element,index,array) => {
+            //activated,row,column
             element = new ColumnHeader(true,0,index);
+            element.setColumn(element);
+            if (index == 0) {
+                //initialise horizontal linkedlists
+                element.setLeft(element);
+                element.setRight(element);
+            } else {
+                //add to horizontal linkedlist
+                element.setLeft(array[index-1]); //last element
+                element.setRight(array[0]); //header
+                //update current ones
+                array[index-1].setRight(element);
+                array[0].setLeft(element);
+            }
+            //initalise vertical linkedlists
+            element.setTop(element);
+            element.setBottom(element);
         });
+        matrix.push([...tempColRow]);
         //shapes
         // row then starts from 1
+        var row = 1;
         this.shapes.forEach(element => {
             var allPlaced = false;
             var rotationCount = 0;
@@ -101,11 +122,41 @@ export class Board {
                 // check we can add shape in
                 if((colCount + element.getCoords()[rotationCount].length - 1) < (this.x * this.y)){
                     const tempRow = new Array((this.x * this.y) + this.numOfIDColumns);
-                    element.getCoords()[rotationCount].forEach(element => {
-                        //create Nodes for that row
+                    //create Nodes for that row only in the spaces needed
+                    element.getCoords()[rotationCount].forEach((element,index,array) => {
+                        //colCount increases each time so the placement of these will slowly move across the array
+                        tempRow[colCount+element] = new Node(true,row,colCount+element);
+                        //set column
+                        tempRow[colCount+element].setColumn(matrix[0][colCount+element]);
+                        //increase NodeCount
+                        matrix[0][colCount+element].setNodeCount(matrix[0][colCount+element].getNodeCount()+1);
+                        if (index == 0) {
+                            //initialise horizontal linkedlists
+                            tempRow[colCount+element].setLeft(tempRow[colCount+element]);
+                            tempRow[colCount+element].setRight(tempRow[colCount+element]);
+                        } else {
+                            //add to horizontal linkedlist
+                            tempRow[colCount+element].setLeft(tempRow[colCount+array[index-1]]); //last element
+                            tempRow[colCount+element].setRight(tempRow[colCount+array[0]]); //header
+                            //update current ones
+                            tempRow[colCount+array[index-1]].setRight(tempRow[colCount+element]);
+                            tempRow[colCount+array[0]].setLeft(tempRow[colCount+element]);
+                        }
+                        //Vertical linkedlist - already init by colHeaders
+                        //set top to be the last currently in list i.e. header's top element
+                        tempRow[colCount+element].setTop(matrix[0][colCount+element].getTop());
+                        //set last element to point to the current element
+                        (matrix[0][colCount+element].getTop()).setBottom(tempRow[colCount+element]);
+                        //set header's top to be this element
+                        matrix[0][colCount+element].setTop(tempRow[colCount+element]);
+                        //set current to point to header
+                        tempRow[colCount+element].setBottom(matrix[0][colCount+element]);
+
                     });
+                    matrix.push([...tempRow]);
                     // go along once
                     colCount++;
+                    row++;
                 } else {
                     //when hits 55
                     colCount = 0;
@@ -122,47 +173,8 @@ export class Board {
         return matrix;
     }
 
-    // buildBoard(){
-    //     //build the board i.e. al x matrix
-    //     // 5 * 11 + 12 = 55 + 12 = 67 columns
-    //     var matrix = new Array();
-    //     //board: number[][];
-    //     //console.log('Shapes',this.shapes);
-    //     this.shapes.forEach(shape => {
-    //         var allPlaced = false;
-    //         var rotationCount = 0;
-    //         var colCount = 0;
-    //         while(!allPlaced){
-    //             // check we can add shape in
-    //             if((colCount + shape.coords[rotationCount].length - 1) < (this.x * this.y)){
-    //                 const tempRow = new Array((this.x * this.y) + this.numOfIDColumns).fill(0);
-    //                 // add in shape id
-    //                 tempRow[shape.getArrayID()] = 1;
-    //                 // concat shape into matrix
-    //                 Array.prototype.splice.apply(tempRow,[colCount,shape.coords[rotationCount].length].concat(shape.coords[rotationCount]));
-    //                 //tempRow = tempRow.splice(colCount,shape.coords[rotationCount].length,shape.coords[rotationCount]).flat();
-    //                 //console.log(colCount, rotationCount, tempRow);
-    //                 //push
-    //                 matrix.push([...tempRow]); //push to the matrix
-    //                 // go along once
-    //                 colCount++;
-    //             } else {
-    //                 //when hits 55
-    //                 colCount = 0;
-    //                 rotationCount++;
-    //                 if(rotationCount > shape.coords.length-1){
-    //                     // next shape
-    //                     //console.log('colCount',colCount);
-    //                     //console.log('rotationCount',rotationCount);
-    //                     allPlaced = true;
-    //                 }
-    //             }
-    //         }
-    //        // console.table(matrix)
-    //     });
-    //     return matrix;
-    // }
 
+    // convert to take 1-12 instead of A-L
     prePlace(prePlace){
         // accept input from frontend - 5 * 11 0 or A-L
 
@@ -222,18 +234,18 @@ export class Board {
         return tempSolution;
     }
 
-    getBlankSolutions() {
-        var info = {
-                solutions: Array(),
+    getBlankSolutions():Object {
+        return {
+                array: Array(),
                 ranOutOfTime: false,
                 foundMaxSolutions: false,
                 dfs: 0
         };
-        return info;
+        
     }
 
     // run when solve clicked
-    solve(prePlace,maxSolutions,maxRunTime){
+    solve(prePlace:number[][],maxSolutions:number,maxRunTime:number){
         // run prePlace if set
         var tempSolution: Node[] = [];
         if (prePlace !== undefined){
@@ -243,6 +255,8 @@ export class Board {
         return this.convertOutput(alogrithmX(this, maxSolutions ? maxSolutions : null, this.getBlankSolutions(),tempSolution, maxRunTime ? new Date().getTime() + maxRunTime : undefined));
     }
 
+
+    // convert to numbers
     getLetterFromRow(row){
         //55 + (this.id.charCodeAt(0) - 65); // -'A' to get 0
         // slice row to get id part, find 1 and add 65 (A)
@@ -253,14 +267,16 @@ export class Board {
         return String.fromCharCode((arrayID - 55) + 65);
     }
 
-    convert1Dto2D(array){
-        var newArray = [];
+    //fix
+    convert1Dto2D(array:number[]){
+        var newArray:number[] = [];
         // 1d length 55
         // 2d length 11 * 5
-        while(array.length) newArray.push([...array.splice(0,this.y)]);
+        while(array.length) newArray.push(array.splice(0,this.y));
         return newArray;
     }
 
+    //convert to change output to be 5*11 of 1-12
     convertOutput(solutions){
         //take board and change to frontend output
 
@@ -299,33 +315,38 @@ export class Board {
 
     }
 
-    calculateColCount(colLength){
-        //current board is just board
-        //console.log(colLength);
-        var columns = new Array((colLength)).fill(0);
-        this.board.forEach(row => {
-            //var tempRow = [...row.slice(0,(colLength))];
-            //console.log(row.length);
-            row.forEach((column, index) => {
-                if (column == 1){
-                    columns[index]++;
-                }
-            });
-        });
-        return columns;
-    }
+    //need converting?
+    // calculateColCount(colLength){
+    //     //current board is just board
+    //     //console.log(colLength);
+    //     var columns = new Array((colLength)).fill(0);
+    //     this.board.forEach(row => {
+    //         //var tempRow = [...row.slice(0,(colLength))];
+    //         //console.log(row.length);
+    //         row.forEach((column, index) => {
+    //             if (column == 1){
+    //                 columns[index]++;
+    //             }
+    //         });
+    //     });
+    //     return columns;
+    // }
 
     // look at again
-    returnSmallestColumns(colOfLowestSum){
-        var rowsWithSmallestCol = new Array();
-        this.board.forEach((row,index) => {
-            // finds row of lowest
-            if (row[colOfLowestSum] == 1){
-                rowsWithSmallestCol.push(index);
-            }
-        });
-        return rowsWithSmallestCol;
-    }
+    // returnSmallestColumns(colOfLowestSum){
+    //     var rowsWithSmallestCol = new Array();
+    //     this.board.forEach((row,index) => {
+    //         // finds row of lowest
+    //         if (row[colOfLowestSum] == 1){
+    //             rowsWithSmallestCol.push(index);
+    //         }
+    //     });
+    //     return rowsWithSmallestCol;
+    // }
+
+}
+
+function algorithmXDancing(boardObject:Board, maxSolutions:number, solutions:Object, tempSolution:[], latestTime:number){
 
 }
 
@@ -349,13 +370,13 @@ function alogrithmX(boardObject, maxSolutions, solutions, tempSolution, latestTi
     //6. back up 
     //7. changeboard2
     //8. backup
-    console.warn('currentDFS',solutions.info.dfs);          
+    console.warn('currentDFS',solutions.dfs);          
     //1. ran out of time!
-    if (solutions.info.ranOutOfTime && latestTime != null && latestTime < new Date().getTime()) {
+    if (solutions.ranOutOfTime && latestTime != null && latestTime < new Date().getTime()) {
         console.error('ranOutOfTime');
-        solutions.info.ranOutOfTime = true;
+        solutions.ranOutOfTime = true;
     }
-    else if (solutions.info.foundMaxSolutions){
+    else if (solutions.foundMaxSolutions){
         //return solutions below break out
         console.error('maxSolutions Found');
     }
@@ -366,7 +387,7 @@ function alogrithmX(boardObject, maxSolutions, solutions, tempSolution, latestTi
     // boardObject.board.every((element) => {element.length == 0}) || tempSolution.length >= 12
     else if (boardObject.colIDs.length == 0){
         console.warn('push to temp');
-        solutions.push([...tempSolution]);
+        solutions.array.push([...tempSolution]);
     }
     // if there are columns!
     // check failure
@@ -430,7 +451,7 @@ function alogrithmX(boardObject, maxSolutions, solutions, tempSolution, latestTi
                 boardObject.colIDs = [...filteredIDs];
                 console.log('colIDs-afterremoval', boardObject.colIDs);      
 
-                solutions.info.dfs++;
+                solutions.dfs++;
                 // remove whole row if column is 1
                 // if 0 remove just that column
                 const filteredBoard = [];
