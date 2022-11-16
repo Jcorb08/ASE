@@ -4,18 +4,22 @@ import { Node, ColumnHeader } from './node';
 //test
 export class Board {
 
-    private x:number;
-    private y:number;
+    private boardLength:number;
+    private layers:number;
+    private layersStart:number[];
     private shapes: Shape[];
     private numOfIDColumns: number;
     //private colIDs: ColumnHeader[];
     private fullBoard: Node[][];
     private board: Node[][];
 
-    constructor(x,y){
+    constructor(boardLength,layers){
         // 5 * 11
-        this.x = x;
-        this.y = y;
+        this.boardLength = boardLength;
+        // level 5 etc.
+        this.layers = layers;
+        // 0 25 41 50 54 55
+        this.layersStart = this.createLayerStarts(this.layers+1);
         // all the shapes to iterate through when making the board
         this.shapes = this.createShapes();
         //add shapes to the array
@@ -24,7 +28,7 @@ export class Board {
         // 0-54 array of counts to keep track of num of 1s
         // column count to come
         // this.colCount = [] array of length 55
-        //this.colIDs = [...Array((this.x * this.y) + this.numOfIDColumns).keys()];
+        //this.colIDs = [...Array((this.boardLength * this.y) + this.numOfIDColumns).keys()];
         //console.log(this.colIDs);
         //build basic board and store in full board, this doesn't change so we can rapid reset
         this.fullBoard = this.buildBoard();
@@ -35,60 +39,79 @@ export class Board {
 
     }
 
+    createLayerStarts(layers:number): number[]{
+        var array = new Array(layers);
+        array.forEach((value,index,arr) => {
+            if (index == this.layers) {
+                // set to one more than last element
+                value = this.boardLength
+            } else if (index > 0) {
+                // 0 + 5 * 5
+                // 25 + 4 * 4
+                // 41 + 3 * 3
+                // 50 + 2 * 2
+                value = arr[index-1] + ((layers+1-index) * (layers+1-index))
+            } else {
+                // 0 
+                value = index
+            }
+        });
+        return array;
+    }
+
     createShapes(): Shape[]{
         //create the objects
         var shapes: Shape[] = [];
         // needs more rotations/flips...
-        shapes.push(new Shape(1,[[0,1,2,11,13],[0,1,11,22,23]],this.x * this.y));
+        shapes.push(new Shape(1,[[0,1,2,11,13],[0,1,11,22,23]],this.boardLength));
 
-        shapes.push(new Shape(2,[[2,3,11,12,13],[0,11,12,23,34]],this.x * this.y));
+        shapes.push(new Shape(2,[[2,3,11,12,13],[0,11,12,23,34]],this.boardLength));
 
         // this.shapes.push(new Shape('A',[[1,1,1,0,0,0,0,0,0,0,0,1,0,1],[1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1],
-        //                                [1,0,1,0,0,0,0,0,0,0,0,1,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1]],this.x * this.y));
+        //                                [1,0,1,0,0,0,0,0,0,0,0,1,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1]],this.boardLength * this.y));
 
         // this.shapes.push(new Shape('B',[[0,0,1,1,0,0,0,0,0,0,0,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1],
-        //                                [0,1,1,1,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        //                                [0,1,1,1,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
 
         // this.shapes.push(new Shape('C',[[0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1],[0,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1],
-        //                                 [1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],[0,0,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        //                                 [1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],[0,0,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
 
         // this.shapes.push(new Shape('D',[[0,1,0,0,0,0,0,0,0,0,0,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],
-        //                                 [1,1,1,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        //                                 [1,1,1,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
 
         // this.shapes.push(new Shape('E',[[0,1,0,0,0,0,0,0,0,0,0,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],
-        //                                 [1,1,1,1,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        //                                 [1,1,1,1,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
 
         // this.shapes.push(new Shape('F',[[0,1,1,0,0,0,0,0,0,0,0,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,1],
-        //                                 [1,1,1,0,0,0,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        //                                 [1,1,1,0,0,0,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
 
         // this.shapes.push(new Shape('G',[[0,1,1,0,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]
-        //                                 ],this.x * this.y));
+        //                                 ],this.boardLength * this.y));
 
         // this.shapes.push(new Shape('H',[[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],[1,1,1,0,0,0,0,0,0,0,0,0,0,1],
-        //                                 [0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,1]],this.x * this.y));
+        //                                 [0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,1]],this.boardLength * this.y));
 
         // this.shapes.push(new Shape('I',[[1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],[0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,1],
-        //                                 [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1],[1,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        //                                 [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1],[1,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
 
         // this.shapes.push(new Shape('J',[[1,0,0,0,0,0,0,0,0,0,0,1,1,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],
-        //                                 [1,1,1,1,0,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1]],this.x * this.y));
+        //                                 [1,1,1,1,0,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1]],this.boardLength * this.y));
 
         // this.shapes.push(new Shape('K',[[1,0,0,0,0,0,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,0,0,0,0,1],
-        //                                 [1,1,0,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,1]],this.x * this.y));
+        //                                 [1,1,0,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,1]],this.boardLength * this.y));
 
         // this.shapes.push(new Shape('L',[[1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1],[0,0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1],
-        //                                 [1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1],[0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1]],this.x * this.y));
+        //                                 [1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1],[0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
 
 
         return shapes;
     }
 
-
     buildBoard(): Node[][]{
         //build the board i.e. al x matrix
         // 5 * 11 + 12 = 55 + 12 = 67 columns
         var matrix = new Array();
-        const tempColRow = new Array((this.x * this.y) + this.numOfIDColumns);
+        const tempColRow = new Array(this.boardLength + this.numOfIDColumns);
         //make columns and push to first row
         tempColRow.forEach((element,index,array) => {
             //activated,row,column
@@ -118,47 +141,73 @@ export class Board {
             var allPlaced = false;
             var rotationCount = 0;
             var colCount = 0;
+            var layer = this.layers;
+            var layerCounter = 0;
             while(!allPlaced){
-                // check we can add shape in
-                if((colCount + element.getCoords()[rotationCount].length - 1) < (this.x * this.y)){
-                    const tempRow = new Array((this.x * this.y) + this.numOfIDColumns);
-                    //create Nodes for that row only in the spaces needed
-                    element.getCoords()[rotationCount].forEach((element,index,array) => {
-                        //colCount increases each time so the placement of these will slowly move across the array
-                        tempRow[colCount+element] = new Node(true,row,colCount+element);
-                        //set column
-                        tempRow[colCount+element].setColumn(matrix[0][colCount+element]);
-                        //increase NodeCount
-                        matrix[0][colCount+element].setNodeCount(matrix[0][colCount+element].getNodeCount()+1);
-                        if (index == 0) {
-                            //initialise horizontal linkedlists
-                            tempRow[colCount+element].setLeft(tempRow[colCount+element]);
-                            tempRow[colCount+element].setRight(tempRow[colCount+element]);
-                        } else {
-                            //add to horizontal linkedlist
-                            tempRow[colCount+element].setLeft(tempRow[colCount+array[index-1]]); //last element
-                            tempRow[colCount+element].setRight(tempRow[colCount+array[0]]); //header
-                            //update current ones
-                            tempRow[colCount+array[index-1]].setRight(tempRow[colCount+element]);
-                            tempRow[colCount+array[0]].setLeft(tempRow[colCount+element]);
-                        }
-                        //Vertical linkedlist - already init by colHeaders
-                        //set top to be the last currently in list i.e. header's top element
-                        tempRow[colCount+element].setTop(matrix[0][colCount+element].getTop());
-                        //set last element to point to the current element
-                        (matrix[0][colCount+element].getTop()).setBottom(tempRow[colCount+element]);
-                        //set header's top to be this element
-                        matrix[0][colCount+element].setTop(tempRow[colCount+element]);
-                        //set current to point to header
-                        tempRow[colCount+element].setBottom(matrix[0][colCount+element]);
+                // check we can add shape in if not move to next rotation of shape
+                if((colCount + element.getCoords()[rotationCount].length - 1) < (this.boardLength)){
+                    //check layer
+                    //if the last element in the shape array is = to an element in the layer horisontal issue array. 
+                    // might get array out of bounds here
+                    if(element.getCoords()[rotationCount][element.getCoords()[rotationCount].length-1] < this.layersStart[this.layersStart.length - layer+1] ){
+                        //check horizontal
+                        //if the first element in the shape array is > the last position in the current layer, 
+                        // move to start point of next layer
+                        // first element < next 
+                        if(element.getCoords()[rotationCount][0] < this.layersStart[this.layersStart.length - layer] + (layer * layerCounter+1)){
+                            const tempRow = new Array((this.boardLength) + this.numOfIDColumns);
+                            //create Nodes for that row only in the spaces needed
+                            element.getCoords()[rotationCount].forEach((element,index,array) => {
+                                //colCount increases each time so the placement of these will slowly move across the array
+                                tempRow[colCount+element] = new Node(true,row,colCount+element);
+                                //set column
+                                tempRow[colCount+element].setColumn(matrix[0][colCount+element]);
+                                //increase NodeCount
+                                matrix[0][colCount+element].setNodeCount(matrix[0][colCount+element].getNodeCount()+1);
+                                if (index == 0) {
+                                    //initialise horizontal linkedlists
+                                    tempRow[colCount+element].setLeft(tempRow[colCount+element]);
+                                    tempRow[colCount+element].setRight(tempRow[colCount+element]);
+                                } else {
+                                    //add to horizontal linkedlist
+                                    tempRow[colCount+element].setLeft(tempRow[colCount+array[index-1]]); //last element
+                                    tempRow[colCount+element].setRight(tempRow[colCount+array[0]]); //header
+                                    //update current ones
+                                    tempRow[colCount+array[index-1]].setRight(tempRow[colCount+element]);
+                                    tempRow[colCount+array[0]].setLeft(tempRow[colCount+element]);
+                                }
+                                //Vertical linkedlist - already init by colHeaders
+                                //set top to be the last currently in list i.e. header's top element
+                                tempRow[colCount+element].setTop(matrix[0][colCount+element].getTop());
+                                //set last element to point to the current element
+                                (matrix[0][colCount+element].getTop()).setBottom(tempRow[colCount+element]);
+                                //set header's top to be this element
+                                matrix[0][colCount+element].setTop(tempRow[colCount+element]);
+                                //set current to point to header
+                                tempRow[colCount+element].setBottom(matrix[0][colCount+element]);
 
-                    });
-                    matrix.push([...tempRow]);
-                    // go along once
-                    colCount++;
-                    row++;
+                            });
+                            matrix.push([...tempRow]);
+                            // go along once
+                            colCount++;
+                            row++;
+                        } else {
+                            // go to next horizontal i.e go one down to 5
+                            // 0 1 2 3 4
+                            // 5 6 7 8 9
+                            layerCounter++;
+                            colCount = this.layersStart[this.layersStart.length - layer] + (layer * layerCounter);
+                        }
+                    } else {
+                        // move to next layer up 5 -> 4
+                        layer = layer - 1;
+                        colCount = this.layersStart[this.layersStart.length - layer];
+                        layerCounter = 0;
+                    }
                 } else {
                     //when hits 55
+                    layer = this.layers;
+                    layerCounter = 0;
                     colCount = 0;
                     rotationCount++;
                     if(rotationCount > element.getCoords().length-1){
@@ -260,7 +309,7 @@ export class Board {
     getLetterFromRow(row){
         //55 + (this.id.charCodeAt(0) - 65); // -'A' to get 0
         // slice row to get id part, find 1 and add 65 (A)
-        return String.fromCharCode((row.slice(this.x * this.y).indexOf(1)) + 65);
+        return String.fromCharCode((row.slice(this.boardLength).indexOf(1)) + 65);
     }
 
     getLetterFromArrayID(arrayID){
@@ -268,6 +317,7 @@ export class Board {
     }
 
     //fix
+    // convert to represent a 2D pyramid
     convert1Dto2D(array:number[]){
         var newArray:number[] = [];
         // 1d length 55
@@ -289,7 +339,7 @@ export class Board {
         var output = new Array();
         solutions.forEach(solution => {
             //fill temp with 0s and set to length 55
-            var tempSolution = [...new Array(this.x * this.y).fill(0)];
+            var tempSolution = [...new Array(this.boardLength).fill(0)];
             for (let index = 0; index < solution.length; index++) {
                 const row = [...solution[index]];
                 //last in row is always the arrayID
