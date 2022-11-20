@@ -1,4 +1,5 @@
 import { Shape } from './shape';
+import { SearchObject } from './search';
 import { Node, ColumnHeader } from './node';
 
 //test
@@ -283,25 +284,26 @@ export class Board {
         return tempSolution;
     }
 
-    getBlankSolutions():Object {
-        return {
-                array: Array(),
-                ranOutOfTime: false,
-                foundMaxSolutions: false,
-                dfs: 0
-        };
+    // getBlankSolutions():Object {
+    //     return {
+    //             array: Array(),
+    //             ranOutOfTime: false,
+    //             foundMaxSolutions: false,
+    //             dfs: 0
+    //     };
         
-    }
+    // }
 
     // run when solve clicked
-    solve(prePlace:number[][],maxSolutions:number,maxRunTime:number){
+    solve(prePlace:number[][],maxSolutions:number = 0,maxRunTime:number){
         // run prePlace if set
         var tempSolution: Node[] = [];
         if (prePlace !== undefined){
             tempSolution = [...this.prePlace(prePlace)];
         }
         //run algoritmX return solutions
-        return this.convertOutput(alogrithmX(this, maxSolutions ? maxSolutions : null, this.getBlankSolutions(),tempSolution, maxRunTime ? new Date().getTime() + maxRunTime : undefined));
+        //return this.convertOutput(alogrithmX(this, maxSolutions ? maxSolutions : null, [],tempSolution, maxRunTime ? new Date().getTime() + maxRunTime : undefined,false));
+        return this.convertOutput(dancingLinks(this,new SearchObject(maxSolutions != 0 ? maxSolutions : 0, maxRunTime != 0 ? new Date().getTime() + maxRunTime : 0),new Array()));
     }
 
 
@@ -365,6 +367,66 @@ export class Board {
 
     }
 
+    //cover a given node
+    public cover(targetNode: Node){
+        //pointer to header column
+        var columnNode: ColumnHeader = (targetNode.getColumn() as ColumnHeader);
+
+        //unlink column header from its neighbours
+        columnNode.getLeft().setRight(columnNode.getRight());
+        columnNode.getRight().setLeft(columnNode.getLeft());
+        columnNode.setActivated(false);
+
+        //move down column and remove each row
+        //by traversing right
+        for (let row = columnNode.getBottom(); row != columnNode; row = row.getBottom()) {
+            for (let rightNode = row.getRight(); rightNode != row; rightNode = rightNode.getRight()) {
+                rightNode.getTop().setBottom(rightNode.getBottom());
+                rightNode.getBottom().setTop(rightNode.getTop());
+                //get column and decrease nodeCount
+                (rightNode.getColumn() as ColumnHeader).setNodeCount((rightNode.getColumn() as ColumnHeader).getNodeCount()-1 );
+            }
+            
+        }
+    }
+
+    //uncover a given node
+    public uncover(targetNode: Node){
+        //pointer to header column
+        var columnNode: ColumnHeader = (targetNode.getColumn() as ColumnHeader);
+
+        //move down column and relink each row
+        //by traversing left
+        for (let row = columnNode.getTop(); row != columnNode; row = row.getTop()) {
+            for (let leftNode = row.getLeft(); leftNode != row; leftNode = leftNode.getLeft()) {
+                leftNode.getTop().setBottom(leftNode);
+                leftNode.getBottom().setTop(leftNode);
+                //get column and decrease nodeCount
+                (leftNode.getColumn() as ColumnHeader).setNodeCount((leftNode.getColumn() as ColumnHeader).getNodeCount()+1 );
+            }
+            
+        }
+        //link column header to its neighbours
+        columnNode.getLeft().setRight(columnNode);
+        columnNode.getRight().setLeft(columnNode);
+        columnNode.setActivated(true);
+    }
+
+    //get min Column
+    public getMinColumn(): ColumnHeader{
+        var minColumn: ColumnHeader = (this.board[0][0] as ColumnHeader);
+        var currentColumn: ColumnHeader = (this.board[0][0].getRight() as ColumnHeader);
+        do {
+            if(currentColumn.getNodeCount() < minColumn.getNodeCount() && currentColumn.getActivated()){
+                minColumn = currentColumn;
+            }
+            currentColumn = (currentColumn.getRight() as ColumnHeader);
+        } while(currentColumn != this.board[0][0]);
+
+        return minColumn;
+    }
+
+
     //need converting?
     // calculateColCount(colLength){
     //     //current board is just board
@@ -396,155 +458,68 @@ export class Board {
 
 }
 
-function algorithmXDancing(boardObject:Board, maxSolutions:number, solutions:Object, tempSolution:[], latestTime:number){
-
-}
-
-// our recursive alogrithmX function
-// takes the current board, the max solutions to find, the current found solutions, and max time it can take
-function alogrithmX(boardObject, maxSolutions, solutions, tempSolution, latestTime){
-    // if taken two long or solutions.length-1 = maxSolutions return solutions i.e. exit out
-
-    //  row col-> 0 1 2 ... 54 55 - 67
-    //   0            0            
-    //   1            1
-    //   2            1
-    //  ...
-
-    //1. board -> changedboard1
-    //2. algorthx -> board
-    //3. board -> changeboard2
-    //3. algorthmx -> board
-    //4. board -> changeboard3
-    //5. nope
-    //6. back up 
-    //7. changeboard2
-    //8. backup
-    console.warn('currentDFS',solutions.dfs);          
+//Takes board,searchObject,and an empty tempsolution
+//Returns SearchObject that has the solutions attached
+function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:number[][]):SearchObject{
     //1. ran out of time!
-    if (solutions.ranOutOfTime && latestTime != null && latestTime < new Date().getTime()) {
+    if (searchObject.checkTime()){
+        //return solutions below break out
         console.error('ranOutOfTime');
-        solutions.ranOutOfTime = true;
     }
-    else if (solutions.foundMaxSolutions){
+    //2. max Solutions found!
+    else if(searchObject.checkMaxSolutions()){
         //return solutions below break out
         console.error('maxSolutions Found');
     }
-    // 2. if matrix no columns at all success!
-    // return board
-
-    // change to if IDColumns.length = 0
-    // boardObject.board.every((element) => {element.length == 0}) || tempSolution.length >= 12
-    else if (boardObject.colIDs.length == 0){
-        console.warn('push to temp');
-        solutions.array.push([...tempSolution]);
-    }
-    // if there are columns!
-    // check failure
-    // check column has lowest ones -> has 0 1s
     else {
-        //proceed!
-        // inner workings of alogrithmX
-        // 2. choose a column with the lowest sum - least amount of ones 
-        //console.log('currentBoard',boardObject.board);
-        //boardObject.board[0].length
-        var colCounts = [...boardObject.calculateColCount(boardObject.colIDs.length).sort()];
-        console.log('colCounts',colCounts);
-        var colOfLowestSum = colCounts[0];
-        //console.log('colOfLowestSum',colOfLowestSum);
+        // 3. choose a column with the lowest sum - least amount of ones 
+        var minColumn:ColumnHeader = boardObject.getMinColumn();
+        //4. if no columns success!
+        if(!minColumn.getActivated){
+            console.warn('push to temp');
+            //returns empty array
+            searchObject.addToSolutions([...tempSolution]);
+        } 
+        //5. proceed!
+        else {
+            //6. does the mincolumn have no rows?
+            if (minColumn.getNodeCount() === 0 ){
+                //fail :(
+                console.error('colOfLowestSum = 0');
+            } 
+            else {
+                //7. columns > 0 - working on a row in this column
+                //Select first in column
+                var currentRow: Node = (minColumn.getBottom() as Node);
+                // while row is not a column
+                do {
+                    // cover that conflicting rows
+                    // cover the column
+                    // cover the working row
+                    boardObject.cover(currentRow);
+                    // put row into partial
+                    tempSolution = searchObject.addToTempSolution(tempSolution,currentRow);
 
-        if (colOfLowestSum === 0 ){
-            //fail :(
-            // update solution matrix to what it was last
-            // go back to previous board state
-            //solutions[solutions.length-1].pop();
-            console.error('colOfLowestSum = 0');
+                    //recurse call search
+                    searchObject = dancingLinks(boardObject,searchObject,tempSolution);
 
-            //change dfs?
-        } else {
-            // col count > 0
-            // 3. select any of those rows with lowest sum column - push to temp solution
-            const rowsWithSmallestCol = [...boardObject.returnSmallestColumns(colCounts.indexOf(colOfLowestSum))];
-            for (let index = 0; index < rowsWithSmallestCol.length; index++) {
-                const tempBoard = [...boardObject.board];  
-                const tempCols = [...boardObject.colIDs];
-                console.log('colIDs-first', boardObject.colIDs); 
-                //console.log('RowsWithSmallestCol',rowsWithSmallestCol);
-                //console.log('ChoosenRowIndex',rowsWithSmallestCol[index],'indexOfRowsOfSmallesCol',index);
-                console.log('board-first',boardObject.board);
-                const choosenRow = [...boardObject.board[rowsWithSmallestCol[index]]];
-                //console.log('choosenRow',choosenRow);
-                const columnsToRemove = new Array();
-                choosenRow.forEach((element,index) => {
-                    if(element == 1){
-                        columnsToRemove.push(index);
-                    }
-                });
-                //console.log('columnsToRemove',columnsToRemove);
-                
+                    // remove row from partial solution
+                    tempSolution.pop();
+                    // uncover row
+                    // uncover conflicts 
+                    // uncover column
+                    boardObject.uncover(currentRow);
 
-                // remove cols
-                const filteredIDs = [];
-                const selectedIDs = [];
-                boardObject.colIDs.forEach((element,index) => {
-                    if (columnsToRemove.includes(index)) {
-                        //console.log(element,true);
-                        selectedIDs.push(element);
+                    if(searchObject.checkMaxSolutions()){
+                        console.error('Max Solutions Found');
+                        break;
                     } else {
-                        filteredIDs.push(element);
+                        currentRow = currentRow.getBottom();
                     }
-                });
-                //var filteredIDs = boardObject.colIDs.filter((element,index) => {!columnsToRemove.includes(element)});
-                //push to temp
-                tempSolution.push([...selectedIDs]);
-                console.info('tempSolution',tempSolution);  
-                boardObject.colIDs = [...filteredIDs];
-                console.log('colIDs-afterremoval', boardObject.colIDs);      
-
-                solutions.dfs++;
-                // remove whole row if column is 1
-                // if 0 remove just that column
-                const filteredBoard = [];
-
-                boardObject.board.forEach((row,index) => {
-                    // if one of columnsToRemove = 1 in row then remove
-                    if (!columnsToRemove.some((element) => row[element] === 1)) {
-                        //remove columns
-                        //console.log(index,row);
-                        filteredBoard.push(row.filter((columns, index) => !columnsToRemove.includes(index)));
-                    };
-                    //console.log(row[columnsToRemove[0]]);
-                });
-                //console.log('filtered',filteredBoard);
-                boardObject.board = [...filteredBoard];
-                console.log('board after removal', boardObject.board);
-                solutions = alogrithmX(boardObject, maxSolutions, solutions,tempSolution,latestTime);
-                console.info('solutions',solutions);
-                //reset board to last state
-                boardObject.board = [...tempBoard];
-                boardObject.colIDs = [...tempCols];
-                //remove last from tempSolution
-                var popped = tempSolution.pop();
-                //console.info('popped',popped,index, rowsWithSmallestCol.length);
-                solutions.info.dfs--;
-
-                //console.log('resettotempboard',boardObject.Board);
-                //
-                if (maxSolutions != null && solutions.length >= maxSolutions) {
-                    console.error('MaxSolutions FOund');
-                    solutions.info.foundMaxSolutions = true;
-                    break;
-                }
+                } while(currentRow != minColumn);
             }
         }
     }
-    //final return
-    return solutions;
+    //return solutions and our other vars
+    return searchObject;
 }
-
-
-// main for now
-// export function solveX (prePlace,maxSolutions,maxRunTime){
-//     boardObject = new Board(5,11);                
-//     return boardObject.solve(prePlace,maxSolutions,maxRunTime);
-// }
