@@ -14,7 +14,21 @@ export class Board {
     private fullBoard: Node[][];
     private board: Node[][];
 
-    constructor(boardLength,layers){
+    //Getters
+    public getBoardLength(): number{
+        return this.boardLength;
+    }
+    public getLayers(): number{
+        return this.layers;
+    }
+    public getLayersStart(): number[]{
+        return this.layersStart;
+    }
+    public getShapeID(arrayID:number): number{
+        return (arrayID + 1) - this.boardLength;
+    }
+
+    constructor(boardLength :number,layers:number){
         // 5 * 11
         this.boardLength = boardLength;
         // level 5 etc.
@@ -303,61 +317,8 @@ export class Board {
         }
         //run algoritmX return solutions
         //return this.convertOutput(alogrithmX(this, maxSolutions ? maxSolutions : null, [],tempSolution, maxRunTime ? new Date().getTime() + maxRunTime : undefined,false));
-        return this.convertOutput(dancingLinks(this,new SearchObject(maxSolutions != 0 ? maxSolutions : 0, maxRunTime != 0 ? new Date().getTime() + maxRunTime : 0),new Array()));
-    }
-
-
-    // convert to numbers
-    getLetterFromRow(row){
-        //55 + (this.id.charCodeAt(0) - 65); // -'A' to get 0
-        // slice row to get id part, find 1 and add 65 (A)
-        return String.fromCharCode((row.slice(this.boardLength).indexOf(1)) + 65);
-    }
-
-    getLetterFromArrayID(arrayID){
-        return String.fromCharCode((arrayID - 55) + 65);
-    }
-
-    //fix
-    // convert to represent a 2D pyramid
-    convert1Dto2D(array:number[]){
-        var newArray:number[] = [];
-        // 1d length 55
-        // 2d length 11 * 5
-        while(array.length) newArray.push(array.splice(0,this.y));
-        return newArray;
-    }
-
-    //convert to change output to be 5*11 of 1-12
-    convertOutput(solutions){
-        //take board and change to frontend output
-
-        // one solution is 12 rows one for each shape
-        // those rows all cover the entirelist
-
-        // A 
-
-        // map 1s to A etc. once figured out what letter it corrosponds to
-        var output = new Array();
-        solutions.forEach(solution => {
-            //fill temp with 0s and set to length 55
-            var tempSolution = [...new Array(this.boardLength).fill(0)];
-            for (let index = 0; index < solution.length; index++) {
-                const row = [...solution[index]];
-                //last in row is always the arrayID
-                const id = this.getLetterFromArrayID(row.pop());
-                //console.log(typeof id, id,row);
-                // set each place in row in tempsolution
-                // 0 -> current shape ID
-                row.forEach((element)=>{
-                    tempSolution[element] = id;
-                });
-            }
-
-            //convert 1d to 2d array and push
-            output.push(this.convert1Dto2D(tempSolution));
-        });
-        return output;
+        //convertOutput now done in SearchObject when adding to Solutions
+        return dancingLinks(this,new SearchObject(maxSolutions != 0 ? maxSolutions : 0, maxRunTime != 0 ? new Date().getTime() + maxRunTime : 0),new Array());
     }
 
     reset(){
@@ -478,7 +439,7 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
         if(!minColumn.getActivated){
             console.warn('push to temp');
             //returns empty array
-            searchObject.addToSolutions([...tempSolution]);
+            searchObject.addToSolutions([...tempSolution],boardObject.g);
         } 
         //5. proceed!
         else {
