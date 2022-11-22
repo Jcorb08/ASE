@@ -185,3 +185,5 @@ shape 12 vertical
 
 41,45,49,50,53
 
+shape 7 vertical
+33,30,44,42
