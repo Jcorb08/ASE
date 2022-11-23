@@ -3,8 +3,9 @@ export class Shape{
     private id: number;
     private arrayID: number;
     private coords: number[][];
+    private verticals: number[][];
 
-    constructor(id:number,coords:number[][],arrayLength:number){
+    constructor(id:number,coords:number[][],verticals:number[][],arrayLength:number){
         // the number 1-12
         this.id = id;
         // represented as 0-11 for the algorithmX array
@@ -16,6 +17,8 @@ export class Shape{
         //coords for example [[0,1,2,11,13],[0,1,11,22,23]]
         // a list of them rotated clockwise
         this.coords = coords;
+        //verticals - manually inputted
+        this.verticals = verticals;
     }
 
     //Getters
@@ -27,5 +30,8 @@ export class Shape{
     }
     public getCoords(): number[][]{
         return this.coords;
+    }
+    public getVerticals(): number[][]{
+        return this.verticals;
     }
 }

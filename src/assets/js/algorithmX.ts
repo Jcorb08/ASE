@@ -158,6 +158,7 @@ export class Board {
             var colCount = 0;
             var layer = this.layers;
             var layerCounter = 0;
+            //horizontals
             while(!allPlaced){
                 // check we can add shape in if not move to next rotation of shape
                 if((colCount + element.getCoords()[rotationCount].length - 1) < (this.boardLength)){
@@ -174,7 +175,7 @@ export class Board {
                             //create Nodes for that row only in the spaces needed
                             element.getCoords()[rotationCount].forEach((element,index,array) => {
                                 //colCount increases each time so the placement of these will slowly move across the array
-                                tempRow[colCount+element] = new Node(true,row,colCount+element);
+                                tempRow[colCount+element] = new Node(row,colCount+element);
                                 //set column
                                 tempRow[colCount+element].setColumn(matrix[0][colCount+element]);
                                 //increase NodeCount
@@ -233,6 +234,43 @@ export class Board {
                     }
                 }
             }
+            //verticals for now
+            element.getVerticals().forEach((rowArray) => {
+                const tempRow = new Array((this.boardLength) + this.numOfIDColumns);
+                //create Nodes for that row only in the spaces needed
+                rowArray.forEach((element,index,array) => {
+                    //colCount increases each time so the placement of these will slowly move across the array
+                    tempRow[element] = new Node(row,element);
+                    //set column
+                    tempRow[element].setColumn(matrix[0][element]);
+                    //increase NodeCount
+                    matrix[0][element].setNodeCount(matrix[0][element].getNodeCount()+1);
+                    if (index == 0) {
+                        //initialise horizontal linkedlists
+                        tempRow[element].setLeft(tempRow[element]);
+                        tempRow[element].setRight(tempRow[element]);
+                    } else {
+                        //add to horizontal linkedlist
+                        tempRow[element].setLeft(tempRow[array[index-1]]); //last element
+                        tempRow[element].setRight(tempRow[array[0]]); //header
+                        //update current ones
+                        tempRow[array[index-1]].setRight(tempRow[element]);
+                        tempRow[array[0]].setLeft(tempRow[element]);
+                    }
+                    //Vertical linkedlist - already init by colHeaders
+                    //set top to be the last currently in list i.e. header's top element
+                    tempRow[element].setTop(matrix[0][element].getTop());
+                    //set last element to point to the current element
+                    (matrix[0][element].getTop()).setBottom(tempRow[element]);
+                    //set header's top to be this element
+                    matrix[0][element].setTop(tempRow[element]);
+                    //set current to point to header
+                    tempRow[element].setBottom(matrix[0][element]);
+
+                });
+                matrix.push([...tempRow]);
+                row++;
+            });
         });
         return matrix;
     }
