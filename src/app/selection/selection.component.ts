@@ -5,7 +5,7 @@ import { GameService } from '../services/game.service';
 import { HtmlElementService } from '../services/htmlElement.service';
 import { IPiece, Piece } from '../services/piece.component';
 import { SharedService } from '../services/shared.service';
-import { solveX } from '../../assets/js/algorithmX'
+import { Board } from '../../assets/js/algorithmX'
 import { AnyCnameRecord } from 'dns';
 import { COLS, ROWS } from '../services/constants';
 
@@ -108,7 +108,8 @@ export class SelectionComponent implements OnInit {
     this.sharedService.currentCtx.subscribe(board => this.currentCtx = board);
 
     this.resetGame();
-    this.solution = solveX(undefined,1,undefined);
+    this.solution = [[]];
+    //solveX(undefined,1,undefined);
     console.log(this.solution, 'this.board')
     this.solution.forEach((row, y) => {
       row.forEach((value, x) => {
@@ -163,20 +164,23 @@ export class SelectionComponent implements OnInit {
     //     prePlaceTest.push(tempRow);
     // }
     // console.log(prePlaceTest, 'prePlaceTest');
+
+    var board = new Board(55,5);
+
+
+    //this.solution = solveX(this.refinePreplace, 1, undefined);
+    // console.log(this.solution, 'this.solution')
     
-    this.solution = solveX(this.refinePreplace, 1, undefined);
-    console.log(this.solution, 'this.solution')
-    
-    this.solution.forEach((row, y) => {
-      row.forEach((value, x) => {
-        Object.entries(value).forEach(([key, item]) => {
-          this.board[x][Number(key)] = this.alphabet.indexOf(item.toLowerCase())+1;
-        });
-      });
-    });
-    this.sharedService.setBoard(this.board)
-    new BoardComponent(this.gameService, this.htmlService, this.sharedService).drawBoard()
-    this.sharedService.setGameSolved(true)
+    // this.solution.forEach((row, y) => {
+    //   row.forEach((value, x) => {
+    //     Object.entries(value).forEach(([key, item]) => {
+    //       this.board[x][Number(key)] = this.alphabet.indexOf(item.toLowerCase())+1;
+    //     });
+    //   });
+    // });
+    // this.sharedService.setBoard(this.board)
+    // new BoardComponent(this.gameService, this.htmlService, this.sharedService).drawBoard()
+    // this.sharedService.setGameSolved(true)
   }
 
   refinePrePlaceTest(shape: number[][]){

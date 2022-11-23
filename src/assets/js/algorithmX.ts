@@ -28,18 +28,27 @@ export class Board {
         return (arrayID + 1) - this.boardLength;
     }
 
-    constructor(boardLength :number,layers:number){
+    constructor(boardLength:number,layers:number){
         // 5 * 11
         this.boardLength = boardLength;
+        console.log('boardLength-aggggggggg',this.boardLength);
         // level 5 etc.
         this.layers = layers;
+        console.log('layers',this.layers);
+        
         // 0 25 41 50 54 55
         this.layersStart = this.createLayerStarts(this.layers+1);
+        console.log('layersStart',this.layersStart);
+        
         // all the shapes to iterate through when making the board
         this.shapes = this.createShapes();
+        console.log('shapes',this.shapes);
+        
         //add shapes to the array
 
         this.numOfIDColumns = this.shapes.length;
+        console.log('numOfIDCols',this.numOfIDColumns);
+        
         // 0-54 array of counts to keep track of num of 1s
         // column count to come
         // this.colCount = [] array of length 55
@@ -47,6 +56,7 @@ export class Board {
         //console.log(this.colIDs);
         //build basic board and store in full board, this doesn't change so we can rapid reset
         this.fullBoard = this.buildBoard();
+        console.log('fullBoard',this.fullBoard);
         //console.log('Full Board');
         //console.log(this.fullBoard);
         // the board we will change
@@ -55,22 +65,23 @@ export class Board {
     }
 
     createLayerStarts(layers:number): number[]{
-        var array = new Array(layers);
-        array.forEach((value,index,arr) => {
+        const array = new Array();
+        for (let index = 0; index < layers; index++) {
             if (index == this.layers) {
                 // set to one more than last element
-                value = this.boardLength
+                array.push(this.boardLength);
             } else if (index > 0) {
                 // 0 + 5 * 5
                 // 25 + 4 * 4
                 // 41 + 3 * 3
                 // 50 + 2 * 2
-                value = arr[index-1] + ((layers+1-index) * (layers+1-index))
+                array.push(array[index-1] + ((layers-index) * (layers-index)))
             } else {
                 // 0 
-                value = index
+                array.push(index);
             }
-        });
+            
+        }
         return array;
     }
 
@@ -80,66 +91,27 @@ export class Board {
         // needs more rotations/flips...
         shapes.push(new Shape(1,[[5,1,7,0,2],[10,0,6,11,1],[10,0,5,11,1],[5,0,6,7,2]],[[54,52,51,43,31]],this.boardLength));
 
-        shapes.push(new Shape(2,[[5,2,6,7,3],[16,0,5,10,11],[5,1,2,6,3],[16,0,5,11,6]],this.boardLength));
+        shapes.push(new Shape(2,[[5,2,6,7,3],[16,0,5,10,11],[5,1,2,6,3],[16,0,5,11,6]],[],this.boardLength));
       
-        shapes.push(new Shape(3,[[11,1,5,6,12],[10,1,5,6,7],[11,0,1,6,7],[11,5,6,7,2],[10,1,6,11,7],[11,0,5,6,7],[11,1,5,6,2],[12,1,5,6,7]],this.boardLength));
+        shapes.push(new Shape(3,[[11,1,5,6,12],[10,1,5,6,7],[11,0,1,6,7],[11,5,6,7,2],[10,1,6,11,7],[11,0,5,6,7],[11,1,5,6,2],[12,1,5,6,7]],[],this.boardLength));
       
-        shapes.push(new Shape(4,[[5,1,6,7],[10,0,5,6],[6,0,1,2],[11,5,6,1]],this.boardLength));
+        shapes.push(new Shape(4,[[5,1,6,7],[10,0,5,6],[6,0,1,2],[11,5,6,1]],[],this.boardLength));
       
-        shapes.push(new Shape(5,[[5,1,6,7,8],[15,0,5,10,6],[7,0,1,2,3],[16,6,10,11,1],[5,2,6,7,8],[15,0,5,10,11],[6,0,1,2,3],[16,5,6,11,1]],this.boardLength));
+        shapes.push(new Shape(5,[[5,1,6,7,8],[15,0,5,10,6],[7,0,1,2,3],[16,6,10,11,1],[5,2,6,7,8],[15,0,5,10,11],[6,0,1,2,3],[16,5,6,11,1]],[],this.boardLength));
       
-        shapes.push(new Shape(6,[[5,1,6,7,2],[10,0,5,11,6],[5,0,1,6,2],[11,0,5,6,1],[5,0,1,6,7],[10,0,5,6,1],[6,0,1,7,2],[10,5,6,11,1]],this.boardLength));
+        shapes.push(new Shape(6,[[5,1,6,7,2],[10,0,5,11,6],[5,0,1,6,2],[11,0,5,6,1],[5,0,1,6,7],[10,0,5,6,1],[6,0,1,7,2],[10,5,6,11,1]],[],this.boardLength));
         
         shapes.push(new Shape(7,[[5,1,6,2],[11,0,5,6],[6,0,1,7],[10,6,5,1]],[[33,30,44,42]],this.boardLength));
       
-        shapes.push(new Shape(8,[[10,0,5,1],[7,0,1,2],[10,6,11,1],[5,0,6,7],[10,0,5,11],[11,0,6,1],[5,6,7,2],[5,0,1,2]],this.boardLength));
+        shapes.push(new Shape(8,[[10,0,5,1],[7,0,1,2],[10,6,11,1],[5,0,6,7],[10,0,5,11],[11,0,6,1],[5,6,7,2],[5,0,1,2]],[],this.boardLength));
       
-        shapes.push(new Shape(9,[[12,0,1,7,2],[10,7,11,12,2],[10,0,5,11,12],[10,0,1,5,2]],this.boardLength));
+        shapes.push(new Shape(9,[[12,0,1,7,2],[10,7,11,12,2],[10,0,5,11,12],[10,0,1,5,2]],[],this.boardLength));
       
-        shapes.push(new Shape(10,[[5,0,6,7,8],[15,0,5,10,1],[8,0,1,2,3],[15,6,11,16,1],[5,0,1,2,3],[16,0,6,11,1],[5,6,7,8,3],[15,0,5,10,16]],this.boardLength));
+        shapes.push(new Shape(10,[[5,0,6,7,8],[15,0,5,10,1],[8,0,1,2,3],[15,6,11,16,1],[5,0,1,2,3],[16,0,6,11,1],[5,6,7,8,3],[15,0,5,10,16]],[],this.boardLength));
       
-        shapes.push(new Shape(11,[[5,0,6],[5,0,1],[6,0,1],[5,6,1]],this.boardLength));
+        shapes.push(new Shape(11,[[5,0,6],[5,0,1],[6,0,1],[5,6,1]],[],this.boardLength));
       
         shapes.push(new Shape(12,[[7,0,1,6,12],[10,6,7,11,2],[11,0,5,6,12],[10,1,5,6,2]],[[41,45,49,50,53]],this.boardLength));
-      
-        
-
-        // this.shapes.push(new Shape('A',[[1,1,1,0,0,0,0,0,0,0,0,1,0,1],[1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1],
-        //                                [1,0,1,0,0,0,0,0,0,0,0,1,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1]],this.boardLength * this.y));
-
-        // this.shapes.push(new Shape('B',[[0,0,1,1,0,0,0,0,0,0,0,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1],
-        //                                [0,1,1,1,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
-
-        // this.shapes.push(new Shape('C',[[0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1],[0,1,0,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,1],
-        //                                 [1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],[0,0,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
-
-        // this.shapes.push(new Shape('D',[[0,1,0,0,0,0,0,0,0,0,0,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],
-        //                                 [1,1,1,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
-
-        // this.shapes.push(new Shape('E',[[0,1,0,0,0,0,0,0,0,0,0,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],
-        //                                 [1,1,1,1,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
-
-        // this.shapes.push(new Shape('F',[[0,1,1,0,0,0,0,0,0,0,0,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1,1],
-        //                                 [1,1,1,0,0,0,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
-
-        // this.shapes.push(new Shape('G',[[0,1,1,0,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1]
-        //                                 ],this.boardLength * this.y));
-
-        // this.shapes.push(new Shape('H',[[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],[1,1,1,0,0,0,0,0,0,0,0,0,0,1],
-        //                                 [0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1],[1,0,0,0,0,0,0,0,0,0,0,1,1,1]],this.boardLength * this.y));
-
-        // this.shapes.push(new Shape('I',[[1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],[0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,1,1],
-        //                                 [1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1],[1,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
-
-        // this.shapes.push(new Shape('J',[[1,0,0,0,0,0,0,0,0,0,0,1,1,1,1],[1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1],
-        //                                 [1,1,1,1,0,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1]],this.boardLength * this.y));
-
-        // this.shapes.push(new Shape('K',[[1,0,0,0,0,0,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,0,0,0,0,1],
-        //                                 [1,1,0,0,0,0,0,0,0,0,0,0,1],[0,1,0,0,0,0,0,0,0,0,0,0,1,1]],this.boardLength * this.y));
-
-        // this.shapes.push(new Shape('L',[[1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1],[0,0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,1],
-        //                                 [1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1],[0,1,1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1]],this.boardLength * this.y));
-
 
         return shapes;
     }
@@ -148,28 +120,35 @@ export class Board {
         //build the board i.e. al x matrix
         // 5 * 11 + 12 = 55 + 12 = 67 columns
         var matrix = new Array();
-        const tempColRow = new Array(this.boardLength + this.numOfIDColumns);
         //make columns and push to first row
-        tempColRow.forEach((element,index,array) => {
+
+        const tempColRow = new Array();
+        for (let index = 0; index < this.boardLength + this.numOfIDColumns; index++) {
             //activated,row,column
-            element = new ColumnHeader(true,0,index);
-            element.setColumn(element);
+            const colHeader = new ColumnHeader(true,0,index);
+            console.log('colheader',colHeader);
+            
+            colHeader.setColumn(tempColRow[index]);
             if (index == 0) {
                 //initialise horizontal linkedlists
-                element.setLeft(element);
-                element.setRight(element);
+                colHeader.setLeft(colHeader);
+                colHeader.setRight(colHeader);
             } else {
                 //add to horizontal linkedlist
-                element.setLeft(array[index-1]); //last element
-                element.setRight(array[0]); //header
+                colHeader.setLeft(tempColRow[index-1]); //last element
+                colHeader.setRight(tempColRow[0]); //header
                 //update current ones
-                array[index-1].setRight(element);
-                array[0].setLeft(element);
+                tempColRow[index-1].setRight(colHeader);
+                tempColRow[0].setLeft(colHeader);
             }
             //initalise vertical linkedlists
-            element.setTop(element);
-            element.setBottom(element);
-        });
+            colHeader.setTop(colHeader);
+            colHeader.setBottom(colHeader);
+            tempColRow[index] = colHeader;
+        }
+
+        console.log('tempColRow',tempColRow);
+        
         matrix.push([...tempColRow]);
         //shapes
         // row then starts from 1
@@ -257,10 +236,14 @@ export class Board {
                 }
             }
             //verticals for now
+            console.log('matrix before vertical',matrix);
+            
             element.getVerticals().forEach((rowArray) => {
                 const tempRow = new Array((this.boardLength) + this.numOfIDColumns);
                 //create Nodes for that row only in the spaces needed
                 rowArray.forEach((element,index,array) => {
+                    console.log('vertical-element-row',element);
+                    
                     //colCount increases each time so the placement of these will slowly move across the array
                     tempRow[element] = new Node(row,element);
                     //set column
@@ -499,7 +482,7 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
         if(!minColumn.getActivated){
             console.warn('push to temp');
             //returns empty array
-            searchObject.addToSolutions([...tempSolution],boardObject.g);
+            searchObject.addToSolutions([...tempSolution],boardObject);
         } 
         //5. proceed!
         else {
