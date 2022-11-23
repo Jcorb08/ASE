@@ -204,6 +204,28 @@ export class Board {
                                 tempRow[colCount+element].setBottom(matrix[0][colCount+element]);
 
                             });
+                            //Set ARRAY ID Element
+                            tempRow[element.getArrayID()] = new Node(row,element.getArrayID());
+                            //set column
+                            tempRow[element.getArrayID()].setColumn(matrix[0][element.getArrayID()]);
+                            //increase NodeCount
+                            matrix[0][element.getArrayID()].setNodeCount(matrix[0][element.getArrayID()].getNodeCount()+1);
+                            //add to horizontal linkedlist
+                            tempRow[element.getArrayID()].setLeft(tempRow[colCount+element.getCoords()[rotationCount][element.getCoords()[rotationCount].length-1]]); //last element
+                            tempRow[element.getArrayID()].setRight(tempRow[colCount+element.getCoords()[rotationCount][0]]); //header
+                            //update current ones
+                            tempRow[colCount+element.getCoords()[rotationCount][element.getCoords()[rotationCount].length-1]].setRight(tempRow[element.getArrayID()]);
+                            tempRow[colCount+element.getCoords()[rotationCount][0]].setLeft(tempRow[element.getArrayID()]);
+                            //Vertical linkedlist - already init by colHeaders
+                            //set top to be the last currently in list i.e. header's top element
+                            tempRow[element.getArrayID()].setTop(matrix[0][element.getArrayID()].getTop());
+                            //set last element to point to the current element
+                            (matrix[0][element.getArrayID()].getTop()).setBottom(tempRow[element.getArrayID()]);
+                            //set header's top to be this element
+                            matrix[0][element.getArrayID()].setTop(tempRow[element.getArrayID()]);
+                            //set current to point to header
+                            tempRow[element.getArrayID()].setBottom(matrix[0][element.getArrayID()]);
+
                             matrix.push([...tempRow]);
                             // go along once
                             colCount++;
@@ -273,6 +295,29 @@ export class Board {
                     tempRow[element].setBottom(matrix[0][element]);
 
                 });
+
+                //Set ARRAY ID Element
+                tempRow[element.getArrayID()] = new Node(row,element.getArrayID());
+                //set column
+                tempRow[element.getArrayID()].setColumn(matrix[0][element.getArrayID()]);
+                //increase NodeCount
+                matrix[0][element.getArrayID()].setNodeCount(matrix[0][element.getArrayID()].getNodeCount()+1);
+                //add to horizontal linkedlist
+                tempRow[element.getArrayID()].setLeft(tempRow[colCount+rowArray[rowArray.length-1]]); //last element
+                tempRow[element.getArrayID()].setRight(tempRow[colCount+rowArray[0]]); //header
+                //update current ones
+                tempRow[colCount+rowArray[rowArray.length-1]].setRight(tempRow[element.getArrayID()]);
+                tempRow[colCount+rowArray[0]].setLeft(tempRow[element.getArrayID()]);
+                //Vertical linkedlist - already init by colHeaders
+                //set top to be the last currently in list i.e. header's top element
+                tempRow[element.getArrayID()].setTop(matrix[0][element.getArrayID()].getTop());
+                //set last element to point to the current element
+                (matrix[0][element.getArrayID()].getTop()).setBottom(tempRow[element.getArrayID()]);
+                //set header's top to be this element
+                matrix[0][element.getArrayID()].setTop(tempRow[element.getArrayID()]);
+                //set current to point to header
+                tempRow[element.getArrayID()].setBottom(matrix[0][element.getArrayID()]);
+
                 matrix.push([...tempRow]);
                 row++;
             });
