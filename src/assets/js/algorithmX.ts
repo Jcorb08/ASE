@@ -78,7 +78,7 @@ export class Board {
         //create the objects
         var shapes: Shape[] = [];
         // needs more rotations/flips...
-        shapes.push(new Shape(1,[[5,1,7,0,2],[10,0,6,11,1],[10,0,5,11,1],[5,0,6,7,2]],this.boardLength));
+        shapes.push(new Shape(1,[[5,1,7,0,2],[10,0,6,11,1],[10,0,5,11,1],[5,0,6,7,2]],[[54,52,51,43,31]],this.boardLength));
 
         shapes.push(new Shape(2,[[5,2,6,7,3],[16,0,5,10,11],[5,1,2,6,3],[16,0,5,11,6]],this.boardLength));
       
@@ -90,7 +90,7 @@ export class Board {
       
         shapes.push(new Shape(6,[[5,1,6,7,2],[10,0,5,11,6],[5,0,1,6,2],[11,0,5,6,1],[5,0,1,6,7],[10,0,5,6,1],[6,0,1,7,2],[10,5,6,11,1]],this.boardLength));
         
-        shapes.push(new Shape(7,[[5,1,6,2],[11,0,5,6],[6,0,1,7],[10,6,5,1]],this.boardLength));
+        shapes.push(new Shape(7,[[5,1,6,2],[11,0,5,6],[6,0,1,7],[10,6,5,1]],[[33,30,44,42]],this.boardLength));
       
         shapes.push(new Shape(8,[[10,0,5,1],[7,0,1,2],[10,6,11,1],[5,0,6,7],[10,0,5,11],[11,0,6,1],[5,6,7,2],[5,0,1,2]],this.boardLength));
       
@@ -100,7 +100,7 @@ export class Board {
       
         shapes.push(new Shape(11,[[5,0,6],[5,0,1],[6,0,1],[5,6,1]],this.boardLength));
       
-        shapes.push(new Shape(12,[[7,0,1,6,12],[10,6,7,11,2],[11,0,5,6,12],[10,1,5,6,2]],this.boardLength));
+        shapes.push(new Shape(12,[[7,0,1,6,12],[10,6,7,11,2],[11,0,5,6,12],[10,1,5,6,2]],[[41,45,49,50,53]],this.boardLength));
       
         
 
