@@ -535,6 +535,7 @@ export class Board {
 //Takes board,searchObject,and an empty tempsolution
 //Returns SearchObject that has the solutions attached
 function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:number[][]):SearchObject{
+    console.warn('DFS',searchObject.getDFS());
     //1. ran out of time!
     if (searchObject.checkTime()){
         //return solutions below break out
@@ -575,7 +576,9 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
                     tempSolution = searchObject.addToTempSolution(tempSolution,currentRow);
 
                     //recurse call search
+                    searchObject.increaseDFS();
                     searchObject = dancingLinks(boardObject,searchObject,tempSolution);
+                    searchObject.decreaseDFS();
 
                     // remove row from partial solution
                     tempSolution.pop();
