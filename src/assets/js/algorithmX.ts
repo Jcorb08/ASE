@@ -89,7 +89,7 @@ export class Board {
         //create the objects
         var shapes: Shape[] = [];
         // needs more rotations/flips...
-        shapes.push(new Shape(1,[[5,1,7,0,2],[10,0,6,11,1],[10,0,5,11,1],[5,0,6,7,2]],[[54,52,51,43,31]],this.boardLength));
+        shapes.push(new Shape(1,[[5,1,7,0,2],[10,0,6,11,1],[10,0,5,11,1],[5,0,6,7,2]],[[6,25,41,45,50],[8,28,43,45,51],[18,40,49,45,53],[16,37,47,45,52]],this.boardLength));
 
         shapes.push(new Shape(2,[[5,2,6,7,3],[16,0,5,10,11],[5,1,2,6,3],[16,0,5,11,6]],[],this.boardLength));
       
@@ -259,6 +259,31 @@ export class Board {
             }
             //verticals for now
             console.log('matrix before vertical',matrix);
+
+            /*
+      // var name, type = value
+                var left2right: number[] = [4,9,14,19,24,28,32,36,40,43,46,49,51,53,54];
+                var right2left: number[] = [0,5,10,15,20,25,29,33,37,41,44,47,50,52,54];
+                var left2left: number[] = [20,21,22,23,24,37,38,39,40,47,48,49,52,53,54];
+                var lright2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
+                var startcorner = 1;
+                var startPlace = rowArray;
+                var workPlace = rowArray
+                if (startcorner = 1){
+                    
+                    //push workPlace
+                    //while any in workplace not in left2right
+                        //workplace ++, push workPlace
+                    //workPlace = startPlace
+                    //while any in workplace not in left2left
+                        //left2left transform, push workPlace
+                    //workplace = startPlace
+                    //moveInTransform
+                    //ifworkplace not present in left2right or left2left push workplace
+                    //startplace = workplace
+
+                }
+            */
             
             element.getVerticals().forEach((rowArray) => {
                 const tempRow = new Array((this.boardLength) + this.numOfIDColumns);
