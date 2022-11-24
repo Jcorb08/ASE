@@ -64,7 +64,7 @@ export class Board {
 
     }
 
-    createLayerStarts(layers:number): number[]{
+    private createLayerStarts(layers:number): number[]{
         const array = new Array();
         for (let index = 0; index < layers; index++) {
             if (index == this.layers) {
@@ -85,7 +85,7 @@ export class Board {
         return array;
     }
 
-    createShapes(): Shape[]{
+    private createShapes(): Shape[]{
         //create the objects
         var shapes: Shape[] = [];
         // needs more rotations/flips...
@@ -116,7 +116,7 @@ export class Board {
         return shapes;
     }
 
-    buildBoard(): Node[][]{
+    private buildBoard(): Node[][]{
         //build the board i.e. al x matrix
         // 5 * 11 + 12 = 55 + 12 = 67 columns
         var matrix = new Array();
@@ -327,7 +327,7 @@ export class Board {
 
 
     // convert to take 1-12 instead of A-L
-    prePlace(prePlace){
+    private prePlace(prePlace){
         // accept input from frontend - 5 * 11 0 or A-L
 
         //use .flat(); https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat 
@@ -397,10 +397,10 @@ export class Board {
     // }
 
     // run when solve clicked
-    solve(prePlace:number[][],maxSolutions:number = 0,maxRunTime:number){
+    public solve(prePlace:number[][] = new Array(),maxSolutions:number = 0,maxRunTime:number = 0){
         // run prePlace if set
         var tempSolution: Node[] = [];
-        if (prePlace !== undefined){
+        if (prePlace.length !== 0){
             tempSolution = [...this.prePlace(prePlace)];
         }
         //run algoritmX return solutions
@@ -409,7 +409,7 @@ export class Board {
         return dancingLinks(this,new SearchObject(maxSolutions != 0 ? maxSolutions : 0, maxRunTime != 0 ? new Date().getTime() + maxRunTime : 0),new Array());
     }
 
-    reset(){
+    public reset(){
         // needs to be a way to stop algorithmX if a reset is clicked
         // allow this to enable recursive play without refresh
         this.board = this.fullBoard;

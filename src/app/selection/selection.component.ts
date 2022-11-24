@@ -166,7 +166,7 @@ export class SelectionComponent implements OnInit {
     // console.log(prePlaceTest, 'prePlaceTest');
 
     var board = new Board(55,5);
-
+    board.solve(new Array(),1,0);
 
     //this.solution = solveX(this.refinePreplace, 1, undefined);
     // console.log(this.solution, 'this.solution')
