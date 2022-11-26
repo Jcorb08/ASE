@@ -83,11 +83,17 @@ export class SearchObject{
         //iterate through node add cols to temp solution array
         var temp:number[] = new Array();
         var currentColumn = row;
-        temp.push(currentColumn.getColumnID());
+        console.log('rowTempSol',row,currentColumn,currentColumn.getColumnID());
+        
         do {
             temp.push(currentColumn.getColumnID());
             currentColumn = currentColumn.getRight();
         } while(currentColumn != row);
+        tempSolution.push(temp);
+        console.log('temp',temp);
+        
+        //console.log('tempSol',tempSolution);
+        
         return tempSolution;
     }
     public checkMaxSolutions(): boolean{

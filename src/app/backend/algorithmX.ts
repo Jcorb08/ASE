@@ -132,7 +132,7 @@ export class Board {
         for (let index = 0; index < this.boardLength + this.numOfIDColumns; index++) {
             //activated,row,column
             const colHeader = new ColumnHeader(true,0,index);
-            console.log('colheader',colHeader);
+            //console.log('colheader',colHeader);
             
             colHeader.setColumn(tempColRow[index]);
             if (index == 0) {
@@ -153,7 +153,7 @@ export class Board {
             tempColRow[index] = colHeader;
         }
 
-        console.log('tempColRow',tempColRow);
+        //console.log('tempColRow',tempColRow);
         
         matrix.push([...tempColRow]);
         //shapes
@@ -264,7 +264,7 @@ export class Board {
                 }
             }
             //verticals for now
-            console.log('matrix before vertical',matrix);
+            //console.log('matrix before vertical',matrix);
 
             /*
       // var name, type = value
@@ -295,7 +295,6 @@ export class Board {
                 const tempRow = new Array((this.boardLength) + this.numOfIDColumns);
                 //create Nodes for that row only in the spaces needed
                 rowArray.forEach((element,index,array) => {
-                    console.log('vertical-element-row',element);
                     
                     //colCount increases each time so the placement of these will slowly move across the array
                     tempRow[element] = new Node(row,element);
@@ -453,6 +452,7 @@ export class Board {
     public cover(targetNode: Node){
         //pointer to header column
         var columnNode: ColumnHeader = (targetNode.getColumn() as ColumnHeader);
+        console.log('colNode-cover',columnNode);
 
         //unlink column header from its neighbours
         columnNode.getLeft().setRight(columnNode.getRight());
@@ -462,7 +462,9 @@ export class Board {
         //move down column and remove each row
         //by traversing right
         for (let row = columnNode.getBottom(); row != columnNode; row = row.getBottom()) {
+            //console.log('row-cover',row);
             for (let rightNode = row.getRight(); rightNode != row; rightNode = rightNode.getRight()) {
+                //console.log('leftNode-cover',rightNode);
                 rightNode.getTop().setBottom(rightNode.getBottom());
                 rightNode.getBottom().setTop(rightNode.getTop());
                 //get column and decrease nodeCount
@@ -476,11 +478,15 @@ export class Board {
     public uncover(targetNode: Node){
         //pointer to header column
         var columnNode: ColumnHeader = (targetNode.getColumn() as ColumnHeader);
-
+        console.log('colNode-uncover',columnNode);
+        
         //move down column and relink each row
         //by traversing left
         for (let row = columnNode.getTop(); row != columnNode; row = row.getTop()) {
+            //console.log('row-uncover',row);
             for (let leftNode = row.getLeft(); leftNode != row; leftNode = leftNode.getLeft()) {
+                //console.log('leftNode-uncover',leftNode);
+                
                 leftNode.getTop().setBottom(leftNode);
                 leftNode.getBottom().setTop(leftNode);
                 //get column and decrease nodeCount
@@ -496,14 +502,17 @@ export class Board {
 
     //get min Column
     public getMinColumn(): ColumnHeader{
-        var minColumn: ColumnHeader = (this.board[0][0] as ColumnHeader);
-        var currentColumn: ColumnHeader = (this.board[0][0].getRight() as ColumnHeader);
+        var first: ColumnHeader = (this.board[0].find(col => (col as ColumnHeader).getActivated()) as ColumnHeader);
+        var minColumn: ColumnHeader = first;
+        var currentColumn: ColumnHeader = (first.getRight() as ColumnHeader);
+        //console.log('minCol',minColumn,currentColumn);
         do {
             if(currentColumn.getNodeCount() < minColumn.getNodeCount() && currentColumn.getActivated()){
                 minColumn = currentColumn;
             }
             currentColumn = (currentColumn.getRight() as ColumnHeader);
-        } while(currentColumn != this.board[0][0]);
+        } while(currentColumn != first);
+        console.info('minCol',minColumn);
 
         return minColumn;
     }
@@ -543,7 +552,7 @@ export class Board {
 //Takes board,searchObject,and an empty tempsolution
 //Returns SearchObject that has the solutions attached
 function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:number[][]):SearchObject{
-    console.warn('DFS',searchObject.getDFS());
+    console.warn('DFS',searchObject.getDFS(),searchObject,tempSolution);
     //1. ran out of time!
     if (searchObject.checkTime()){
         //return solutions below break out
@@ -574,6 +583,8 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
                 //7. columns > 0 - working on a row in this column
                 //Select first in column
                 var currentRow: Node = (minColumn.getBottom() as Node);
+                console.log('currentRow',currentRow);
+                
                 // while row is not a column
                 do {
                     // cover that conflicting rows
@@ -581,7 +592,7 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
                     // cover the working row
                     boardObject.cover(currentRow);
                     // put row into partial
-                    tempSolution = searchObject.addToTempSolution(tempSolution,currentRow);
+                    tempSolution = [...searchObject.addToTempSolution(tempSolution,currentRow)];
 
                     //recurse call search
                     searchObject.increaseDFS();
