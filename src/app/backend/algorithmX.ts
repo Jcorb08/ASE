@@ -27,6 +27,18 @@ export class Board {
     public getShapeID(arrayID:number): number{
         return (arrayID + 1) - this.boardLength;
     }
+    public getBoard(): Node[][]{
+        return this.board;
+    }
+    public getFullBoard(): Node[][]{
+        return this.fullBoard;
+    }
+    //Setters
+    //build basic board and store in full board, this doesn't change so we can rapid reset
+    public setBoard(board: Node[][]){
+        this.board = board;
+        this.fullBoard = board;
+    }
 
     constructor(boardLength:number,layers:number){
         // 5 * 11
@@ -49,18 +61,12 @@ export class Board {
         this.numOfIDColumns = this.shapes.length;
         console.log('numOfIDCols',this.numOfIDColumns);
         
-        // 0-54 array of counts to keep track of num of 1s
-        // column count to come
-        // this.colCount = [] array of length 55
-        //this.colIDs = [...Array((this.boardLength * this.y) + this.numOfIDColumns).keys()];
-        //console.log(this.colIDs);
-        //build basic board and store in full board, this doesn't change so we can rapid reset
-        this.fullBoard = this.buildBoard();
-        console.log('fullBoard',this.fullBoard);
+        //this.fullBoard = this.buildBoard();
+        //console.log('fullBoard',this.fullBoard);
         //console.log('Full Board');
         //console.log(this.fullBoard);
         // the board we will change
-        this.board = this.fullBoard;
+        //this.board = this.fullBoard;
 
     }
 
@@ -116,7 +122,7 @@ export class Board {
         return shapes;
     }
 
-    private buildBoard(): Node[][]{
+    public buildBoard(): Node[][]{
         //build the board i.e. al x matrix
         // 5 * 11 + 12 = 55 + 12 = 67 columns
         var matrix = new Array();

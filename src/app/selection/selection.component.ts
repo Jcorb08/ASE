@@ -5,7 +5,8 @@ import { GameService } from '../services/game.service';
 import { HtmlElementService } from '../services/htmlElement.service';
 import { IPiece, Piece } from '../services/piece.component';
 import { SharedService } from '../services/shared.service';
-import { Board } from '../backend/algorithmX'
+import { Board } from '../backend/algorithmX';
+import { Node } from '../backend/node';
 import { AnyCnameRecord } from 'dns';
 import { COLS, ROWS } from '../services/constants';
 
@@ -40,20 +41,22 @@ export class SelectionComponent implements OnInit {
     this.sharedService.currentShape.subscribe(piece => this.currentPiece = piece);
     var boardLength = 55;
     var layers = 5;
+    this.boardObject = new Board(boardLength,layers);
     if (typeof Worker !== 'undefined') {
       // Create a new
       const worker = new Worker(new URL('../backend/onload.worker', import.meta.url));
       worker.onmessage = ({ data }) => {
         //console.log(`Onload: ${(data as Board)}`);
-        this.boardObject = (data as Board);
+        this.boardObject.setBoard(data as Node[][]);
         console.log(`Onload: ${this.boardObject.getBoardLength()}`);
       };
-      worker.postMessage([boardLength,layers]);
+      worker.postMessage([this.boardObject]);
     } else {
       // Web workers are not supported in this environment.
       // You should add a fallback so that your program still executes correctly.
-      this.boardObject = new Board(55,5);
+      this.boardObject.setBoard(this.boardObject.buildBoard());
     }
+    
   }
 
   rotateShape() {
