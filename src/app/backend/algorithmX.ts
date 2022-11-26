@@ -431,6 +431,8 @@ export class Board {
     public solve(prePlace:number[][] = new Array(),maxSolutions:number = 0,maxRunTime:number = 0){
         // run prePlace if set
         var tempSolution: Node[] = [];
+        console.log(prePlace,'prePlace');
+        
         if (prePlace.length !== 0){
             tempSolution = [...this.prePlace(prePlace)];
         }
