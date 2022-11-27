@@ -168,7 +168,7 @@ export class Board {
             //horizontals
             while(!allPlaced){
                 // check we can add shape in if not move to next rotation of shape
-                if((colCount + element.getCoords()[rotationCount].length - 1) < (this.boardLength)){
+                if((colCount + Math.max(...element.getCoords()[rotationCount])) < (this.boardLength)){
                     //check layer
                     //if the last element in the shape array is = to an element in the layer horisontal issue array. 
                     // might get array out of bounds here
