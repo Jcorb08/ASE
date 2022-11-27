@@ -44,9 +44,9 @@ export class SearchObject{
     // public setRanOutOfTime(ranOutOfTime: boolean){
     //     this.ranOutOfTime = ranOutOfTime;
     // }
-    // public setMaxSolutionsFound(maxSolutionsFound: boolean){
-    //     this.maxSolutionsFound = maxSolutionsFound;
-    // }
+    public setMaxSolutionsFound(maxSolutionsFound: boolean){
+        this.maxSolutionsFound = maxSolutionsFound;
+    }
     // public setSolutions(solutions: number[][]){
     //     this.solutions = solutions;
     // }
