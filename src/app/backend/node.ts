@@ -5,7 +5,7 @@ export class Node {
     protected right: Node;
     protected top: Node;
     protected bottom: Node;
-    protected column: Node;
+    protected column: ColumnHeader;
 
     //Activated
     protected activated: boolean;
@@ -27,7 +27,7 @@ export class Node {
     public setBottom(bottom: Node){
         this.bottom = bottom;
     }
-    public setColumn(column: Node){
+    public setColumn(column: ColumnHeader){
         this.column = column;
     }
     //Getters
@@ -43,7 +43,7 @@ export class Node {
     public getBottom(): Node{
         return this.bottom;
     }
-    public getColumn(): Node{
+    public getColumn(): ColumnHeader{
         return this.column;
     }
     public getColumnID(): number{

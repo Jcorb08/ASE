@@ -60,24 +60,24 @@ export class SearchObject{
     }
     public addToSolutions(tempSolution:number[][],boardObject:Board){
         // length 5 where 5 is height of pyrmid
-        var solution = new Array(boardObject.getLayers());
-        var layersStart = boardObject.getLayersStart();
-        layersStart.pop(); //remove last as this is end of array
-        tempSolution.forEach((row :number[],index: number)=>{
-            var shapeID:number = boardObject.getShapeID(row.pop() as number);
-            row.forEach((col:number,index:number)=>{
-                var layerValues = layersStart.map(x => x-col);
-                for (let i = layerValues.length-1; i >= 0; i--) {
-                    if(layerValues[i] >= 0){
-                        //can be placed in that layer
-                        //e.g. col=30 -> first true is where layersStart = 25 as x-col=5
-                        // therefore its placed at [1][5] as [1][0] here would be the 25th space
-                        solution[i][layerValues[i]] = shapeID;
-                    }               
-                }
-            })
-        });
-        this.solutions.push([...solution]);
+        // var solution = new Array(boardObject.getLayers()).fill(new Array());
+        // var layersStart = boardObject.getLayersStart();
+        // layersStart.pop(); //remove last as this is end of array
+        // tempSolution.forEach((row :number[],index: number)=>{
+        //     var shapeID:number = boardObject.getShapeID(row.pop() as number);
+        //     row.forEach((col:number,index:number)=>{
+        //         var layerValues = layersStart.map(x => x-col);
+        //         for (let i = layerValues.length-1; i >= 0; i--) {
+        //             if(layerValues[i] >= 0){
+        //                 //can be placed in that layer
+        //                 //e.g. col=30 -> first true is where layersStart = 25 as x-col=5
+        //                 // therefore its placed at [1][5] as [1][0] here would be the 25th space
+        //                 solution[i][layerValues[i]] = shapeID;
+        //             }               
+        //         }
+        //     })
+        // });
+        this.solutions.push([...tempSolution]);
     }
     public addToTempSolution(tempSolution:number[][], row: Node): number[][]{
         //iterate through node add cols to temp solution array
