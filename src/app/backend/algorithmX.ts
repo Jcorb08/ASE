@@ -515,9 +515,8 @@ export class Board {
     }
 
     //get min Column
-    public getMinColumn(): ColumnHeader{
+    public getMinColumn(first: ColumnHeader): ColumnHeader{
         console.log('all cols',this.board[0]);
-        var first: ColumnHeader = (this.board[0].find(col => (col as ColumnHeader).getActivated()) as ColumnHeader);
         var minColumn: ColumnHeader = first;
         var currentColumn: ColumnHeader = (first.getRight() as ColumnHeader);
         //console.log('minCol',minColumn,currentColumn);
@@ -583,16 +582,17 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
         console.error('maxSolutions Found');
     }
     else {
-        // 3. choose a column with the lowest sum - least amount of ones 
-        var minColumn:ColumnHeader = boardObject.getMinColumn();
-        //4. if no columns success!
-        if(!minColumn.getActivated){
+        const startCol = boardObject.getBoard()[0].find(col => (col as ColumnHeader).getActivated());
+        //3. if no activated columns success!
+        if (startCol === undefined){
             console.warn('push to temp');
             //returns empty array
             searchObject.addToSolutions([...tempSolution],boardObject);
-        } 
-        //5. proceed!
+        }
+        //4. proceed!
         else {
+            // 5. choose a column with the lowest sum - least amount of ones 
+            var minColumn:ColumnHeader = boardObject.getMinColumn(startCol as ColumnHeader);
             //6. does the mincolumn have no rows?
             if (minColumn.getNodeCount() === 0 ){
                 //fail :(
