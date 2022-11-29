@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IPiece, Piece } from './piece.component';
-import { COLS, ROWS, POINTS } from './constants';
+import { COLS, ROWS, STEPS, POINTS } from './constants';
 import { SharedService } from './shared.service';
 
 @Injectable({
@@ -86,5 +86,27 @@ export class GameService {
         : 0;
 
     return (level + 1) * lineClearPoints;
+  }
+
+  getEmptyNBoard(): number[][] {
+    // return Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+    let size = 0
+    let arr = Array();
+    for (var i = 0; i < ROWS; i++) {
+      size += STEPS[i]
+      arr[i] = Array(COLS).fill(0, 0, size);
+    }
+    return arr
+  }
+
+  getEmptySBoard(): string[][] {
+    // return Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+    let size = 0
+    let arr = Array();
+    for (var i = 0; i < ROWS; i++) {
+      size += STEPS[i]
+      arr[i] = Array(COLS).fill(0, 0, size);
+    }
+    return arr
   }
 }

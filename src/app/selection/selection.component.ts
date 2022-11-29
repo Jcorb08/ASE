@@ -7,12 +7,13 @@ import { IPiece, Piece } from '../services/piece.component';
 import { SharedService } from '../services/shared.service';
 import { solveX } from '../../assets/js/algorithmX'
 import { AnyCnameRecord } from 'dns';
-import { COLS, ROWS } from '../services/constants';
+import { COLS, ROWS, STEPS } from '../services/constants';
 
 @Component({
   selector: 'app-selection',
   templateUrl: './selection.component.html',
-  styleUrls: ['./selection.component.css']
+  styleUrls: ['./selection.component.css'],
+  viewProviders: [ BoardComponent ]
 })
 export class SelectionComponent implements OnInit {
 
@@ -28,11 +29,13 @@ export class SelectionComponent implements OnInit {
   currentPiece: Piece;
   currentCtx: CanvasRenderingContext2D;
   currentCtxNext: CanvasRenderingContext2D;
-  gameSolved: boolean;
+  gameOutcome = {solved: false, solution: false};
+
 
   constructor(private gameService: GameService,
     private htmlService: HtmlElementService,
-    private sharedService: SharedService) {}
+    private sharedService: SharedService,
+    private boardCompo: BoardComponent) {}
 
 
   ngOnInit(): void {
@@ -77,11 +80,11 @@ export class SelectionComponent implements OnInit {
     this.sharedService.currentCtx.subscribe(canvas => this.currentCtx = canvas);
     this.sharedService.currentTetris.subscribe(piece => this.currentTetris = piece);
     this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
-    this.sharedService.getGameSolved().subscribe(solve => this.gameSolved = solve);
+    this.sharedService.getGameSolved().subscribe(solve => this.gameOutcome = solve.solved);
 
-    if (this.gameSolved) this.resetGame()
+    if (this.gameOutcome) this.resetGame()
     if (this.currentTetris) this.freezeLastShape()
-    new BoardComponent(this.gameService, this.htmlService, this.sharedService).submit(this.currentPiece, this.currentCtx)
+    this.boardCompo.submit(this.currentPiece, this.currentCtx)
   }
 
   freezeLastShape(){
@@ -109,18 +112,17 @@ export class SelectionComponent implements OnInit {
 
     this.resetGame();
     this.solution = solveX(undefined,1,undefined);
-    console.log(this.solution, 'this.board')
     this.solution.forEach((row, y) => {
       row.forEach((value, x) => {
         Object.entries(value).forEach(([key, item]) => {
           if(foundPieces.indexOf(item) == -1){
             this.solutionPieces.push(
               new Piece(
-                this.currentCtx, 
-                {}, 
-                true, 
+                this.currentCtx,
+                {},
+                true,
                 {s: (alphabet.indexOf(item.toLowerCase())+1).toString(), x: Number(key), y: x}
-              ) 
+              )
             )
             foundPieces.push(item)
           }
@@ -137,9 +139,7 @@ export class SelectionComponent implements OnInit {
       this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
 
       if (this.currentTetris) this.freezeLastShape()
-      console.log(row, 'submitPieces');
-      
-      new BoardComponent(this.gameService, this.htmlService, this.sharedService).submitPieces(row, this.currentCtx)
+      this.boardCompo.submitPieces(row, this.currentCtx)
     });
   }
 
@@ -163,10 +163,10 @@ export class SelectionComponent implements OnInit {
     //     prePlaceTest.push(tempRow);
     // }
     // console.log(prePlaceTest, 'prePlaceTest');
-    
+
     this.solution = solveX(this.refinePreplace, 1, undefined);
     console.log(this.solution, 'this.solution')
-    
+
     this.solution.forEach((row, y) => {
       row.forEach((value, x) => {
         Object.entries(value).forEach(([key, item]) => {
@@ -175,12 +175,13 @@ export class SelectionComponent implements OnInit {
       });
     });
     this.sharedService.setBoard(this.board)
-    new BoardComponent(this.gameService, this.htmlService, this.sharedService).drawBoard()
-    this.sharedService.setGameSolved(true)
+    this.sharedService.setGameSolved(true, this.solution.length > 0)
+    this.boardCompo.drawBoard()
+
   }
 
   refinePrePlaceTest(shape: number[][]){
-    let refinePreplace = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+    let refinePreplace = this.gameService.getEmptySBoard();
     shape.forEach((row, y) => {
       row.forEach((value, x) => {
         if(value > 0){
