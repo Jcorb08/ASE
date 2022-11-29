@@ -6,144 +6,124 @@ var startcorner = 1;
 var rowArray = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];       //just temporary
 var startPlace = rowArray;
 var workPlace:number[] = rowArray
+
+
 if (startcorner = 1){
 
 
     //if()
-while(workPlace.filter(x => !left2right.includes(x))){
-//push workplace
-//increcease all values in workplace by 1
-workPlace = workPlace.map(x => x + 1);
+    while(workPlace.filter(x => !left2right.includes(x))){//go left
+    //push workplace
+    //increcease all values in workplace by 1
+    workPlace = workPlace.map(x => x + 1);
 
 
 
-}
-workPlace = startPlace;
+    }
+    workPlace = startPlace; //reset workplace
 
-while(workPlace.filter(x => !left2left.includes(x))){
+        while(workPlace.filter(x => !left2left.includes(x))){//go down
+            //push workplace
+            for(var i = 0; i < workPlace.length; i++){
+       
+                if ( workPlace[i] > 24 ){
+                  workPlace[i] = workPlace[i] + 5;
+                }
+                else if(workPlace[i] <40){
+                    workPlace[i] = workPlace[i] + 4;
+                }
+                else if(workPlace[i] <49){
+                    workPlace[i] = workPlace[i] + 3;
+                }
+                else if(workPlace[i] <53){
+                    workPlace[i] = workPlace[i] + 2;
+                }
+                else if(workPlace[i] <54){
+                    workPlace[i] = workPlace[i] + 1;
+                }
+            }
+        }
+        workPlace = startPlace;
+
+        //this needs encapsulation
+//go in
+
+while(workPlace.filter(x => !left2left.includes(x))){//go down
     //push workplace
     for(var i = 0; i < workPlace.length; i++){
-       
+
         if ( workPlace[i] > 24 ){
-            workPlace[i] = workPlace[i] + 5;
+          workPlace[i] = workPlace[i] + 6;
         }
         else if(workPlace[i] <40){
-            workPlace[i] = workPlace[i] + 4;
+            workPlace[i] = workPlace[i] + 5;
         }
         else if(workPlace[i] <49){
-            workPlace[i] = workPlace[i] + 3;
+            workPlace[i] = workPlace[i] + 4;
         }
         else if(workPlace[i] <53){
-            workPlace[i] = workPlace[i] + 2;
+            workPlace[i] = workPlace[i] + 3;
         }
         else if(workPlace[i] <54){
-            workPlace[i] = workPlace[i] + 1;
+            workPlace[i] = workPlace[i] + 2;
         }
     }
+}
 workPlace = startPlace;
-for(var i = 0; i < workPlace.length; i++){
+//call that encapsulation
+
+for(var i = 0; i < workPlace.length; i++){//next level
        
-    if ( workPlace[i] > 24 ){
+    if ( workPlace[i] < 24 ){
+        if(workPlace[i] < 4){
         workPlace[i] = workPlace[i] + 25;
-    }
-    else if(workPlace[i] <40){
-        workPlace[i] = workPlace[i] + 16;
-    }
-    else if(workPlace[i] <49){
-        workPlace[i] = workPlace[i] + 9;
-    }
-    else if(workPlace[i] <53){
-        workPlace[i] = workPlace[i] + 4;
-    }
-    else if(workPlace[i] <54){
-        workPlace[i] = workPlace[i] + 1;
-    }
-}
-startPlace= workPlace;
-
-
-
-
-
-    
-    ////left 2 left transform workplace
-    
-    
-    }
-
-startcorner ++;
-
-
-
-
-
-}
-
-if (startcorner = 2){
-
-
-    //if()
-while(workPlace.filter(x => !right2left.includes(x))){
-//push workplace
-//increcease all values in workplace by 1
-workPlace = workPlace.map(x => x - 1);
-
-
-
-}
-workPlace = startPlace;
-
-while(workPlace.filter(x => !right2right.includes(x))){
-    //push workplace
-    for(var i = 0; i < workPlace.length; i++){
-       
-        if ( workPlace[i] > 24 ){
-            workPlace[i] = workPlace[i] + 5;
         }
-        else if(workPlace[i] <40){
-            workPlace[i] = workPlace[i] + 4;
-        }
-        else if(workPlace[i] <49){
-            workPlace[i] = workPlace[i] + 3;
-        }
-        else if(workPlace[i] <53){
-            workPlace[i] = workPlace[i] + 2;
-        }
-        else if(workPlace[i] <54){
-            workPlace[i] = workPlace[i] + 1;
-        }
-    }
-workPlace = startPlace;
-for(var i = 0; i < workPlace.length; i++){//needs work
-       
-    if ( workPlace[i] > 24 ){
-        
-        if (workPlace[i]<=4){
-            workPlace[i] = workPlace[i] + 25;
-        }
-        if (workPlace[i]>4 && workPlace[i]<=9){
+        else if (workPlace[i] < 9){
             workPlace[i] = workPlace[i] + 24;
         }
-        if (workPlace[i]>9 && workPlace[i]<=14){
+        else if (workPlace[i] < 14){
             workPlace[i] = workPlace[i] + 23;
         }
-        if (workPlace[i]>14 && workPlace[i]<=19){
+        else if (workPlace[i] < 19){
             workPlace[i] = workPlace[i] + 22;
         }
-        if (workPlace[i]>19 && workPlace[i]<=24){
+        else if (workPlace[i] < 24){
             workPlace[i] = workPlace[i] + 21;
         }
-
     }
-    else if(workPlace[i] <40){
-        
-        workPlace[i] = workPlace[i] + 16;
+    else if(workPlace[i] <40 && workPlace[i] > 24){
+        if(workPlace[i] < 28){
+            workPlace[i] = workPlace[i] + 16;
+            }
+            else if (workPlace[i] < 32){
+                workPlace[i] = workPlace[i] + 15;
+            }
+            else if (workPlace[i] < 36){
+                workPlace[i] = workPlace[i] + 14;
+            }
+            else if (workPlace[i] < 40){
+                workPlace[i] = workPlace[i] + 13;
+            }
     }
-    else if(workPlace[i] <49){
-        workPlace[i] = workPlace[i] + 9;
+    else if(workPlace[i] <49 && workPlace[i] > 40){
+        if(workPlace[i] < 43){
+            workPlace[i] = workPlace[i] + 9;
+            }
+            else if (workPlace[i] < 46){
+                workPlace[i] = workPlace[i] + 8;
+            }
+            else if (workPlace[i] < 49){
+                workPlace[i] = workPlace[i] + 7;
+            }
+                
     }
-    else if(workPlace[i] <53){
+    else if(workPlace[i] <53 && workPlace[i] > 49){
+       if(workPlace[i] < 51){
         workPlace[i] = workPlace[i] + 4;
+       }
+       else if (workPlace[i] < 53){
+        workPlace[i] = workPlace[i] + 3;
+       }
     }
     else if(workPlace[i] <54){
         workPlace[i] = workPlace[i] + 1;
@@ -159,7 +139,7 @@ startPlace= workPlace;
     ////left 2 left transform workplace
     
     
-    }
+    
 
 startcorner ++;
 
@@ -168,3 +148,4 @@ startcorner ++;
 
 
 }
+
