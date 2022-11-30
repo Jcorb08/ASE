@@ -204,7 +204,8 @@ export class SelectionComponent implements OnInit {
       // You should add a fallback so that your program still executes correctly.
       // this will crash the window currently
       this.boardObject = new Board(55,5);
-      this.boardObject.setBoard(this.boardObject.buildBoard());
+      var buildBoard = new buildBoard(this.boardObject.getLayers(),this.boardObject.getBoardLength(),this.boardObject.getLayersStart())
+      this.boardObject.setBoard(buildBoard.buildBoard());
       solutions = this.boardObject.solve(new Array(),1,0).getSolutions();
     }
     

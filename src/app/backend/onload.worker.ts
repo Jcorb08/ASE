@@ -12,5 +12,5 @@ addEventListener('message', ({ data }) => {
   // pass array instead??
   console.log('data',data[0]);
   
-  postMessage((data[0] as Board).buildBoard());
+  //postMessage((data[0] as Board).buildBoard());
 });
