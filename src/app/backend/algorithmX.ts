@@ -109,62 +109,61 @@ export class Board {
         return solutionEmpty;
     }
     
-    // convert to take 1-12 instead of A-L
+    // convert to take 1-12
     private prePlace(prePlace){
-        // accept input from frontend - 5 * 11 0 or A-L
-
         //use .flat(); https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat 
 
-        // 5*11 -> 1d length 55 A-L or 0
-        var setOfVars = new Set(prePlace.flat());
+        var oneDPrePlace = [...prePlace.flat(3)]
+        var setOfVars = new Set(oneDPrePlace);
         setOfVars.delete(0); //remove 0s
         var shapesToBePrePlaced = Array.from(setOfVars); //['A','B'...]
         //console.log('shapesToBePrePlaced',shapesToBePrePlaced);
-        var buildShapeRows = new Array();
+        var tempSolution = new Array();
+        var tempSearchObject = new SearchObject(0,0);
         shapesToBePrePlaced.forEach(shape => {
-            var shapeRowTemp = [...new Array()];
-            // push id
-            shapeRowTemp.push(((shape as String).charCodeAt(0) - 65) + 55);
             //push shape placements
-            prePlace.flat().forEach((element,index) => {
-                if(typeof element === 'string'){
+            var shapeRowTemp = new Array();
+            oneDPrePlace.forEach((shapeID,index)=>{
+                if(shapeID === shape){
+                    //if shapeID 1 and shape 1 push colID
                     shapeRowTemp.push(index);
                 }
-           });
-           buildShapeRows.push([...shapeRowTemp]);
+            });
+            // push id
+            // shapeRowTemp.push(shape);
+            //should then be an array of [1,3,5] or similar no columnID as we cover that to start
+ 
+            //min column is then shape
+            var minColumn:ColumnHeader = (this.board[0][shape] as ColumnHeader);
+            this.cover(minColumn);
+            var currentRow: Node = (minColumn.getBottom() as Node);
+            //console.log('currentRow',currentRow);
+
+            // while row is not a column
+            while(currentRow != minColumn) {
+                console.log('MinColumn',minColumn,currentRow);
+                // cover that conflicting rows
+                // cover the column
+                // cover the working row
+                currentRow = currentRow.getRight();
+                var inShapeRow = true;
+                while(currentRow.getColumn() !== minColumn){
+                    this.cover(currentRow.getColumn());
+                    if(shapeRowTemp.indexOf(currentRow.getColumnID()) === -1){
+                        inShapeRow = false;
+                    }
+                    currentRow = currentRow.getRight();
+                }
+                // put row into partial if matching preplace
+                if(inShapeRow){
+                    tempSolution = [...tempSearchObject.addToTempSolution([...tempSolution],currentRow)];
+                }
+                //console.log('all cols after push',tempSolution,boardObject.getBoard()[0]);
+
+                currentRow = currentRow.getBottom();
+            }
+
         });
-        //console.log('shapeRows',buildShapeRows);
-       // convert to 1s so we can check the rows don't conflict with this and add idColumns
-       //console.log('flat',prePlace.flat());
-       const tempSolution = new Array();
-    //    buildShapeRows.forEach((columnsToRemove)=>{
-    //         //filterboard
-    //         const filteredBoard = [];
-    //         this.board.forEach((row) => {
-    //             // if one of columnsToRemove = 1 in row then remove
-    //             if (!columnsToRemove.some((element) => row[element] === 1)) {
-    //                 //remove columns
-    //                 //console.log(index,row);
-    //                 filteredBoard.push(row.filter((columns, index) => !columnsToRemove.includes(index)));
-    //             };
-    //             //console.log(row[columnsToRemove[0]]);
-    //         });
-    //         this.board = [...filteredBoard];
-    //         // remove cols
-    //         const filteredIDs = [];
-    //         const selectedIDs = [];
-    //         this.colIDs.forEach((element,index) => {
-    //             if (columnsToRemove.includes(index)) {
-    //                 //console.log(element,true);
-    //                 selectedIDs.push(element);
-    //             } else {
-    //                 filteredIDs.push(element);
-    //             }
-    //         });
-    //         //push to temp
-    //         tempSolution.push([...selectedIDs]);
-    //         this.colIDs = [...filteredIDs];
-    //     });
         // edits this.board
         return tempSolution;
     }
