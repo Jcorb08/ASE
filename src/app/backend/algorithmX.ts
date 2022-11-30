@@ -13,6 +13,7 @@ export class Board {
     //private colIDs: ColumnHeader[];
     private fullBoard: Node[][];
     private board: Node[][];
+    private emptySolution: number[][];
 
     //Getters
     public getBoardLength(): number{
@@ -32,6 +33,9 @@ export class Board {
     }
     public getFullBoard(): Node[][]{
         return this.fullBoard;
+    }
+    public getEmptySolution(): number[][]{
+        return this.emptySolution;
     }
     //Setters
     //build basic board and store in full board, this doesn't change so we can rapid reset
@@ -61,6 +65,9 @@ export class Board {
         this.numOfIDColumns = this.shapes.length;
         console.log('numOfIDCols',this.numOfIDColumns);
         
+        this.emptySolution = this.createEmptySolution();
+        console.log('emptySolutionArray',this.emptySolution);
+        
         //this.fullBoard = this.buildBoard();
         //console.log('fullBoard',this.fullBoard);
         //console.log('Full Board');
@@ -89,6 +96,18 @@ export class Board {
             
         }
         return array;
+    }
+
+    private createEmptySolution():number[][]{
+        var solutionEmpty:number[][] = new Array();
+        var layersStart = [...this.getLayersStart()];
+        layersStart.pop();
+        for (let index = 0; index < layersStart.length; index++) {
+            console.log(index,(layersStart.length-index)**2,layersStart.length-index);
+            
+            solutionEmpty.push(new Array((layersStart.length-index)**2))
+        }
+        return solutionEmpty;
     }
 
     private createShapes(): Shape[]{
@@ -546,11 +565,11 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
                 //Select first in column
                 boardObject.cover(minColumn);
                 var currentRow: Node = (minColumn.getBottom() as Node);
-                console.log('currentRow',currentRow);
+                //console.log('currentRow',currentRow);
 
                 // while row is not a column
                 while(currentRow != minColumn) {
-                    console.log('MinColumn',minColumn);
+                    //console.log('MinColumn',minColumn);
                     // cover that conflicting rows
                     // cover the column
                     // cover the working row
@@ -561,7 +580,7 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
                     }
                     // put row into partial
                     tempSolution = [...searchObject.addToTempSolution([...tempSolution],currentRow)];
-                    console.log('all cols after push',tempSolution,boardObject.getBoard()[0]);
+                    //console.log('all cols after push',tempSolution,boardObject.getBoard()[0]);
 
                     //recurse call search
                     searchObject.increaseDFS();
@@ -570,7 +589,7 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
 
                     // remove row from partial solution
                     var popped = tempSolution.pop();
-                    console.log('pop',popped);
+                    //console.log('pop',popped);
 
                     // uncover row
                     // uncover conflicts 
