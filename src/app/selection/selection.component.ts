@@ -170,12 +170,12 @@ export class SelectionComponent implements OnInit {
     this.solution.forEach((row, y) => {
       row.forEach((value, x) => {
         Object.entries(value).forEach(([key, item]) => {
-          this.board[x][Number(key)] = this.alphabet.indexOf(item.toLowerCase())+1;
+          if(this.board[x][Number(key)] == 0) this.board[x][Number(key)] = this.alphabet.indexOf(item.toLowerCase())+1;
         });
       });
     });
     this.sharedService.setBoard(this.board)
-    this.sharedService.setGameSolved(true, this.solution.length > 0)
+    this.sharedService.setGameSolved(true, this.solution[0][ROWS -1].length == COLS)
     this.boardCompo.drawBoard()
 
   }
