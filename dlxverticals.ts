@@ -8,6 +8,24 @@ var startPlace = rowArray;
 var workPlace:number[] = rowArray
 
 
+function left2rightFunc() {
+
+    while(workPlace.filter(x => !left2right.includes(x))){//go left
+        //push workplace
+        //increcease all values in workplace by 1
+        
+    
+        matrix = setBoardRow(matrix,row,element.getShapeID(),workPlace);
+        row++;
+        
+        workPlace = workPlace.map(x => x + 1);
+        }
+}
+
+
+
+
+//first corner
 if (startcorner = 1){
 
 
@@ -26,19 +44,19 @@ if (startcorner = 1){
             //push workplace
             for(var i = 0; i < workPlace.length; i++){
        
-                if ( workPlace[i] > 24 ){
+                if ( workPlace[i] <= 24 ){
                   workPlace[i] = workPlace[i] + 5;
                 }
-                else if(workPlace[i] <40){
+                else if(workPlace[i] <= 40){
                     workPlace[i] = workPlace[i] + 4;
                 }
-                else if(workPlace[i] <49){
+                else if(workPlace[i] <= 49){
                     workPlace[i] = workPlace[i] + 3;
                 }
-                else if(workPlace[i] <53){
+                else if(workPlace[i] <= 53){
                     workPlace[i] = workPlace[i] + 2;
                 }
-                else if(workPlace[i] <54){
+                else if(workPlace[i] <= 54){
                     workPlace[i] = workPlace[i] + 1;
                 }
             }
@@ -52,19 +70,19 @@ while(workPlace.filter(x => !left2left.includes(x))){//go down
     //push workplace
     for(var i = 0; i < workPlace.length; i++){
 
-        if ( workPlace[i] > 24 ){
+        if ( workPlace[i] <= 24 ){
           workPlace[i] = workPlace[i] + 6;
         }
-        else if(workPlace[i] <40){
+        else if(workPlace[i] <=40){
             workPlace[i] = workPlace[i] + 5;
         }
-        else if(workPlace[i] <49){
+        else if(workPlace[i] <=49){
             workPlace[i] = workPlace[i] + 4;
         }
-        else if(workPlace[i] <53){
+        else if(workPlace[i] <=53){
             workPlace[i] = workPlace[i] + 3;
         }
-        else if(workPlace[i] <54){
+        else if(workPlace[i] <=54){
             workPlace[i] = workPlace[i] + 2;
         }
     }
@@ -75,19 +93,19 @@ workPlace = startPlace;
 for(var i = 0; i < workPlace.length; i++){//next level
        
     if ( workPlace[i] < 24 ){
-        if(workPlace[i] < 4){
+        if(workPlace[i] <= 4){
         workPlace[i] = workPlace[i] + 25;
         }
-        else if (workPlace[i] < 9){
+        else if (workPlace[i] <= 9){
             workPlace[i] = workPlace[i] + 24;
         }
-        else if (workPlace[i] < 14){
+        else if (workPlace[i] <= 14){
             workPlace[i] = workPlace[i] + 23;
         }
-        else if (workPlace[i] < 19){
+        else if (workPlace[i] <= 19){
             workPlace[i] = workPlace[i] + 22;
         }
-        else if (workPlace[i] < 24){
+        else if (workPlace[i] <= 24){
             workPlace[i] = workPlace[i] + 21;
         }
     }
@@ -95,34 +113,177 @@ for(var i = 0; i < workPlace.length; i++){//next level
         if(workPlace[i] < 28){
             workPlace[i] = workPlace[i] + 16;
             }
-            else if (workPlace[i] < 32){
+            else if (workPlace[i] <= 32){
                 workPlace[i] = workPlace[i] + 15;
             }
-            else if (workPlace[i] < 36){
+            else if (workPlace[i] <= 36){
                 workPlace[i] = workPlace[i] + 14;
             }
-            else if (workPlace[i] < 40){
+            else if (workPlace[i] <= 40){
                 workPlace[i] = workPlace[i] + 13;
             }
     }
     else if(workPlace[i] <49 && workPlace[i] > 40){
-        if(workPlace[i] < 43){
+        if(workPlace[i] <= 43){
             workPlace[i] = workPlace[i] + 9;
             }
-            else if (workPlace[i] < 46){
+            else if (workPlace[i] <= 46){
                 workPlace[i] = workPlace[i] + 8;
             }
-            else if (workPlace[i] < 49){
+            else if (workPlace[i] <= 49){
                 workPlace[i] = workPlace[i] + 7;
             }
                 
     }
     else if(workPlace[i] <53 && workPlace[i] > 49){
-       if(workPlace[i] < 51){
+       if(workPlace[i] <= 51){
         workPlace[i] = workPlace[i] + 4;
        }
-       else if (workPlace[i] < 53){
+       else if (workPlace[i] <= 53){
         workPlace[i] = workPlace[i] + 3;
+       }
+    }
+    else if(workPlace[i] <=54){
+        workPlace[i] = workPlace[i] + 1;
+    }
+}
+startPlace= workPlace;
+
+
+
+
+
+    
+    ////left 2 left transform workplace
+    
+    
+    
+
+startcorner ++;
+
+
+
+
+
+}
+
+
+//second corner
+if (startcorner = 2){
+
+
+    //if()
+    while(workPlace.filter(x => !right2left.includes(x))){//go left
+    //push workplace
+    //increcease all values in workplace by 1
+    workPlace = workPlace.map(x => x - 1);
+
+
+
+    }
+    workPlace = startPlace; //reset workplace
+
+        while(workPlace.filter(x => !left2left.includes(x))){//go down
+            //push workplace
+            for(var i = 0; i < workPlace.length; i++){
+       
+                if ( workPlace[i] <= 24 ){
+                  workPlace[i] = workPlace[i] + 5;
+                }
+                else if(workPlace[i] <=40){
+                    workPlace[i] = workPlace[i] + 4;
+                }
+                else if(workPlace[i] <=49){
+                    workPlace[i] = workPlace[i] + 3;
+                }
+                else if(workPlace[i] <=53){
+                    workPlace[i] = workPlace[i] + 2;
+                }
+                else if(workPlace[i] <=54){
+                    workPlace[i] = workPlace[i] + 1;
+                }
+            }
+        }
+        workPlace = startPlace;
+
+        //this needs encapsulation
+//go in
+
+while(workPlace.filter(x => !left2left.includes(x)) && workPlace.filter(x => !right2left.includes(x))){//go down
+    //push workplace
+    for(var i = 0; i < workPlace.length; i++){
+
+        if ( workPlace[i] <= 24 ){
+          workPlace[i] = workPlace[i] + 4;
+        }
+        else if(workPlace[i] <=40){
+            workPlace[i] = workPlace[i] + 3;
+        }
+        else if(workPlace[i] <=49){
+            workPlace[i] = workPlace[i] + 2;
+        }
+        else if(workPlace[i] <=53){
+            workPlace[i] = workPlace[i] + 1;
+        }
+        else if(workPlace[i] <=54){
+            workPlace[i] = workPlace[i] + 0;
+        }
+    }
+}
+workPlace = startPlace;
+//call that encapsulation
+
+for(var i = 0; i < workPlace.length; i++){//next level
+       
+    if ( workPlace[i] < 24 ){
+        if(workPlace[i] < 4){
+        workPlace[i] = workPlace[i] + 24;
+        }
+        else if (workPlace[i] < 9){
+            workPlace[i] = workPlace[i] + 23;
+        }
+        else if (workPlace[i] < 14){
+            workPlace[i] = workPlace[i] + 22;
+        }
+        else if (workPlace[i] < 19){
+            workPlace[i] = workPlace[i] + 21;
+        }
+        else if (workPlace[i] < 24){
+            workPlace[i] = workPlace[i] + 20;
+        }
+    }
+    else if(workPlace[i] <40 && workPlace[i] > 24){
+        if(workPlace[i] < 28){
+            workPlace[i] = workPlace[i] + 15;
+            }
+            else if (workPlace[i] < 32){
+                workPlace[i] = workPlace[i] + 14;
+            }
+            else if (workPlace[i] < 36){
+                workPlace[i] = workPlace[i] + 13;
+            }
+            else if (workPlace[i] < 40){
+                workPlace[i] = workPlace[i] + 12;
+            }
+    }
+    else if(workPlace[i] <49 && workPlace[i] > 40){
+        if(workPlace[i] < 43){
+            workPlace[i] = workPlace[i] + 8;
+            }
+            else if (workPlace[i] < 46){
+                workPlace[i] = workPlace[i] + 7;
+            }
+            else if (workPlace[i] < 49){
+                workPlace[i] = workPlace[i] + 6;
+            }
+                
+    }
+    else if(workPlace[i] <53 && workPlace[i] > 49){
+       if(workPlace[i] < 51){
+        workPlace[i] = workPlace[i] + 3;
+       }
+       else if (workPlace[i] < 53){
+        workPlace[i] = workPlace[i] + 2;
        }
     }
     else if(workPlace[i] <54){
@@ -149,3 +310,289 @@ startcorner ++;
 
 }
 
+//corner 3
+
+if (startcorner = 3){
+
+
+    //if()
+    while(workPlace.filter(x => !right2left.includes(x))){//go left
+    //push workplace
+    //increcease all values in workplace by 1
+    workPlace = workPlace.map(x => x - 1);
+
+
+
+    }
+    workPlace = startPlace; //reset workplace
+
+        while(workPlace.filter(x => !right2right.includes(x))){//go down
+            //push workplace
+            for(var i = 0; i < workPlace.length; i++){
+       
+                if ( workPlace[i] <= 24 ){
+                  workPlace[i] = workPlace[i] - 5;
+                }
+                else if(workPlace[i] <=40){
+                    workPlace[i] = workPlace[i] - 4;
+                }
+                else if(workPlace[i] <=49){
+                    workPlace[i] = workPlace[i] - 3;
+                }
+                else if(workPlace[i] <=53){
+                    workPlace[i] = workPlace[i] - 2;
+                }
+                else if(workPlace[i] <=54){
+                    workPlace[i] = workPlace[i] - 1;
+                }
+            }
+        }
+        workPlace = startPlace;
+
+        //this needs encapsulation
+//go in
+
+while(workPlace.filter(x => !right2right.includes(x)) && workPlace.filter(x => !right2left.includes(x))){//go down
+    //push workplace
+    for(var i = 0; i < workPlace.length; i++){
+
+        if ( workPlace[i] <= 24 ){
+          workPlace[i] = workPlace[i] - 6;
+        }
+        else if(workPlace[i] <=40){
+            workPlace[i] = workPlace[i] - 5;
+        }
+        else if(workPlace[i] <=49){
+            workPlace[i] = workPlace[i] - 4;
+        }
+        else if(workPlace[i] <=53){
+            workPlace[i] = workPlace[i] - 3;
+        }
+        else if(workPlace[i] <=54){
+            workPlace[i] = workPlace[i] -2;
+        }
+    }
+}
+workPlace = startPlace;
+//call that encapsulation
+
+for(var i = 0; i < workPlace.length; i++){//next level
+       
+    if ( workPlace[i] <= 24 ){
+        if(workPlace[i] < 4){
+        workPlace[i] = workPlace[i] + 20;
+        }
+        else if (workPlace[i] <= 9){
+            workPlace[i] = workPlace[i] + 19;
+        }
+        else if (workPlace[i] <= 14){
+            workPlace[i] = workPlace[i] + 18;
+        }
+        else if (workPlace[i] <= 19){
+            workPlace[i] = workPlace[i] + 17;
+        }
+        else if (workPlace[i] <= 24){
+            workPlace[i] = workPlace[i] + 16;
+        }
+    }
+    else if(workPlace[i] <=40 && workPlace[i] > 24){
+        if(workPlace[i] < 28){
+            workPlace[i] = workPlace[i] + 12;
+            }
+            else if (workPlace[i] <= 32){
+                workPlace[i] = workPlace[i] + 11;
+            }
+            else if (workPlace[i] <= 36){
+                workPlace[i] = workPlace[i] + 10;
+            }
+            else if (workPlace[i] <= 40){
+                workPlace[i] = workPlace[i] + 9;
+            }
+    }
+    else if(workPlace[i] <=49 && workPlace[i] > 40){
+        if(workPlace[i] <= 43){
+            workPlace[i] = workPlace[i] + 8;
+            }
+            else if (workPlace[i] <= 46){
+                workPlace[i] = workPlace[i] + 7;
+            }
+            else if (workPlace[i] <= 49){
+                workPlace[i] = workPlace[i] + 6;
+            }
+                
+    }
+    else if(workPlace[i] <=53 && workPlace[i] > 49){
+       if(workPlace[i] < 51){
+        workPlace[i] = workPlace[i] + 2;
+       }
+       else if (workPlace[i] <= 53){
+        workPlace[i] = workPlace[i] + 1;
+       }
+    }
+    else if(workPlace[i] <=54){
+        workPlace[i] = workPlace[i] + 1;
+    }
+}
+startPlace= workPlace;
+
+
+
+
+
+    
+    ////left 2 left transform workplace
+    
+    
+    
+
+startcorner ++;
+
+
+
+
+
+}
+
+//corner 4
+
+
+if (startcorner = 4){
+
+
+    //if()
+    while(workPlace.filter(x => !left2right.includes(x))){//go left
+    //push workplace
+    //increcease all values in workplace by 1
+    workPlace = workPlace.map(x => x + 1);
+
+
+
+    }
+    workPlace = startPlace; //reset workplace
+
+        while(workPlace.filter(x => !right2right.includes(x))){//go down
+            //push workplace
+            for(var i = 0; i < workPlace.length; i++){
+       
+                if ( workPlace[i] <= 24 ){
+                  workPlace[i] = workPlace[i] - 5;
+                }
+                else if(workPlace[i] <=40){
+                    workPlace[i] = workPlace[i] - 4;
+                }
+                else if(workPlace[i] <=49){
+                    workPlace[i] = workPlace[i] - 3;
+                }
+                else if(workPlace[i] <=53){
+                    workPlace[i] = workPlace[i] - 2;
+                }
+                else if(workPlace[i] <=54){
+                    workPlace[i] = workPlace[i] - 1;
+                }
+            }
+        }
+        workPlace = startPlace;
+
+        //this needs encapsulation
+//go in
+
+while(workPlace.filter(x => !left2left.includes(x)) && workPlace.filter(x => !right2left.includes(x))){//go down
+    //push workplace
+    for(var i = 0; i < workPlace.length; i++){
+
+        if ( workPlace[i] <= 24 ){
+          workPlace[i] = workPlace[i] - 4;
+        }
+        else if(workPlace[i] <=40){
+            workPlace[i] = workPlace[i] - 3;
+        }
+        else if(workPlace[i] <=49){
+            workPlace[i] = workPlace[i] - 2;
+        }
+        else if(workPlace[i] <=53){
+            workPlace[i] = workPlace[i] - 1;
+        }
+        else if(workPlace[i] <=54){
+            workPlace[i] = workPlace[i] -1;
+        }
+    }
+}
+workPlace = startPlace;
+//call that encapsulation
+
+for(var i = 0; i < workPlace.length; i++){//next level
+       
+    if ( workPlace[i] <= 24 ){
+        if(workPlace[i] < 4){
+        workPlace[i] = workPlace[i] + 20;
+        }
+        else if (workPlace[i] <= 9){
+            workPlace[i] = workPlace[i] + 19;
+        }
+        else if (workPlace[i] <= 14){
+            workPlace[i] = workPlace[i] + 18;
+        }
+        else if (workPlace[i] <= 19){
+            workPlace[i] = workPlace[i] + 18;
+        }
+        else if (workPlace[i] <= 24){
+            workPlace[i] = workPlace[i] + 17;
+        }
+    }
+    else if(workPlace[i] <=40 && workPlace[i] > 24){
+        if(workPlace[i] < 28){
+            workPlace[i] = workPlace[i] + 13;
+            }
+            else if (workPlace[i] <= 32){
+                workPlace[i] = workPlace[i] + 12;
+            }
+            else if (workPlace[i] <= 36){
+                workPlace[i] = workPlace[i] + 11;
+            }
+            else if (workPlace[i] <= 40){
+                workPlace[i] = workPlace[i] + 10;
+            }
+    }
+    else if(workPlace[i] <=49 && workPlace[i] > 40){
+        if(workPlace[i] <= 43){
+            workPlace[i] = workPlace[i] + 7;
+            }
+            else if (workPlace[i] <= 46){
+                workPlace[i] = workPlace[i] + 6;
+            }
+            else if (workPlace[i] <= 49){
+                workPlace[i] = workPlace[i] + 5;
+            }
+                
+    }
+    else if(workPlace[i] <=53 && workPlace[i] > 49){
+       if(workPlace[i] < 51){
+        workPlace[i] = workPlace[i] + 3;
+       }
+       else if (workPlace[i] <= 53){
+        workPlace[i] = workPlace[i] + 2;
+       }
+    }
+    else if(workPlace[i] <=54){
+        workPlace[i] = workPlace[i] + 1;
+    }
+}
+startPlace= workPlace;
+
+
+
+
+
+    
+    ////left 2 left transform workplace
+    
+    
+    
+
+startcorner ++;
+
+
+
+
+
+}
