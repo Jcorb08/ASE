@@ -553,7 +553,7 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
         //4. proceed!
         else {
             // 5. choose a column with the lowest sum - least amount of ones 
-            var minColumn:ColumnHeader = boardObject.getMinColumn(startCol as ColumnHeader);
+            const minColumn:ColumnHeader = boardObject.getMinColumn(startCol as ColumnHeader);
             
             //6. does the mincolumn have no rows?
             if (minColumn.getNodeCount() === 0 ){
@@ -569,7 +569,7 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
 
                 // while row is not a column
                 while(currentRow != minColumn) {
-                    //console.log('MinColumn',minColumn);
+                    console.log('MinColumn',minColumn,currentRow);
                     // cover that conflicting rows
                     // cover the column
                     // cover the working row
@@ -584,7 +584,7 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
 
                     //recurse call search
                     searchObject.increaseDFS();
-                    searchObject = dancingLinks(boardObject,searchObject,tempSolution);
+                    searchObject = dancingLinks(boardObject,searchObject,[...tempSolution]);
                     searchObject.decreaseDFS();
 
                     // remove row from partial solution
@@ -604,6 +604,8 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
                         console.error('Max Solutions Found');
                         break;
                     } 
+                    console.log('currentRow',currentRow);
+                    
                 }
                 boardObject.uncover(minColumn);
             }

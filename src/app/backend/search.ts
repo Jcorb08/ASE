@@ -60,16 +60,16 @@ export class SearchObject{
     }
     public addToSolutions(tempSolution:number[][],boardObject:Board){
         // length 5 where 5 is height of pyramid
-        var solution:number[][] = [...boardObject.getEmptySolution()];
-        var layersStart = [...boardObject.getLayersStart()];
+        const solution:number[][] = [...boardObject.getEmptySolution()];
+        const layersStart = [...boardObject.getLayersStart()];
         layersStart.pop();
         
         tempSolution.forEach((row :number[],i: number)=>{
-
+            var rowTemp = [...row]
             // work out logic of pyramid
-            var shapeID:number = boardObject.getShapeID(row.pop() as number);
+            var shapeID:number = boardObject.getShapeID(rowTemp.pop() as number);
             //console.log('shapeID',shapeID,row);
-            row.forEach((col:number,index:number)=>{
+            rowTemp.forEach((col:number,index:number)=>{
                 var layers = layersStart.filter(x => (col - x) >= 0);
                 // get all > 0 select first element that is the layer
                 //can be placed in that layer
@@ -78,11 +78,12 @@ export class SearchObject{
                 solution[layers.length-1][col-layers[layers.length-1]] = shapeID;
             });
         });
+        
         this.solutions.push([...solution]);
     }
     public addToTempSolution(tempSolution:number[][], row: Node): number[][]{
         //iterate through node add cols to temp solution array
-        var temp:number[] = new Array();
+        const temp:number[] = new Array();
         var currentColumn = row;
         //console.log('rowTempSol',row,currentColumn,currentColumn.getColumnID());
         
@@ -95,7 +96,7 @@ export class SearchObject{
         
         //console.log('tempSol',tempSolution);
         
-        return tempSolution;
+        return [...tempSolution];
     }
     public checkMaxSolutions(): boolean{
         if (this.maxSolutions != 0 && this.solutions.length >= this.maxSolutions) {
