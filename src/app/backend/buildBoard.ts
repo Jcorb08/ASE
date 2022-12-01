@@ -269,7 +269,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
 
 
 
-                const tempRow = new Array((this.boardLength) + this.numOfIDColumns);
+                const tempRow = new Array((this.boardLength) + this.numOfIDColumns);/*
                 //create Nodes for that row only in the spaces needed
                 rowArray.forEach((element,index,array) => {
                     
@@ -301,7 +301,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
                     //set current to point to header
                     tempRow[element].setBottom(matrix[0][element]);
 
-                });
+                });*/
 
                 //Set ARRAY ID Element
                 tempRow[element.getArrayID()] = new Node(row,element.getArrayID());
@@ -327,7 +327,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
 
                 matrix.push([...tempRow]);
                 row++;
-            });
+            });     
         });
         return matrix;
     }
