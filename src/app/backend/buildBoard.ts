@@ -395,7 +395,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
 
     private left2rightFunc(matrix,row,shapeID,workPlace) {
 
-        while(workPlace.filter(x => !left2right.includes(x))){//go left
+        while(workPlace.filter(x => !this.left2right.includes(x))){//go left
             //push workplace
             //increcease all values in workplace by 1
             
@@ -405,13 +405,13 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
             
             workPlace = workPlace.map(x => x + 1);
             }
-            workPlace = startPlace;
+            workPlace = this.startPlace;
 
 }
 
 private right2leftFunc(matrix,row,shapeID,workPlace) {
 
-    while(workPlace.filter(x => !left2right.includes(x))){//go left
+    while(workPlace.filter(x => !this.left2right.includes(x))){//go left
         //push workplace
         //decrese  all values in workplace by 1
         
@@ -421,13 +421,13 @@ private right2leftFunc(matrix,row,shapeID,workPlace) {
         
         workPlace = workPlace.map(x => x - 1);
         }
-        workPlace = startPlace;
+        workPlace = this.startPlace;
 
 
 }
 
 private goingDownFunc(matrix,row,shapeID,workPlace) {
-    while(workPlace.filter(x => !left2left.includes(x))){//go down
+    while(workPlace.filter(x => !this.left2left.includes(x))){//go down
         //push workplace
         matrix = this.setBoardRow(matrix,row,shapeID,workPlace);
         row++;
@@ -496,7 +496,7 @@ private goingUpFunc(matrix,row,shapeID,workPlace) {
 }
 
 private goingInsc1Func(matrix,row,shapeID,workPlace) {
-    if(workPlace.filter(x => !left2left.includes(x)) && workPlace.filter(x => !left2right.includes(x))){
+    if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !this.left2right.includes(x))){
         for(var i = 0; i < workPlace.length; i++){
 
             if ( workPlace[i] <= 24 ){
@@ -515,7 +515,7 @@ private goingInsc1Func(matrix,row,shapeID,workPlace) {
                 workPlace[i] = workPlace[i] + 2;
             }
         }
-        startPlace = workPlace;
+        this.startPlace = workPlace;
         this.left2rightFunc;
                     
         this.goingDownFunc; 
@@ -546,7 +546,7 @@ private goingInsc2Func(matrix,row,shapeID,workPlace) {
                 workPlace[i] = workPlace[i] + 0;
             }
         }
-        startPlace = workPlace;
+        this.startPlace = workPlace;
         this.right2leftFunc;
                     
         this.goingDownFunc; 
@@ -561,7 +561,7 @@ private goingInsc2Func(matrix,row,shapeID,workPlace) {
 }
 
 private goingInsc3Func(matrix,row,shapeID,workPlace) {
-    if(workPlace.filter(x => right2right.includes(x)) && workPlace.filter(x => !right2left.includes(x))){
+    if(workPlace.filter(x => !this.right2right.includes(x)) && workPlace.filter(x => !this.right2left.includes(x))){
         for(var i = 0; i < workPlace.length; i++){
 
             if ( workPlace[i] <= 24 ){
@@ -594,7 +594,7 @@ private goingInsc3Func(matrix,row,shapeID,workPlace) {
 }
 
 private goingInsc4Func(matrix,row,shapeID,workPlace) {
-    if(workPlace.filter(x => !right2right.includes(x)) && workPlace.filter(x => !left2right.includes(x))){
+    if(workPlace.filter(x => !this.right2right.includes(x)) && workPlace.filter(x => !this.left2right.includes(x))){
         for(var i = 0; i < workPlace.length; i++){
 
             if ( workPlace[i] <= 24 ){
@@ -613,7 +613,7 @@ private goingInsc4Func(matrix,row,shapeID,workPlace) {
                 workPlace[i] = workPlace[i] -1;
             }
         }
-        startPlace = workPlace;
+        this.startPlace = workPlace;
         this.left2rightFunc;
                     
         this.goingUpFunc; 
@@ -629,7 +629,7 @@ private goingInsc4Func(matrix,row,shapeID,workPlace) {
 
 private nextlevelSc1Func(matrix,row,shapeID,workPlace) {
 workPlace = this.levelupPlace;
-if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !left2right.includes(x))){
+if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !this.left2right.includes(x))){
     for(var i = 0; i < workPlace.length; i++){//next level
        
         if ( workPlace[i] < 24 ){
@@ -687,9 +687,9 @@ if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !
             workPlace[i] = workPlace[i] + 1;
         }
     }
-    startPlace= workPlace;
+    this.startPlace= workPlace;
     this.levelupPlace = workPlace;
-    if(workPlace.filter(x => !left2left.includes(x)) && workPlace.filter(x => !left2right.includes(x))){
+    if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !this.left2right.includes(x))){
         this.left2rightFunc;
         
         this.goingDownFunc;    
@@ -709,7 +709,7 @@ if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !
 
 private nextlevelSc2Func(matrix,row,shapeID,workPlace) {
     workPlace = this.levelupPlace;
-    if(workPlace.filter(x => !left2left.includes(x)) && workPlace.filter(x => !right2left.includes(x))){
+    if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !this.right2left.includes(x))){
     for(var i = 0; i < workPlace.length; i++){//next level
        
         if ( workPlace[i] < 24 ){
@@ -769,7 +769,7 @@ private nextlevelSc2Func(matrix,row,shapeID,workPlace) {
     }
     startPlace= workPlace;
     this.levelupPlace = workPlace;
-    if(workPlace.filter(x => !left2left.includes(x)) && workPlace.filter(x => !right2left.includes(x))){
+    if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !this.right2left.includes(x))){
         this.right2leftFunc;
         
         this.goingDownFunc;    
@@ -787,7 +787,7 @@ private nextlevelSc2Func(matrix,row,shapeID,workPlace) {
 }
 private nextlevelSc3Func(matrix,row,shapeID,workPlace) {
     workPlace = this.levelupPlace;
-    if(workPlace.filter(x => !right2right.includes(x)) && workPlace.filter(x => !right2left.includes(x))){
+    if(workPlace.filter(x => !this.right2right.includes(x)) && workPlace.filter(x => !this.right2left.includes(x))){
     for(var i = 0; i < workPlace.length; i++){//next level
        
         if ( workPlace[i] <= 24 ){
@@ -847,7 +847,7 @@ private nextlevelSc3Func(matrix,row,shapeID,workPlace) {
     }
     startPlace= workPlace;
     this.levelupPlace = workPlace;
-    if(workPlace.filter(x => !right2right.includes(x)) && workPlace.filter(x => !right2left.includes(x))){
+    if(workPlace.filter(x => !this.right2right.includes(x)) && workPlace.filter(x => !this.right2left.includes(x))){
         this.right2leftFunc;
         
         this.goingUpFunc;    
@@ -864,7 +864,7 @@ private nextlevelSc3Func(matrix,row,shapeID,workPlace) {
 }
 private nextlevelSc4Func(matrix,row,shapeID,workPlace) {
     workPlace = this.levelupPlace;
-    if(workPlace.filter(x => !right2right.includes(x)) && workPlace.filter(x => !left2right.includes(x))){
+    if(workPlace.filter(x => !this.right2right.includes(x)) && workPlace.filter(x => !this.left2right.includes(x))){
     for(var i = 0; i < workPlace.length; i++){//next level
        
         if ( workPlace[i] <= 24 ){
@@ -924,7 +924,7 @@ private nextlevelSc4Func(matrix,row,shapeID,workPlace) {
     }
     startPlace= workPlace;
     this.levelupPlace = workPlace;
-    if(workPlace.filter(x => !right2right.includes(x)) && workPlace.filter(x => !left2right.includes(x))){
+    if(workPlace.filter(x => !this.right2right.includes(x)) && workPlace.filter(x => !this.left2right.includes(x))){
         this.left2rightFunc;
         
         this.goingUpFunc;    
