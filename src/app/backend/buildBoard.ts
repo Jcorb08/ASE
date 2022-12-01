@@ -629,7 +629,7 @@ private goingInsc4Func(matrix,row,shapeID,workPlace) {
 
 private nextlevelSc1Func(matrix,row,shapeID,workPlace) {
 workPlace = this.levelupPlace;
-if(workPlace.filter(x => !left2left.includes(x)) && workPlace.filter(x => !left2right.includes(x))){
+if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !left2right.includes(x))){
     for(var i = 0; i < workPlace.length; i++){//next level
        
         if ( workPlace[i] < 24 ){
