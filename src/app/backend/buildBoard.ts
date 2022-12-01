@@ -10,6 +10,8 @@ export class buildBoard{
     private layersStart:number[];
     private shapes: Shape[];
     private numOfIDColumns: number;
+    private levelupPlace:number[];
+    private startPlace:number[];
 
 
     private left2right: number[] = [4,9,14,19,24,28,32,36,40,43,46,49,51,53,54];
@@ -233,9 +235,36 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
                 }
             */
             this.startCorner = 1;
+            //needs ecapsulation
             element.getVerticals().forEach((rowArray) => {
 
                 this.workplace = [...rowArray];
+                this.levelupPlace = [...rowArray];
+                
+                if(this.startCorner == 1){
+                    this.left2rightFunc;
+                    
+                    this.goingDownFunc;    
+                    
+
+            
+                    }
+
+                else if(this.startCorner == 2){
+                    this.right2leftFunc;
+                    this.goingDownFunc;
+                }
+                else if(this.startCorner == 3){
+                    this.right2leftFunc;
+                    this.goingUpFunc;
+                }
+
+                else if(this.startCorner == 4){
+                    this.left2rightFunc;
+                    this.goingUpFunc;
+                }
+
+//end of adding verticals
 
 
 
@@ -376,7 +405,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
             
             workPlace = workPlace.map(x => x + 1);
             }
-
+            workPlace = startPlace;
 
 }
 
@@ -392,6 +421,7 @@ private right2leftFunc(matrix,row,shapeID,workPlace) {
         
         workPlace = workPlace.map(x => x - 1);
         }
+        workPlace = startPlace;
 
 
 }
@@ -419,6 +449,13 @@ private goingDownFunc(matrix,row,shapeID,workPlace) {
                 workPlace[i] = workPlace[i] + 1;
             }
         }
+    }
+    workPlace = startPlace;
+    if (this.startCorner ==1){
+        this.goingInsc1Func(matrix,row,shapeID,workPlace);
+    }
+    else if (this.startCorner ==2){
+        this.goingInsc2Func(matrix,row,shapeID,workPlace);
     }
 
 
@@ -448,7 +485,13 @@ private goingUpFunc(matrix,row,shapeID,workPlace) {
             }
         }
     }
-
+    workPlace = startPlace;
+    if (this.startCorner ==3){
+        this.goingInsc3Func(matrix,row,shapeID,workPlace);
+    }
+    else if (this.startCorner ==4){
+        this.goingInsc4Func(matrix,row,shapeID,workPlace);
+    }
 
 }
 
@@ -473,7 +516,12 @@ private goingInsc1Func(matrix,row,shapeID,workPlace) {
             }
         }
         startPlace = workPlace;
-
+        this.left2rightFunc;
+                    
+        this.goingDownFunc; 
+    }
+    else{
+        this.nextlevelSc1Func(matrix,row,shapeID,workPlace);
     }
 
 
@@ -499,7 +547,14 @@ private goingInsc2Func(matrix,row,shapeID,workPlace) {
             }
         }
         startPlace = workPlace;
+        this.right2leftFunc;
+                    
+        this.goingDownFunc; 
+        
 
+    }
+    else{
+        this.nextlevelSc2Func(matrix,row,shapeID,workPlace);
     }
 
 
@@ -526,14 +581,20 @@ private goingInsc3Func(matrix,row,shapeID,workPlace) {
             }
         }
         startPlace = workPlace;
+        this.right2leftFunc;
+                    
+        this.goingUpFunc; 
 
+    }
+    else{
+        this.nextlevelSc3Func(matrix,row,shapeID,workPlace);
     }
 
 
 }
 
 private goingInsc4Func(matrix,row,shapeID,workPlace) {
-    if(workPlace.filter(x => !left2left.includes(x)) && workPlace.filter(x => !right2left.includes(x))){
+    if(workPlace.filter(x => !right2right.includes(x)) && workPlace.filter(x => !left2right.includes(x))){
         for(var i = 0; i < workPlace.length; i++){
 
             if ( workPlace[i] <= 24 ){
@@ -553,15 +614,22 @@ private goingInsc4Func(matrix,row,shapeID,workPlace) {
             }
         }
         startPlace = workPlace;
-
+        this.left2rightFunc;
+                    
+        this.goingUpFunc; 
     }
+    else{
+        this.nextlevelSc4Func(matrix,row,shapeID,workPlace);
+    }
+    
 
 
 
 }
 
 private nextlevelSc1Func(matrix,row,shapeID,workPlace) {
-
+workPlace = this.levelupPlace;
+if(workPlace.filter(x => !left2left.includes(x)) && workPlace.filter(x => !left2right.includes(x))){
     for(var i = 0; i < workPlace.length; i++){//next level
        
         if ( workPlace[i] < 24 ){
@@ -620,12 +688,28 @@ private nextlevelSc1Func(matrix,row,shapeID,workPlace) {
         }
     }
     startPlace= workPlace;
+    this.levelupPlace = workPlace;
+    if(workPlace.filter(x => !left2left.includes(x)) && workPlace.filter(x => !left2right.includes(x))){
+        this.left2rightFunc;
+        
+        this.goingDownFunc;    
+                    
+
+        
+    }
+}
+    else{
+        this.startCorner =2;
+        //next corner, call get verts again
+        
+    }
     
 }
 
 
 private nextlevelSc2Func(matrix,row,shapeID,workPlace) {
-
+    workPlace = this.levelupPlace;
+    if(workPlace.filter(x => !left2left.includes(x)) && workPlace.filter(x => !right2left.includes(x))){
     for(var i = 0; i < workPlace.length; i++){//next level
        
         if ( workPlace[i] < 24 ){
@@ -684,10 +768,26 @@ private nextlevelSc2Func(matrix,row,shapeID,workPlace) {
         }
     }
     startPlace= workPlace;
+    this.levelupPlace = workPlace;
+    if(workPlace.filter(x => !left2left.includes(x)) && workPlace.filter(x => !right2left.includes(x))){
+        this.right2leftFunc;
+        
+        this.goingDownFunc;    
+                    
+
+        
+    }
+    else{
+        this.startCorner =3;
+        //next corner, call get verts again
+        
+    }
+}
     
 }
 private nextlevelSc3Func(matrix,row,shapeID,workPlace) {
-
+    workPlace = this.levelupPlace;
+    if(workPlace.filter(x => !right2right.includes(x)) && workPlace.filter(x => !right2left.includes(x))){
     for(var i = 0; i < workPlace.length; i++){//next level
        
         if ( workPlace[i] <= 24 ){
@@ -746,10 +846,25 @@ private nextlevelSc3Func(matrix,row,shapeID,workPlace) {
         }
     }
     startPlace= workPlace;
-    
+    this.levelupPlace = workPlace;
+    if(workPlace.filter(x => !right2right.includes(x)) && workPlace.filter(x => !right2left.includes(x))){
+        this.right2leftFunc;
+        
+        this.goingUpFunc;    
+                    
+
+        
+    }
+    else{
+        this.startCorner =4;
+        //next corner, call get verts again
+        
+    }
+}
 }
 private nextlevelSc4Func(matrix,row,shapeID,workPlace) {
-
+    workPlace = this.levelupPlace;
+    if(workPlace.filter(x => !right2right.includes(x)) && workPlace.filter(x => !left2right.includes(x))){
     for(var i = 0; i < workPlace.length; i++){//next level
        
         if ( workPlace[i] <= 24 ){
@@ -808,7 +923,22 @@ private nextlevelSc4Func(matrix,row,shapeID,workPlace) {
         }
     }
     startPlace= workPlace;
+    this.levelupPlace = workPlace;
+    if(workPlace.filter(x => !right2right.includes(x)) && workPlace.filter(x => !left2right.includes(x))){
+        this.left2rightFunc;
+        
+        this.goingUpFunc;    
+                    
+
+        
+    }
+    else{
+        this.startCorner =1;
+        //next corner, call get verts again
+        
+    }
     
+}
 }
 
 }
