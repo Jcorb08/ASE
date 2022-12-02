@@ -12,6 +12,7 @@ export class buildBoard{
     private numOfIDColumns: number;
     private levelupPlace:number[];
     private startPlace:number[];
+    private row:number; 
 
 
     private left2right: number[] = [4,9,14,19,24,28,32,36,40,43,46,49,51,53,54];
@@ -42,13 +43,13 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
         // needs more rotations/flips...
         shapes.push(new Shape(1,[[5,1,7,0,2],[10,0,6,11,1],[10,0,5,11,1],[5,0,6,7,2]],[[6,25,41,45,50],[8,28,43,45,51],[18,40,49,45,53],[16,37,47,45,52]],this.boardLength));
 
-        shapes.push(new Shape(2,[[5,2,6,7,3],[16,0,5,10,11],[5,1,2,6,3],[16,0,5,11,6]],[],this.boardLength));
+        shapes.push(new Shape(2,[[5,2,6,7,3],[16,0,5,10,11],[5,1,2,6,3],[16,0,5,11,6]],[[0,25,41,30,45],[4,28,43,45,31],[24,40,49,45,35],[20,37,47,34,45]],this.boardLength));
       
         shapes.push(new Shape(3,[[11,1,5,6,12],[10,1,5,6,7],[11,0,1,6,7],[11,5,6,7,2],[10,1,6,11,7],[11,0,5,6,7],[11,1,5,6,2],[12,1,5,6,7]],[],this.boardLength));
       
-        shapes.push(new Shape(4,[[5,1,6,7],[10,0,5,6],[6,0,1,2],[11,5,6,1]],[],this.boardLength));
+        shapes.push(new Shape(4,[[5,1,6,7],[10,0,5,6],[6,0,1,2],[11,5,6,1]],[[0,6,25,41],[4,8,28,43],[24,18,40,49],[20,16,37,47]],this.boardLength));
       
-        shapes.push(new Shape(5,[[5,1,6,7,8],[15,0,5,10,6],[7,0,1,2,3],[16,6,10,11,1],[5,2,6,7,8],[15,0,5,10,11],[6,0,1,2,3],[16,5,6,11,1]],[],this.boardLength));
+        shapes.push(new Shape(5,[[5,1,6,7,8],[15,0,5,10,6],[7,0,1,2,3],[16,6,10,11,1],[5,2,6,7,8],[15,0,5,10,11],[6,0,1,2,3],[16,5,6,11,1]],[[0,6,25,41,50],[4,8,28,43,51],[24,18,40,49,53],[20,16,37,47,52]],this.boardLength));
       
         shapes.push(new Shape(6,[[5,1,6,7,2],[10,0,5,11,6],[5,0,1,6,2],[11,0,5,6,1],[5,0,1,6,7],[10,0,5,6,1],[6,0,1,7,2],[10,5,6,11,1]],[],this.boardLength));
         
@@ -179,7 +180,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
                             matrix.push([...tempRow]);
                             // go along once
                             colCount++;
-                            row++;
+                            this.row++;
                         } else {
                             // go to next horizontal i.e go one down to 5
                             // 0 1 2 3 4
@@ -218,15 +219,15 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
                 var lright2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
                 var startcorner = 1;
                 var startPlace = rowArray;
-                var workPlace = rowArray
+                var this.workplace = rowArray
                 if (startcorner = 1){
                     
-                    //push workPlace
+                    //push this.workplace
                     //while any in workplace not in left2right
-                        //workplace ++, push workPlace
-                    //workPlace = startPlace
+                        //workplace ++, push this.workplace
+                    //this.workplace = startPlace
                     //while any in workplace not in left2left
-                        //left2left transform, push workPlace
+                        //left2left transform, push this.workplace
                     //workplace = startPlace
                     //moveInTransform
                     //ifworkplace not present in left2right or left2left push workplace
@@ -242,7 +243,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
                 this.levelupPlace = [...rowArray];
                 
                 if(this.startCorner == 1){
-                    this.left2rightFunc;
+                    this.left2rightFunc(matrix,row,element.getArrayID());
                     
                     this.goingDownFunc;    
                     
@@ -326,12 +327,12 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
                 tempRow[element.getArrayID()].setBottom(matrix[0][element.getArrayID()]);
 
                 matrix.push([...tempRow]);
-                row++;
+                this.row++;
             });     
         });
         return matrix;
     }
-    // needs row++ after call
+    // needs this.row++ after call
     private setBoardRow(matrix:Node[][],row:number,shapeID:number,arrayToAdd:number[]): Node[][] {
         const tempRow = new Array((this.boardLength) + this.numOfIDColumns);
         //create Nodes for that row only in the spaces needed
@@ -393,160 +394,160 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
         return matrix;
     }
 
-    private left2rightFunc(matrix,row,shapeID,workPlace) {
+    private left2rightFunc(matrix,shapeID) {
 
-        while(workPlace.filter(x => !this.left2right.includes(x))){//go left
+        while(this.workplace.filter(x => !this.left2right.includes(x))){//go left
             //push workplace
             //increcease all values in workplace by 1
             
         
-            matrix = this.setBoardRow(matrix,row,shapeID,workPlace);
-            row++;
+            matrix = this.setBoardRow(matrix,shapeID);
+            this.row++;
             
-            workPlace = workPlace.map(x => x + 1);
+            this.workplace = this.workplace.map(x => x + 1);
             }
-            workPlace = this.startPlace;
-
+            this.workplace = this.startPlace;
+            matrix = this.setBoardRow(matrix,shapeID);
 }
 
-private right2leftFunc(matrix,row,shapeID,workPlace) {
+private right2leftFunc(matrix,shapeID) {
 
-    while(workPlace.filter(x => !this.left2right.includes(x))){//go left
+    while(this.workplace.filter(x => !this.left2right.includes(x))){//go left
         //push workplace
         //decrese  all values in workplace by 1
         
     
-        matrix = this.setBoardRow(matrix,row,shapeID,workPlace);
-        row++;
+        matrix = this.setBoardRow(matrix,shapeID);
+        this.row++;
         
-        workPlace = workPlace.map(x => x - 1);
+        this.workplace = this.workplace.map(x => x - 1);
         }
-        workPlace = this.startPlace;
+        this.workplace = this.startPlace;
 
-
+        matrix = this.setBoardRow(matrix,shapeID);
 }
 
-private goingDownFunc(matrix,row,shapeID,workPlace) {
-    while(workPlace.filter(x => !this.left2left.includes(x))){//go down
+private goingDownFunc(matrix,shapeID) {
+    while(this.workplace.filter(x => !this.left2left.includes(x))){//go down
         //push workplace
-        matrix = this.setBoardRow(matrix,row,shapeID,workPlace);
-        row++;
-        for(var i = 0; i < workPlace.length; i++){
+        matrix = this.setBoardRow(matrix,shapeID);
+        this.row++;
+        for(var i = 0; i < this.workplace.length; i++){
    
-            if ( workPlace[i] <= 24 ){
-              workPlace[i] = workPlace[i] + 5;
+            if ( this.workplace[i] <= 24 ){
+              this.workplace[i] = this.workplace[i] + 5;
             }
-            else if(workPlace[i] <= 40){
-                workPlace[i] = workPlace[i] + 4;
+            else if(this.workplace[i] <= 40){
+                this.workplace[i] = this.workplace[i] + 4;
             }
-            else if(workPlace[i] <= 49){
-                workPlace[i] = workPlace[i] + 3;
+            else if(this.workplace[i] <= 49){
+                this.workplace[i] = this.workplace[i] + 3;
             }
-            else if(workPlace[i] <= 53){
-                workPlace[i] = workPlace[i] + 2;
+            else if(this.workplace[i] <= 53){
+                this.workplace[i] = this.workplace[i] + 2;
             }
-            else if(workPlace[i] <= 54){
-                workPlace[i] = workPlace[i] + 1;
+            else if(this.workplace[i] <= 54){
+                this.workplace[i] = this.workplace[i] + 1;
             }
         }
     }
-    workPlace = this.startPlace;
+    this.workplace = this.startPlace;
     if (this.startCorner ==1){
-        this.goingInsc1Func(matrix,row,shapeID,workPlace);
+        this.goingInsc1Func(matrix,shapeID);
     }
     else if (this.startCorner ==2){
-        this.goingInsc2Func(matrix,row,shapeID,workPlace);
+        this.goingInsc2Func(matrix,shapeID);
     }
-
+    matrix = this.setBoardRow(matrix,shapeID);
 
 }
 
-private goingUpFunc(matrix,row,shapeID,workPlace) {
-    while(workPlace.filter(x => !this.right2right.includes(x))){//go down
+private goingUpFunc(matrix,shapeID) {
+    while(this.workplace.filter(x => !this.right2right.includes(x))){//go down
         //push workplace
-        matrix = this.setBoardRow(matrix,row,shapeID,workPlace);
-        row++;
-        for(var i = 0; i < workPlace.length; i++){
+        matrix = this.setBoardRow(matrix,shapeID);
+        this.row++;
+        for(var i = 0; i < this.workplace.length; i++){
    
-            if ( workPlace[i] <= 24 ){
-              workPlace[i] = workPlace[i] - 5;
+            if ( this.workplace[i] <= 24 ){
+              this.workplace[i] = this.workplace[i] - 5;
             }
-            else if(workPlace[i] <=40){
-                workPlace[i] = workPlace[i] - 4;
+            else if(this.workplace[i] <=40){
+                this.workplace[i] = this.workplace[i] - 4;
             }
-            else if(workPlace[i] <=49){
-                workPlace[i] = workPlace[i] - 3;
+            else if(this.workplace[i] <=49){
+                this.workplace[i] = this.workplace[i] - 3;
             }
-            else if(workPlace[i] <=53){
-                workPlace[i] = workPlace[i] - 2;
+            else if(this.workplace[i] <=53){
+                this.workplace[i] = this.workplace[i] - 2;
             }
-            else if(workPlace[i] <=54){
-                workPlace[i] = workPlace[i] - 1;
+            else if(this.workplace[i] <=54){
+                this.workplace[i] = this.workplace[i] - 1;
             }
         }
     }
-    workPlace = this.startPlace;
+    this.workplace = this.startPlace;
     if (this.startCorner ==3){
-        this.goingInsc3Func(matrix,row,shapeID,workPlace);
+        this.goingInsc3Func(matrix,shapeID);
     }
     else if (this.startCorner ==4){
-        this.goingInsc4Func(matrix,row,shapeID,workPlace);
+        this.goingInsc4Func(matrix,shapeID);
     }
-
+    matrix = this.setBoardRow(matrix,shapeID);
 }
 
-private goingInsc1Func(matrix,row,shapeID,workPlace) {
-    if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !this.left2right.includes(x))){
-        for(var i = 0; i < workPlace.length; i++){
+private goingInsc1Func(matrix,shapeID) {
+    if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x))){
+        for(var i = 0; i < this.workplace.length; i++){
 
-            if ( workPlace[i] <= 24 ){
-              workPlace[i] = workPlace[i] + 6;
+            if ( this.workplace[i] <= 24 ){
+              this.workplace[i] = this.workplace[i] + 6;
             }
-            else if(workPlace[i] <=40){
-                workPlace[i] = workPlace[i] + 5;
+            else if(this.workplace[i] <=40){
+                this.workplace[i] = this.workplace[i] + 5;
             }
-            else if(workPlace[i] <=49){
-                workPlace[i] = workPlace[i] + 4;
+            else if(this.workplace[i] <=49){
+                this.workplace[i] = this.workplace[i] + 4;
             }
-            else if(workPlace[i] <=53){
-                workPlace[i] = workPlace[i] + 3;
+            else if(this.workplace[i] <=53){
+                this.workplace[i] = this.workplace[i] + 3;
             }
-            else if(workPlace[i] <=54){
-                workPlace[i] = workPlace[i] + 2;
+            else if(this.workplace[i] <=54){
+                this.workplace[i] = this.workplace[i] + 2;
             }
         }
-        this.startPlace = workPlace;
+        this.startPlace = this.workplace;
         this.left2rightFunc;
                     
         this.goingDownFunc; 
     }
     else{
-        this.nextlevelSc1Func(matrix,row,shapeID,workPlace);
+        this.nextlevelSc1Func(matrix,shapeID);
     }
-
+    matrix = this.setBoardRow(matrix,shapeID);
 
 }
-private goingInsc2Func(matrix,row,shapeID,workPlace) {
-    if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !this.right2left.includes(x))){
-        for(var i = 0; i < workPlace.length; i++){
+private goingInsc2Func(matrix,shapeID) {
+    if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x))){
+        for(var i = 0; i < this.workplace.length; i++){
 
-            if ( workPlace[i] <= 24 ){
-              workPlace[i] = workPlace[i] + 4;
+            if ( this.workplace[i] <= 24 ){
+              this.workplace[i] = this.workplace[i] + 4;
             }
-            else if(workPlace[i] <=40){
-                workPlace[i] = workPlace[i] + 3;
+            else if(this.workplace[i] <=40){
+                this.workplace[i] = this.workplace[i] + 3;
             }
-            else if(workPlace[i] <=49){
-                workPlace[i] = workPlace[i] + 2;
+            else if(this.workplace[i] <=49){
+                this.workplace[i] = this.workplace[i] + 2;
             }
-            else if(workPlace[i] <=53){
-                workPlace[i] = workPlace[i] + 1;
+            else if(this.workplace[i] <=53){
+                this.workplace[i] = this.workplace[i] + 1;
             }
-            else if(workPlace[i] <=54){
-                workPlace[i] = workPlace[i] + 0;
+            else if(this.workplace[i] <=54){
+                this.workplace[i] = this.workplace[i] + 0;
             }
         }
-        this.startPlace = workPlace;
+        this.startPlace = this.workplace;
         this.right2leftFunc;
                     
         this.goingDownFunc; 
@@ -554,142 +555,142 @@ private goingInsc2Func(matrix,row,shapeID,workPlace) {
 
     }
     else{
-        this.nextlevelSc2Func(matrix,row,shapeID,workPlace);
+        this.nextlevelSc2Func(matrix,shapeID);
     }
-
+    matrix = this.setBoardRow(matrix,shapeID);
 
 }
 
-private goingInsc3Func(matrix,row,shapeID,workPlace) {
-    if(workPlace.filter(x => !this.right2right.includes(x)) && workPlace.filter(x => !this.right2left.includes(x))){
-        for(var i = 0; i < workPlace.length; i++){
+private goingInsc3Func(matrix,shapeID) {
+    if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x))){
+        for(var i = 0; i < this.workplace.length; i++){
 
-            if ( workPlace[i] <= 24 ){
-              workPlace[i] = workPlace[i] - 6;
+            if ( this.workplace[i] <= 24 ){
+              this.workplace[i] = this.workplace[i] - 6;
             }
-            else if(workPlace[i] <=40){
-                workPlace[i] = workPlace[i] - 5;
+            else if(this.workplace[i] <=40){
+                this.workplace[i] = this.workplace[i] - 5;
             }
-            else if(workPlace[i] <=49){
-                workPlace[i] = workPlace[i] - 4;
+            else if(this.workplace[i] <=49){
+                this.workplace[i] = this.workplace[i] - 4;
             }
-            else if(workPlace[i] <=53){
-                workPlace[i] = workPlace[i] - 3;
+            else if(this.workplace[i] <=53){
+                this.workplace[i] = this.workplace[i] - 3;
             }
-            else if(workPlace[i] <=54){
-                workPlace[i] = workPlace[i] -2;
+            else if(this.workplace[i] <=54){
+                this.workplace[i] = this.workplace[i] -2;
             }
         }
-        this.startPlace = workPlace;
+        this.startPlace = this.workplace;
         this.right2leftFunc;
                     
         this.goingUpFunc; 
 
     }
     else{
-        this.nextlevelSc3Func(matrix,row,shapeID,workPlace);
+        this.nextlevelSc3Func(matrix,shapeID);
     }
-
+    matrix = this.setBoardRow(matrix,shapeID);
 
 }
 
-private goingInsc4Func(matrix,row,shapeID,workPlace) {
-    if(workPlace.filter(x => !this.right2right.includes(x)) && workPlace.filter(x => !this.left2right.includes(x))){
-        for(var i = 0; i < workPlace.length; i++){
+private goingInsc4Func(matrix,shapeID) {
+    if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x))){
+        for(var i = 0; i < this.workplace.length; i++){
 
-            if ( workPlace[i] <= 24 ){
-              workPlace[i] = workPlace[i] - 4;
+            if ( this.workplace[i] <= 24 ){
+              this.workplace[i] = this.workplace[i] - 4;
             }
-            else if(workPlace[i] <=40){
-                workPlace[i] = workPlace[i] - 3;
+            else if(this.workplace[i] <=40){
+                this.workplace[i] = this.workplace[i] - 3;
             }
-            else if(workPlace[i] <=49){
-                workPlace[i] = workPlace[i] - 2;
+            else if(this.workplace[i] <=49){
+                this.workplace[i] = this.workplace[i] - 2;
             }
-            else if(workPlace[i] <=53){
-                workPlace[i] = workPlace[i] - 1;
+            else if(this.workplace[i] <=53){
+                this.workplace[i] = this.workplace[i] - 1;
             }
-            else if(workPlace[i] <=54){
-                workPlace[i] = workPlace[i] -1;
+            else if(this.workplace[i] <=54){
+                this.workplace[i] = this.workplace[i] -1;
             }
         }
-        this.startPlace = workPlace;
+        this.startPlace = this.workplace;
         this.left2rightFunc;
                     
         this.goingUpFunc; 
     }
     else{
-        this.nextlevelSc4Func(matrix,row,shapeID,workPlace);
+        this.nextlevelSc4Func(matrix,shapeID);
     }
     
 
-
+    matrix = this.setBoardRow(matrix,shapeID);
 
 }
 
-private nextlevelSc1Func(matrix,row,shapeID,workPlace) {
-workPlace = this.levelupPlace;
-if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !this.left2right.includes(x))){
-    for(var i = 0; i < workPlace.length; i++){//next level
+private nextlevelSc1Func(matrix,shapeID) {
+this.workplace = this.levelupPlace;
+if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x))){
+    for(var i = 0; i < this.workplace.length; i++){//next level
        
-        if ( workPlace[i] < 24 ){
-            if(workPlace[i] <= 4){
-            workPlace[i] = workPlace[i] + 25;
+        if ( this.workplace[i] < 24 ){
+            if(this.workplace[i] <= 4){
+            this.workplace[i] = this.workplace[i] + 25;
             }
-            else if (workPlace[i] <= 9){
-                workPlace[i] = workPlace[i] + 24;
+            else if (this.workplace[i] <= 9){
+                this.workplace[i] = this.workplace[i] + 24;
             }
-            else if (workPlace[i] <= 14){
-                workPlace[i] = workPlace[i] + 23;
+            else if (this.workplace[i] <= 14){
+                this.workplace[i] = this.workplace[i] + 23;
             }
-            else if (workPlace[i] <= 19){
-                workPlace[i] = workPlace[i] + 22;
+            else if (this.workplace[i] <= 19){
+                this.workplace[i] = this.workplace[i] + 22;
             }
-            else if (workPlace[i] <= 24){
-                workPlace[i] = workPlace[i] + 21;
+            else if (this.workplace[i] <= 24){
+                this.workplace[i] = this.workplace[i] + 21;
             }
         }
-        else if(workPlace[i] <40 && workPlace[i] > 24){
-            if(workPlace[i] < 28){
-                workPlace[i] = workPlace[i] + 16;
+        else if(this.workplace[i] <40 && this.workplace[i] > 24){
+            if(this.workplace[i] < 28){
+                this.workplace[i] = this.workplace[i] + 16;
                 }
-                else if (workPlace[i] <= 32){
-                    workPlace[i] = workPlace[i] + 15;
+                else if (this.workplace[i] <= 32){
+                    this.workplace[i] = this.workplace[i] + 15;
                 }
-                else if (workPlace[i] <= 36){
-                    workPlace[i] = workPlace[i] + 14;
+                else if (this.workplace[i] <= 36){
+                    this.workplace[i] = this.workplace[i] + 14;
                 }
-                else if (workPlace[i] <= 40){
-                    workPlace[i] = workPlace[i] + 13;
+                else if (this.workplace[i] <= 40){
+                    this.workplace[i] = this.workplace[i] + 13;
                 }
         }
-        else if(workPlace[i] <49 && workPlace[i] > 40){
-            if(workPlace[i] <= 43){
-                workPlace[i] = workPlace[i] + 9;
+        else if(this.workplace[i] <49 && this.workplace[i] > 40){
+            if(this.workplace[i] <= 43){
+                this.workplace[i] = this.workplace[i] + 9;
                 }
-                else if (workPlace[i] <= 46){
-                    workPlace[i] = workPlace[i] + 8;
+                else if (this.workplace[i] <= 46){
+                    this.workplace[i] = this.workplace[i] + 8;
                 }
-                else if (workPlace[i] <= 49){
-                    workPlace[i] = workPlace[i] + 7;
+                else if (this.workplace[i] <= 49){
+                    this.workplace[i] = this.workplace[i] + 7;
                 }
                     
         }
-        else if(workPlace[i] <53 && workPlace[i] > 49){
-           if(workPlace[i] <= 51){
-            workPlace[i] = workPlace[i] + 4;
+        else if(this.workplace[i] <53 && this.workplace[i] > 49){
+           if(this.workplace[i] <= 51){
+            this.workplace[i] = this.workplace[i] + 4;
            }
-           else if (workPlace[i] <= 53){
-            workPlace[i] = workPlace[i] + 3;
+           else if (this.workplace[i] <= 53){
+            this.workplace[i] = this.workplace[i] + 3;
            }
         }
-        else if(workPlace[i] <=54){
-            workPlace[i] = workPlace[i] + 1;
+        else if(this.workplace[i] <=54){
+            this.workplace[i] = this.workplace[i] + 1;
         }
     }
-    this.startPlace= workPlace;
-    this.levelupPlace = workPlace;
-    if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !this.left2right.includes(x))){
+    this.startPlace= this.workplace;
+    this.levelupPlace = this.workplace;
+    if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x))){
         this.left2rightFunc;
         
         this.goingDownFunc;    
@@ -703,73 +704,73 @@ if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !
         //next corner, call get verts again
         
     }
-    
+    matrix = this.setBoardRow(matrix,shapeID);
 }
 
 
-private nextlevelSc2Func(matrix,row,shapeID,workPlace) {
-    workPlace = this.levelupPlace;
-    if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !this.right2left.includes(x))){
-    for(var i = 0; i < workPlace.length; i++){//next level
+private nextlevelSc2Func(matrix,shapeID) {
+    this.workplace = this.levelupPlace;
+    if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x))){
+    for(var i = 0; i < this.workplace.length; i++){//next level
        
-        if ( workPlace[i] < 24 ){
-            if(workPlace[i] < 4){
-            workPlace[i] = workPlace[i] + 24;
+        if ( this.workplace[i] < 24 ){
+            if(this.workplace[i] < 4){
+            this.workplace[i] = this.workplace[i] + 24;
             }
-            else if (workPlace[i] < 9){
-                workPlace[i] = workPlace[i] + 23;
+            else if (this.workplace[i] < 9){
+                this.workplace[i] = this.workplace[i] + 23;
             }
-            else if (workPlace[i] < 14){
-                workPlace[i] = workPlace[i] + 22;
+            else if (this.workplace[i] < 14){
+                this.workplace[i] = this.workplace[i] + 22;
             }
-            else if (workPlace[i] < 19){
-                workPlace[i] = workPlace[i] + 21;
+            else if (this.workplace[i] < 19){
+                this.workplace[i] = this.workplace[i] + 21;
             }
-            else if (workPlace[i] < 24){
-                workPlace[i] = workPlace[i] + 20;
+            else if (this.workplace[i] < 24){
+                this.workplace[i] = this.workplace[i] + 20;
             }
         }
-        else if(workPlace[i] <40 && workPlace[i] > 24){
-            if(workPlace[i] < 28){
-                workPlace[i] = workPlace[i] + 15;
+        else if(this.workplace[i] <40 && this.workplace[i] > 24){
+            if(this.workplace[i] < 28){
+                this.workplace[i] = this.workplace[i] + 15;
                 }
-                else if (workPlace[i] < 32){
-                    workPlace[i] = workPlace[i] + 14;
+                else if (this.workplace[i] < 32){
+                    this.workplace[i] = this.workplace[i] + 14;
                 }
-                else if (workPlace[i] < 36){
-                    workPlace[i] = workPlace[i] + 13;
+                else if (this.workplace[i] < 36){
+                    this.workplace[i] = this.workplace[i] + 13;
                 }
-                else if (workPlace[i] < 40){
-                    workPlace[i] = workPlace[i] + 12;
+                else if (this.workplace[i] < 40){
+                    this.workplace[i] = this.workplace[i] + 12;
                 }
         }
-        else if(workPlace[i] <49 && workPlace[i] > 40){
-            if(workPlace[i] < 43){
-                workPlace[i] = workPlace[i] + 8;
+        else if(this.workplace[i] <49 && this.workplace[i] > 40){
+            if(this.workplace[i] < 43){
+                this.workplace[i] = this.workplace[i] + 8;
                 }
-                else if (workPlace[i] < 46){
-                    workPlace[i] = workPlace[i] + 7;
+                else if (this.workplace[i] < 46){
+                    this.workplace[i] = this.workplace[i] + 7;
                 }
-                else if (workPlace[i] < 49){
-                    workPlace[i] = workPlace[i] + 6;
+                else if (this.workplace[i] < 49){
+                    this.workplace[i] = this.workplace[i] + 6;
                 }
                     
         }
-        else if(workPlace[i] <53 && workPlace[i] > 49){
-           if(workPlace[i] < 51){
-            workPlace[i] = workPlace[i] + 3;
+        else if(this.workplace[i] <53 && this.workplace[i] > 49){
+           if(this.workplace[i] < 51){
+            this.workplace[i] = this.workplace[i] + 3;
            }
-           else if (workPlace[i] < 53){
-            workPlace[i] = workPlace[i] + 2;
+           else if (this.workplace[i] < 53){
+            this.workplace[i] = this.workplace[i] + 2;
            }
         }
-        else if(workPlace[i] <54){
-            workPlace[i] = workPlace[i] + 1;
+        else if(this.workplace[i] <54){
+            this.workplace[i] = this.workplace[i] + 1;
         }
     }
-    this.startPlace= workPlace;
-    this.levelupPlace = workPlace;
-    if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !this.right2left.includes(x))){
+    this.startPlace= this.workplace;
+    this.levelupPlace = this.workplace;
+    if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x))){
         this.right2leftFunc;
         
         this.goingDownFunc;    
@@ -783,71 +784,71 @@ private nextlevelSc2Func(matrix,row,shapeID,workPlace) {
         
     }
 }
-    
+matrix = this.setBoardRow(matrix,shapeID);
 }
-private nextlevelSc3Func(matrix,row,shapeID,workPlace) {
-    workPlace = this.levelupPlace;
-    if(workPlace.filter(x => !this.right2right.includes(x)) && workPlace.filter(x => !this.right2left.includes(x))){
-    for(var i = 0; i < workPlace.length; i++){//next level
+private nextlevelSc3Func(matrix,shapeID) {
+    this.workplace = this.levelupPlace;
+    if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x))){
+    for(var i = 0; i < this.workplace.length; i++){//next level
        
-        if ( workPlace[i] <= 24 ){
-            if(workPlace[i] < 4){
-            workPlace[i] = workPlace[i] + 20;
+        if ( this.workplace[i] <= 24 ){
+            if(this.workplace[i] < 4){
+            this.workplace[i] = this.workplace[i] + 20;
             }
-            else if (workPlace[i] <= 9){
-                workPlace[i] = workPlace[i] + 19;
+            else if (this.workplace[i] <= 9){
+                this.workplace[i] = this.workplace[i] + 19;
             }
-            else if (workPlace[i] <= 14){
-                workPlace[i] = workPlace[i] + 18;
+            else if (this.workplace[i] <= 14){
+                this.workplace[i] = this.workplace[i] + 18;
             }
-            else if (workPlace[i] <= 19){
-                workPlace[i] = workPlace[i] + 17;
+            else if (this.workplace[i] <= 19){
+                this.workplace[i] = this.workplace[i] + 17;
             }
-            else if (workPlace[i] <= 24){
-                workPlace[i] = workPlace[i] + 16;
+            else if (this.workplace[i] <= 24){
+                this.workplace[i] = this.workplace[i] + 16;
             }
         }
-        else if(workPlace[i] <=40 && workPlace[i] > 24){
-            if(workPlace[i] < 28){
-                workPlace[i] = workPlace[i] + 12;
+        else if(this.workplace[i] <=40 && this.workplace[i] > 24){
+            if(this.workplace[i] < 28){
+                this.workplace[i] = this.workplace[i] + 12;
                 }
-                else if (workPlace[i] <= 32){
-                    workPlace[i] = workPlace[i] + 11;
+                else if (this.workplace[i] <= 32){
+                    this.workplace[i] = this.workplace[i] + 11;
                 }
-                else if (workPlace[i] <= 36){
-                    workPlace[i] = workPlace[i] + 10;
+                else if (this.workplace[i] <= 36){
+                    this.workplace[i] = this.workplace[i] + 10;
                 }
-                else if (workPlace[i] <= 40){
-                    workPlace[i] = workPlace[i] + 9;
+                else if (this.workplace[i] <= 40){
+                    this.workplace[i] = this.workplace[i] + 9;
                 }
         }
-        else if(workPlace[i] <=49 && workPlace[i] > 40){
-            if(workPlace[i] <= 43){
-                workPlace[i] = workPlace[i] + 8;
+        else if(this.workplace[i] <=49 && this.workplace[i] > 40){
+            if(this.workplace[i] <= 43){
+                this.workplace[i] = this.workplace[i] + 8;
                 }
-                else if (workPlace[i] <= 46){
-                    workPlace[i] = workPlace[i] + 7;
+                else if (this.workplace[i] <= 46){
+                    this.workplace[i] = this.workplace[i] + 7;
                 }
-                else if (workPlace[i] <= 49){
-                    workPlace[i] = workPlace[i] + 6;
+                else if (this.workplace[i] <= 49){
+                    this.workplace[i] = this.workplace[i] + 6;
                 }
                     
         }
-        else if(workPlace[i] <=53 && workPlace[i] > 49){
-           if(workPlace[i] < 51){
-            workPlace[i] = workPlace[i] + 2;
+        else if(this.workplace[i] <=53 && this.workplace[i] > 49){
+           if(this.workplace[i] < 51){
+            this.workplace[i] = this.workplace[i] + 2;
            }
-           else if (workPlace[i] <= 53){
-            workPlace[i] = workPlace[i] + 1;
+           else if (this.workplace[i] <= 53){
+            this.workplace[i] = this.workplace[i] + 1;
            }
         }
-        else if(workPlace[i] <=54){
-            workPlace[i] = workPlace[i] + 1;
+        else if(this.workplace[i] <=54){
+            this.workplace[i] = this.workplace[i] + 1;
         }
     }
-    this.startPlace= workPlace;
-    this.levelupPlace = workPlace;
-    if(workPlace.filter(x => !this.right2right.includes(x)) && workPlace.filter(x => !this.right2left.includes(x))){
+    this.startPlace= this.workplace;
+    this.levelupPlace = this.workplace;
+    if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x))){
         this.right2leftFunc;
         
         this.goingUpFunc;    
@@ -861,70 +862,71 @@ private nextlevelSc3Func(matrix,row,shapeID,workPlace) {
         
     }
 }
+matrix = this.setBoardRow(matrix,shapeID);
 }
-private nextlevelSc4Func(matrix,row,shapeID,workPlace) {
-    workPlace = this.levelupPlace;
-    if(workPlace.filter(x => !this.right2right.includes(x)) && workPlace.filter(x => !this.left2right.includes(x))){
-    for(var i = 0; i < workPlace.length; i++){//next level
+private nextlevelSc4Func(matrix,shapeID) {
+    this.workplace = this.levelupPlace;
+    if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x))){
+    for(var i = 0; i < this.workplace.length; i++){//next level
        
-        if ( workPlace[i] <= 24 ){
-            if(workPlace[i] < 4){
-            workPlace[i] = workPlace[i] + 20;
+        if ( this.workplace[i] <= 24 ){
+            if(this.workplace[i] < 4){
+            this.workplace[i] = this.workplace[i] + 20;
             }
-            else if (workPlace[i] <= 9){
-                workPlace[i] = workPlace[i] + 19;
+            else if (this.workplace[i] <= 9){
+                this.workplace[i] = this.workplace[i] + 19;
             }
-            else if (workPlace[i] <= 14){
-                workPlace[i] = workPlace[i] + 18;
+            else if (this.workplace[i] <= 14){
+                this.workplace[i] = this.workplace[i] + 18;
             }
-            else if (workPlace[i] <= 19){
-                workPlace[i] = workPlace[i] + 18;
+            else if (this.workplace[i] <= 19){
+                this.workplace[i] = this.workplace[i] + 18;
             }
-            else if (workPlace[i] <= 24){
-                workPlace[i] = workPlace[i] + 17;
+            else if (this.workplace[i] <= 24){
+                this.workplace[i] = this.workplace[i] + 17;
             }
         }
-        else if(workPlace[i] <=40 && workPlace[i] > 24){
-            if(workPlace[i] < 28){
-                workPlace[i] = workPlace[i] + 13;
+        else if(this.workplace[i] <=40 && this.workplace[i] > 24){
+            if(this.workplace[i] < 28){
+                this.workplace[i] = this.workplace[i] + 13;
                 }
-                else if (workPlace[i] <= 32){
-                    workPlace[i] = workPlace[i] + 12;
+                else if (this.workplace[i] <= 32){
+                    this.workplace[i] = this.workplace[i] + 12;
                 }
-                else if (workPlace[i] <= 36){
-                    workPlace[i] = workPlace[i] + 11;
+                else if (this.workplace[i] <= 36){
+                    this.workplace[i] = this.workplace[i] + 11;
                 }
-                else if (workPlace[i] <= 40){
-                    workPlace[i] = workPlace[i] + 10;
+                else if (this.workplace[i] <= 40){
+                    this.workplace[i] = this.workplace[i] + 10;
                 }
         }
-        else if(workPlace[i] <=49 && workPlace[i] > 40){
-            if(workPlace[i] <= 43){
-                workPlace[i] = workPlace[i] + 7;
+        else if(this.workplace[i] <=49 && this.workplace[i] > 40){
+            if(this.workplace[i] <= 43){
+                this.workplace[i] = this.workplace[i] + 7;
                 }
-                else if (workPlace[i] <= 46){
-                    workPlace[i] = workPlace[i] + 6;
+                else if (this.workplace[i] <= 46){
+                    this.workplace[i] = this.workplace[i] + 6;
                 }
-                else if (workPlace[i] <= 49){
-                    workPlace[i] = workPlace[i] + 5;
+                else if (this.workplace[i] <= 49){
+                    this.workplace[i] = this.workplace[i] + 5;
                 }
                     
         }
-        else if(workPlace[i] <=53 && workPlace[i] > 49){
-           if(workPlace[i] < 51){
-            workPlace[i] = workPlace[i] + 3;
+        else if(this.workplace[i] <=53 && this.workplace[i] > 49){
+           if(this.workplace[i] < 51){
+            this.workplace[i] = this.workplace[i] + 3;
            }
-           else if (workPlace[i] <= 53){
-            workPlace[i] = workPlace[i] + 2;
+           else if (this.workplace[i] <= 53){
+            this.workplace[i] = this.workplace[i] + 2;
            }
         }
-        else if(workPlace[i] <=54){
-            workPlace[i] = workPlace[i] + 1;
+        else if(this.workplace[i] <=54){
+            this.workplace[i] = this.workplace[i] + 1;
         }
     }
-    this.startPlace= workPlace;
-    this.levelupPlace = workPlace;
-    if(workPlace.filter(x => !this.right2right.includes(x)) && workPlace.filter(x => !this.left2right.includes(x))){
+    this.startPlace= this.workplace;
+    this.levelupPlace = this.workplace;
+    if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x))){
         this.left2rightFunc;
         
         this.goingUpFunc;    
@@ -939,6 +941,7 @@ private nextlevelSc4Func(matrix,row,shapeID,workPlace) {
     }
     
 }
+matrix = this.setBoardRow(matrix,shapeID);
 }
 
 }
