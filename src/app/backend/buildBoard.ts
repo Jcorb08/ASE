@@ -450,7 +450,7 @@ private goingDownFunc(matrix,row,shapeID,workPlace) {
             }
         }
     }
-    workPlace = startPlace;
+    workPlace = this.startPlace;
     if (this.startCorner ==1){
         this.goingInsc1Func(matrix,row,shapeID,workPlace);
     }
@@ -767,7 +767,7 @@ private nextlevelSc2Func(matrix,row,shapeID,workPlace) {
             workPlace[i] = workPlace[i] + 1;
         }
     }
-    startPlace= workPlace;
+    this.startPlace= workPlace;
     this.levelupPlace = workPlace;
     if(workPlace.filter(x => !this.left2left.includes(x)) && workPlace.filter(x => !this.right2left.includes(x))){
         this.right2leftFunc;
@@ -922,7 +922,7 @@ private nextlevelSc4Func(matrix,row,shapeID,workPlace) {
             workPlace[i] = workPlace[i] + 1;
         }
     }
-    startPlace= workPlace;
+    this.startPlace= workPlace;
     this.levelupPlace = workPlace;
     if(workPlace.filter(x => !this.right2right.includes(x)) && workPlace.filter(x => !this.left2right.includes(x))){
         this.left2rightFunc;
