@@ -306,12 +306,12 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
 
     private left2rightFunc(matrix:Node[][],shapeID:number):Node[][]{
 
-        while(this.workplace.filter(x => !this.left2right.includes(x))){//go left
+        while(this.workplace.filter(x => !this.left2right.includes(x)).length > 0){//go left
             //push workplace
             //increcease all values in workplace by 1
             
-        
-            matrix = this.setBoardRow(matrix,shapeID,this.workplace);
+            if(this.workplace.filter(x => x < 55)){
+            matrix = this.setBoardRow(matrix,shapeID,this.workplace);}
             this.row++;
             
             this.workplace = this.workplace.map(x => x + 1);
@@ -327,7 +327,8 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
             //decrese  all values in workplace by 1
             
         
-            matrix = this.setBoardRow(matrix,shapeID,this.workplace);
+            if(this.workplace.filter(x => x < 55)){
+                matrix = this.setBoardRow(matrix,shapeID,this.workplace);}
             this.row++;
             
             this.workplace = this.workplace.map(x => x - 1);
@@ -340,7 +341,8 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
     private goingDownFunc(matrix:Node[][],shapeID:number):Node[][] {
         while(this.workplace.filter(x => !this.left2left.includes(x))){//go down
             //push workplace
-            matrix = this.setBoardRow(matrix,shapeID,this.workplace);
+            if(this.workplace.filter(x => x < 55)){
+                matrix = this.setBoardRow(matrix,shapeID,this.workplace);}
             this.row++;
             for(var i = 0; i < this.workplace.length; i++){
     
@@ -374,7 +376,8 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
     private goingUpFunc(matrix:Node[][],shapeID:number):Node[][]{
         while(this.workplace.filter(x => !this.right2right.includes(x))){//go down
             //push workplace
-            matrix = this.setBoardRow(matrix,shapeID,this.workplace);
+            if(this.workplace.filter(x => x < 55)){
+                matrix = this.setBoardRow(matrix,shapeID,this.workplace);}
             this.row++;
             for(var i = 0; i < this.workplace.length; i++){
     
