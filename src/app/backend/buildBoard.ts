@@ -217,6 +217,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
                 
                 this.workplace = [...rowArray];
                 this.levelupPlace = [...rowArray];
+                this.startPlace = [...rowArray];
                 
                 if(this.startCorner == 1){
                     matrix = this.left2rightFunc(matrix,element.getArrayID());
