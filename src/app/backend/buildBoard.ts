@@ -307,7 +307,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
 
     private left2rightFunc(matrix:Node[][],shapeID:number):Node[][]{
 
-        while(this.workplace.filter(x => !this.left2right.includes(x)).length > 0){//go left
+        while(this.workplace.filter(x => !this.left2right.includes(x)).length==0){//go left
             //push workplace
             //increcease all values in workplace by 1
             
@@ -323,7 +323,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
 
     private right2leftFunc(matrix:Node[][],shapeID:number):Node[][]{
 
-        while(this.workplace.filter(x => !this.right2left.includes(x))){//go left
+        while(this.workplace.filter(x => !this.right2left.includes(x)).length==0){//go left
             //push workplace
             //decrese  all values in workplace by 1
             
@@ -340,7 +340,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
     }
 
     private goingDownFunc(matrix:Node[][],shapeID:number):Node[][] {
-        while(this.workplace.filter(x => !this.left2left.includes(x))){//go down
+        while(this.workplace.filter(x => !this.left2left.includes(x)).length==0){//go down
             //push workplace
             if(this.workplace.filter(x => x < 55)){
                 matrix = this.setBoardRow(matrix,shapeID,this.workplace);}
@@ -375,7 +375,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
     }
 
     private goingUpFunc(matrix:Node[][],shapeID:number):Node[][]{
-        while(this.workplace.filter(x => !this.right2right.includes(x))){//go down
+        while(this.workplace.filter(x => !this.right2right.includes(x)).length==0){//go down
             //push workplace
             if(this.workplace.filter(x => x < 55)){
                 matrix = this.setBoardRow(matrix,shapeID,this.workplace);}
@@ -410,7 +410,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
     }
 
     private goingInsc1Func(matrix:Node[][],shapeID:number):Node[][] {
-        if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x))){
+        if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x)).length==0){
             for(var i = 0; i < this.workplace.length; i++){
 
                 if ( this.workplace[i] <= 24 ){
@@ -440,7 +440,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
         return matrix;
     }
     private goingInsc2Func(matrix:Node[][],shapeID:number):Node[][] {
-        if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x))){
+        if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x)).length==0){
             for(var i = 0; i < this.workplace.length; i++){
 
                 if ( this.workplace[i] <= 24 ){
@@ -474,7 +474,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
     }
 
     private goingInsc3Func(matrix:Node[][],shapeID:number):Node[][] {
-        if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x))){
+        if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x)).length==0){
             for(var i = 0; i < this.workplace.length; i++){
 
                 if ( this.workplace[i] <= 24 ){
@@ -506,7 +506,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
     }
 
     private goingInsc4Func(matrix:Node[][],shapeID:number):Node[][] {
-        if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x))){
+        if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x)).length==0){
             for(var i = 0; i < this.workplace.length; i++){
 
                 if ( this.workplace[i] <= 24 ){
@@ -538,7 +538,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
 
     private nextlevelSc1Func(matrix:Node[][],shapeID:number):Node[][] {
         this.workplace = this.levelupPlace;
-        if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x))){
+        if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x)).length==0){
             for(var i = 0; i < this.workplace.length; i++){//next level
             
                 if ( this.workplace[i] < 24 ){
@@ -598,7 +598,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
             }
             this.startPlace= this.workplace;
             this.levelupPlace = this.workplace;
-            if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x))){
+            if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x)).length==0){
                 matrix = this.left2rightFunc(matrix,shapeID);
                 
                 matrix = this.goingDownFunc(matrix,shapeID);    
@@ -614,7 +614,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
 
     private nextlevelSc2Func(matrix:Node[][],shapeID:number):Node[][] {
         this.workplace = this.levelupPlace;
-        if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x))){
+        if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x)).length==0){
             for(var i = 0; i < this.workplace.length; i++){//next level
             
                 if ( this.workplace[i] < 24 ){
@@ -674,7 +674,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
             }
             this.startPlace= this.workplace;
             this.levelupPlace = this.workplace;
-            if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x))){
+            if(this.workplace.filter(x => !this.left2left.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x)).length==0){
                 matrix = this.right2leftFunc(matrix,shapeID);
                 
                 matrix = this.goingDownFunc(matrix,shapeID);    
@@ -689,7 +689,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
     }
     private nextlevelSc3Func(matrix:Node[][],shapeID:number):Node[][] {
         this.workplace = this.levelupPlace;
-        if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x))){
+        if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x)).length==0){
             for(var i = 0; i < this.workplace.length; i++){//next level
             
                 if ( this.workplace[i] <= 24 ){
@@ -749,7 +749,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
             }
             this.startPlace= this.workplace;
             this.levelupPlace = this.workplace;
-            if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x))){
+            if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.right2left.includes(x)).length==0){
                 matrix = this.right2leftFunc(matrix,shapeID);
                 
                 matrix = this.goingUpFunc(matrix,shapeID);    
@@ -764,7 +764,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
     }
     private nextlevelSc4Func(matrix:Node[][],shapeID:number):Node[][] {
         this.workplace = this.levelupPlace;
-        if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x))){
+        if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x)).length==0){
             for(var i = 0; i < this.workplace.length; i++){//next level
             
                 if ( this.workplace[i] <= 24 ){
@@ -824,7 +824,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
             }
             this.startPlace= this.workplace;
             this.levelupPlace = this.workplace;
-            if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x))){
+            if(this.workplace.filter(x => !this.right2right.includes(x)) && this.workplace.filter(x => !this.left2right.includes(x)).length==0){
                 matrix = this.left2rightFunc(matrix,shapeID);
                 
                 matrix = this.goingUpFunc(matrix,shapeID);    
