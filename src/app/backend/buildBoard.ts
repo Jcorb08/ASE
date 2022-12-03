@@ -307,7 +307,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
 
     private left2rightFunc(matrix:Node[][],shapeID:number):Node[][]{
 
-        while(!this.workplace.includes(4||9||14||19||24||28||32||36||40||43||46||49||51||53||54)){//go left
+        while(this.workplace.filter(x => !this.left2right.includes(x))){//go left
             //push workplace
             //increcease all values in workplace by 1
             
@@ -323,7 +323,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
 
     private right2leftFunc(matrix:Node[][],shapeID:number):Node[][]{
 
-        while(this.workplace.filter(x => !this.left2right.includes(x))){//go left
+        while(this.workplace.filter(x => !this.right2left.includes(x))){//go left
             //push workplace
             //decrese  all values in workplace by 1
             
