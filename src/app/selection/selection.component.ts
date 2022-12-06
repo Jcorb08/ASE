@@ -5,7 +5,8 @@ import { GameService } from '../services/game.service';
 import { HtmlElementService } from '../services/htmlElement.service';
 import { IPiece, Piece } from '../services/piece.component';
 import { SharedService } from '../services/shared.service';
-import { solveX } from '../../assets/js/algorithmX'
+import { Board } from '../backend/algorithmX';
+import { Node } from '../backend/node';
 import { AnyCnameRecord } from 'dns';
 import { COLS, ROWS, STEPS } from '../services/constants';
 
@@ -29,8 +30,9 @@ export class SelectionComponent implements OnInit {
   currentPiece: Piece;
   currentCtx: CanvasRenderingContext2D;
   currentCtxNext: CanvasRenderingContext2D;
+  gameSolved: boolean;
+  boardObject: Board;
   gameOutcome = {solved: false, solution: false};
-
 
   constructor(private gameService: GameService,
     private htmlService: HtmlElementService,
@@ -40,6 +42,24 @@ export class SelectionComponent implements OnInit {
 
   ngOnInit(): void {
     this.sharedService.currentShape.subscribe(piece => this.currentPiece = piece);
+    // var boardLength = 55;
+    // var layers = 5;
+    // this.boardObject = new Board(boardLength,layers);
+    // if (typeof Worker !== 'undefined') {
+    //   // Create a new
+    //   const worker = new Worker(new URL('../backend/onload.worker', import.meta.url));
+    //   worker.onmessage = ({ data }) => {
+    //     //console.log(`Onload: ${(data as Board)}`);
+    //     this.boardObject.setBoard(data as Node[][]);
+    //     console.log(`Onload: ${this.boardObject.getBoardLength()}`);
+    //   };
+    //   worker.postMessage([this.boardObject]);
+    // } else {
+    //   // Web workers are not supported in this environment.
+    //   // You should add a fallback so that your program still executes correctly.
+    //   this.boardObject.setBoard(this.boardObject.buildBoard());
+    // }
+
   }
 
   rotateShape() {
@@ -111,7 +131,9 @@ export class SelectionComponent implements OnInit {
     this.sharedService.currentCtx.subscribe(board => this.currentCtx = board);
 
     this.resetGame();
-    this.solution = solveX(undefined,1,undefined);
+    this.solution = [[]];
+    //solveX(undefined,1,undefined);
+    console.log(this.solution, 'this.board')
     this.solution.forEach((row, y) => {
       row.forEach((value, x) => {
         Object.entries(value).forEach(([key, item]) => {
@@ -164,19 +186,40 @@ export class SelectionComponent implements OnInit {
     // }
     // console.log(prePlaceTest, 'prePlaceTest');
 
-    this.solution = solveX(this.refinePreplace, 1, undefined);
-    console.log(this.solution, 'this.solution')
-
-    this.solution.forEach((row, y) => {
-      row.forEach((value, x) => {
-        Object.entries(value).forEach(([key, item]) => {
-          if(this.board[x][Number(key)] == 0) this.board[x][Number(key)] = this.alphabet.indexOf(item.toLowerCase())+1;
-        });
-      });
-    });
-    this.sharedService.setBoard(this.board)
-    this.sharedService.setGameSolved(true, this.solution[0][ROWS -1].length == COLS)
-    this.boardCompo.drawBoard()
+    //reset board before solve
+    //this.boardObject.reset();
+    var solutions : number[][][] = [];
+    //console.log('BoardObject Board Length', this.boardObject.getBoardLength());
+    if (typeof Worker !== 'undefined') {
+      // Create a new
+      const worker = new Worker(new URL('../backend/solve.worker', import.meta.url));
+      worker.onmessage = ({ data }) => {
+        console.log(`Solve: ${data}`);
+        //this.boardObject = (data as Board);
+        solutions = data[0] as number[][][];
+        console.log('solutions',solutions);
+      };
+      worker.postMessage([55,5,new Array(),1,0]);
+    } else {
+      // Web workers are not supported in this environment.
+      // You should add a fallback so that your program still executes correctly.
+      // this will crash the window currently
+      this.boardObject = new Board(55,5);
+      var buildBoard = new buildBoard(this.boardObject.getLayers(),this.boardObject.getBoardLength(),this.boardObject.getLayersStart())
+      this.boardObject.setBoard(buildBoard.buildBoard());
+      solutions = this.boardObject.solve(new Array(),1,0).getSolutions();
+    }
+    
+    // this.solution.forEach((row, y) => {
+    //   row.forEach((value, x) => {
+    //     Object.entries(value).forEach(([key, item]) => {
+    //       this.board[x][Number(key)] = this.alphabet.indexOf(item.toLowerCase())+1;
+    //     });
+    //   });
+    // });
+    // this.sharedService.setBoard(this.board)
+    // new BoardComponent(this.gameService, this.htmlService, this.sharedService).drawBoard()
+    // this.sharedService.setGameSolved(true)
 
   }
 

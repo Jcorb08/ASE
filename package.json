@@ -43,5 +43,17 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
     "typescript": "~4.7.2"
-  }
+  },
+  "description": "Repository for Advanced Software Engineering Group 3.",
+  "main": "karma.conf.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jcorb08/ASE.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jcorb08/ASE/issues"
+  },
+  "homepage": "https://github.com/Jcorb08/ASE#readme"
 }
