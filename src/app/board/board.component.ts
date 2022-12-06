@@ -3,9 +3,11 @@ import {
   Component,
   ViewChild,
   ElementRef,
-  OnInit} from '@angular/core';
+  OnInit
+} from '@angular/core';
 import {
   COLS,
+  STEPS,
   BLOCK_SIZE,
   ROWS,
   COLORS,
@@ -30,8 +32,8 @@ export class BoardComponent implements OnInit {
   board: number[][];
   _piece: Piece;
   piece: Piece;
-  next: Piece;  
-  gameSolved: boolean = false;
+  next: Piece;
+  gameOutcome = {solved: false, solution: false};
 
   constructor(private gameService: GameService,
     private htmlService: HtmlElementService,
@@ -50,7 +52,7 @@ export class BoardComponent implements OnInit {
   }
 
   initBoard() {
-    this.sharedService.setGameSolved(false);
+    this.sharedService.setGameSolved(false, false);
     const res = this.canvas.nativeElement.getContext('2d');
     if (!res || !(res instanceof CanvasRenderingContext2D)) {
         throw new Error('Failed to get 2D initBoard context');
@@ -82,15 +84,16 @@ export class BoardComponent implements OnInit {
       this.sharedService.updateTetris(this.piece)
       this.sharedService.updateCtx(this.ctx)
     }
-    
+
   }
 
   submitPieces(piece: Piece, ctx: CanvasRenderingContext2D){
     // this.sharedService.currentTetris.subscribe(piece => this.piece = piece);
-    this.sharedService.getBoard().subscribe(bd => this.board = bd);
     this.ctx = ctx;
     this.piece = piece
     let counter = 0
+
+    this.sharedService.getBoard().subscribe(bd => this.board = bd);
     while (this.gameService.valid(this.piece, this.board) == false) {
       const p = this.sharedService.rotateShape(this.piece)
       this.piece.move(p);
@@ -140,7 +143,7 @@ export class BoardComponent implements OnInit {
   }
 
   resetGame() {
-    this.board = this.getEmptyBoard();
+    this.board = this.gameService.getEmptyNBoard();
     this.addOutlines();
     this.sharedService.setBoard(this.board);
   }
@@ -217,12 +220,9 @@ export class BoardComponent implements OnInit {
     this.addOutlines();
   }
 
-  getEmptyBoard(): number[][] {
-    return Array.from({ length: ROWS }, () => Array(COLS).fill(0));
-  }
-
   public ngAfterViewInit(): void {
     this.htmlService.set('board', this.canvas.nativeElement );
+    this.sharedService.getGameSolved().subscribe(out => this.gameOutcome = out);
   }
 
   // Don't forget the include clean-up code within the ngOnDestroy() event.

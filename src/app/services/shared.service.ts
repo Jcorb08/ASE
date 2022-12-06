@@ -24,7 +24,7 @@ export class SharedService {
 
   private board: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
-  private gameSolved: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private gameOutcome: BehaviorSubject<any> = new BehaviorSubject<any>({solved: false, solution: false});
   private refresh: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private reset: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -36,12 +36,14 @@ export class SharedService {
     this.currentCtxNext = this.shapeCtxNext.asObservable();
   }
 
-  public getGameSolved(): Observable<boolean> {
-    return this.gameSolved.asObservable();
+  public getGameSolved(): Observable<any> {
+    return this.gameOutcome.asObservable();
   }
 
-  public setGameSolved(value: boolean): void {
-    this.gameSolved.next(value);
+  public setGameSolved(game: boolean, found: boolean): void {
+    this.gameOutcome.next(
+      {solved: game, solution: found}
+    )
   }
 
   public getRefresh(): Observable<boolean> {

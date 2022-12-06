@@ -9,7 +9,8 @@ import { SharedService } from '../services/shared.service';
 @Component({
   selector: 'app-control',
   templateUrl: './control.component.html',
-  styleUrls: ['./control.component.css']
+  styleUrls: ['./control.component.css'],
+  viewProviders: [ BoardComponent ]
 })
 export class ControlComponent implements OnInit {
 
@@ -25,7 +26,8 @@ export class ControlComponent implements OnInit {
 
   constructor(private gameService: GameService,
     private htmlService: HtmlElementService,
-    private sharedService: SharedService) {}
+    private sharedService: SharedService,
+    private boardCompo: BoardComponent) {}
 
 
   ngOnInit(): void {
@@ -36,7 +38,7 @@ export class ControlComponent implements OnInit {
     this.sharedService.currentCtx.subscribe(board => this.currentCtx = board);
 
     const p = (this.moves as unknown as Array<any>)[dirCode](this.currentTetris);
-    new BoardComponent(this.gameService, this.htmlService, this.sharedService).control(p)
+    this.boardCompo.control(p)
   }
 
 

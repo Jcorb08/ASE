@@ -5,3 +5,13 @@
 <div class="grid">
   <canvas #board class="game-board"></canvas>
 </div>
+
+<p></p>
+
+<div class="alert alert-success" *ngIf="gameOutcome.solved && gameOutcome.solution" role="alert">
+  Yipee! Solution found
+</div>
+<div class="alert alert-danger" *ngIf="gameOutcome.solved && !gameOutcome.solution" role="alert">
+  Oops! !No solution found. Please try again.
+</div>
+
