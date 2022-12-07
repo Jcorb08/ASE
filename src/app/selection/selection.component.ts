@@ -199,7 +199,7 @@ export class SelectionComponent implements OnInit {
         solutions = data[0] as number[][][];
         console.log('solutions',solutions);
       };
-      worker.postMessage([55,5,new Array(),1,0]);
+      worker.postMessage([55,5,new Array(),100,0]);
     } else {
       // Web workers are not supported in this environment.
       // You should add a fallback so that your program still executes correctly.
