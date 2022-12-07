@@ -12,7 +12,7 @@ addEventListener('message', ({ data }) => {
   console.log('board',board.getBoard());
   
   var solutions = (board.solve(data[2],data[3],data[4]) as SearchObject).getSolutions();
-  console.log('worker solutions',solutions);
+  //console.log('worker solutions',solutions);
   
   postMessage(solutions);
 });

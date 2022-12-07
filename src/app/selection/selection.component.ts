@@ -196,10 +196,10 @@ export class SelectionComponent implements OnInit {
       worker.onmessage = ({ data }) => {
         console.log(`Solve: ${data}`);
         //this.boardObject = (data as Board);
-        solutions = data[0] as number[][][];
+        solutions = data as number[][][];
         console.log('solutions',solutions);
       };
-      worker.postMessage([55,5,new Array(),100,0]);
+      worker.postMessage([55,5,new Array(),1000,0]);
     } else {
       // Web workers are not supported in this environment.
       // You should add a fallback so that your program still executes correctly.
