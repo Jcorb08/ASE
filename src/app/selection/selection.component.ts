@@ -24,8 +24,8 @@ export class SelectionComponent implements OnInit {
   next: Piece;
   currentTetris: Piece;
   board: number[][];
-  solution: string[][];
-  refinePreplace: string[][];
+  solution: number[][];
+  refinePreplace: number[][];
   solutionPieces: Piece[] = [];
   currentPiece: Piece;
   currentCtx: CanvasRenderingContext2D;
@@ -172,6 +172,18 @@ export class SelectionComponent implements OnInit {
     this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
     this.sharedService.setReset(true);
 
+    this.boardObject = new Board(55,5);
+    var testPrePlace:number[][] = new Array();
+        var layersStart = [...this.boardObject.getLayersStart()];
+        layersStart.pop();
+        for (let index = 0; index < layersStart.length; index++) {
+            console.log(index,(layersStart.length-index)**2,layersStart.length-index);
+            
+            testPrePlace.push(new Array((layersStart.length-index)**2).fill(0))
+        }
+    testPrePlace[0][0] = 11;
+    testPrePlace[0][5] = 11;
+    testPrePlace[0][6] = 11;
     // let prePlaceTest = new Array()
     // for (let index = 0; index < 5; index++) {
     //     //const element = array[index];
@@ -199,7 +211,7 @@ export class SelectionComponent implements OnInit {
         solutions = data as number[][][];
         console.log('solutions',solutions);
       };
-      worker.postMessage([55,5,new Array(),1000,0]);
+      worker.postMessage([55,5,testPrePlace,1000,0]);
     } else {
       // Web workers are not supported in this environment.
       // You should add a fallback so that your program still executes correctly.
@@ -224,11 +236,14 @@ export class SelectionComponent implements OnInit {
   }
 
   refinePrePlaceTest(shape: number[][]){
-    let refinePreplace = this.gameService.getEmptySBoard();
+    let refinePreplace = this.gameService.getEmptyNBoard();
     shape.forEach((row, y) => {
       row.forEach((value, x) => {
+        //console.log(row,value);
+        
         if(value > 0){
-          refinePreplace[y][x] = this.alphabet[value-1].toUpperCase();
+          // refinePreplace[y][x] = this.alphabet[value-1].toUpperCase();
+          refinePreplace[y][x] = value;
         }
       });
     });

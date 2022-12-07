@@ -213,7 +213,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
 
             this.startCorner = 1;
             element.getVerticals().forEach((rowArray) => {
-                console.log('before set',element.getArrayID());
+                //console.log('before set',element.getArrayID());
                 
                 this.workplace = [...rowArray];
                 this.levelupPlace = [...rowArray];

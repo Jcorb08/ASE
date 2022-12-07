@@ -102,7 +102,7 @@ export class Board {
         var layersStart = [...this.getLayersStart()];
         layersStart.pop();
         for (let index = 0; index < layersStart.length; index++) {
-            console.log(index,(layersStart.length-index)**2,layersStart.length-index);
+            //console.log(index,(layersStart.length-index)**2,layersStart.length-index);
             
             solutionEmpty.push(new Array((layersStart.length-index)**2))
         }
@@ -114,14 +114,21 @@ export class Board {
         //use .flat(); https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat 
 
         var oneDPrePlace = [...prePlace.flat(3)]
+        //console.log('oneDPrePlace',oneDPrePlace);
+        
         var setOfVars = new Set(oneDPrePlace);
         setOfVars.delete(0); //remove 0s
+        //console.log('setOfVars',setOfVars);
+        
         var shapesToBePrePlaced = Array.from(setOfVars); //['A','B'...]
         //console.log('shapesToBePrePlaced',shapesToBePrePlaced);
+        
+        //console.log('shapesToBePrePlaced',shapesToBePrePlaced);
         var tempSolution = new Array();
-        var tempSearchObject = new SearchObject(0,0);
         shapesToBePrePlaced.forEach(shape => {
             //push shape placements
+            //console.log('shape',shape);
+            
             var shapeRowTemp = new Array();
             oneDPrePlace.forEach((shapeID,index)=>{
                 if(shapeID === shape){
@@ -129,40 +136,17 @@ export class Board {
                     shapeRowTemp.push(index);
                 }
             });
+            shapeRowTemp.push(shape+this.boardLength-1);
+            //console.log(shapeRowTemp,'shapeRowTemp');
+            
             // push id
             // shapeRowTemp.push(shape);
-            //should then be an array of [1,3,5] or similar no columnID as we cover that to start
- 
-            //min column is then shape
-            var minColumn:ColumnHeader = (this.board[0][shape] as ColumnHeader);
-            this.cover(minColumn);
-            var currentRow: Node = (minColumn.getBottom() as Node);
-            //console.log('currentRow',currentRow);
-
-            // while row is not a column
-            while(currentRow != minColumn) {
-                //console.log('MinColumn',minColumn,currentRow);
-                // cover that conflicting rows
-                // cover the column
-                // cover the working row
-                currentRow = currentRow.getRight();
-                var inShapeRow = true;
-                while(currentRow.getColumn() !== minColumn){
-                    this.cover(currentRow.getColumn());
-                    if(shapeRowTemp.indexOf(currentRow.getColumnID()) === -1){
-                        inShapeRow = false;
-                    }
-                    currentRow = currentRow.getRight();
-                }
-                // put row into partial if matching preplace
-                if(inShapeRow){
-                    tempSolution = [...tempSearchObject.addToTempSolution([...tempSolution],currentRow)];
-                }
-                //console.log('all cols after push',tempSolution,boardObject.getBoard()[0]);
-
-                currentRow = currentRow.getBottom();
-            }
-
+            //should then be an array of [1,3,5,shapeID] or similar no columnID as we cover that to start
+            shapeRowTemp.forEach((column)=>{
+                //min column is then columns shape is placed in
+                this.cover(this.board[0][column] as ColumnHeader);
+            });
+            tempSolution.push([...shapeRowTemp]);
         });
         // edits this.board
         return tempSolution;
@@ -171,7 +155,7 @@ export class Board {
     // run when solve clicked
     public solve(prePlace:number[][] = new Array(),maxSolutions:number = 0,maxRunTime:number = 0){
         // run prePlace if set
-        var tempSolution: Node[] = [];
+        var tempSolution: number[][] = new Array();
         console.log(prePlace,'prePlace');
         
         if (prePlace.length !== 0){
@@ -180,7 +164,7 @@ export class Board {
         //run algoritmX return solutions
         //return this.convertOutput(alogrithmX(this, maxSolutions ? maxSolutions : null, [],tempSolution, maxRunTime ? new Date().getTime() + maxRunTime : undefined,false));
         //convertOutput now done in SearchObject when adding to Solutions
-        return dancingLinks(this,new SearchObject(maxSolutions != 0 ? maxSolutions : 0, maxRunTime != 0 ? new Date().getTime() + maxRunTime : 0),new Array());
+        return dancingLinks(this,new SearchObject(maxSolutions != 0 ? maxSolutions : 0, maxRunTime != 0 ? new Date().getTime() + maxRunTime : 0),tempSolution);
     }
 
     public reset(){
