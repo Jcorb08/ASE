@@ -141,7 +141,7 @@ export class Board {
 
             // while row is not a column
             while(currentRow != minColumn) {
-                console.log('MinColumn',minColumn,currentRow);
+                //console.log('MinColumn',minColumn,currentRow);
                 // cover that conflicting rows
                 // cover the column
                 // cover the working row
@@ -260,7 +260,7 @@ export class Board {
 //Takes board,searchObject,and an empty tempsolution
 //Returns SearchObject that has the solutions attached
 function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:number[][]):SearchObject{
-    console.warn('DFS',searchObject.getDFS(),searchObject,tempSolution);
+    //console.warn('DFS',searchObject.getDFS(),searchObject,tempSolution);
     //1. ran out of time!
     if (searchObject.checkTime()){
         //return solutions below break out
@@ -279,7 +279,7 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
         const startCol = boardObject.getBoard()[0].find(col => (col as ColumnHeader).getActivated());
         //3. if no activated columns success!
         if (startCol === undefined){
-            console.warn('push to temp');
+            console.warn('push to temp','DFS',searchObject.getDFS(),searchObject,tempSolution);
             //returns empty array
             searchObject.addToSolutions([...tempSolution],boardObject);
         }
@@ -291,7 +291,7 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
             //6. does the mincolumn have no rows?
             if (minColumn.getNodeCount() === 0 ){
                 //fail :(
-                console.error('colOfLowestSum = 0',minColumn);
+                //console.error('colOfLowestSum = 0',minColumn);
             } 
             else {
                 //7. columns > 0 - working on a row in this column
@@ -302,7 +302,7 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
 
                 // while row is not a column
                 while(currentRow != minColumn) {
-                    console.log('MinColumn',minColumn,currentRow);
+                    //console.log('MinColumn',minColumn,currentRow);
                     // cover that conflicting rows
                     // cover the column
                     // cover the working row
@@ -337,7 +337,7 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
                         console.error('Max Solutions Found');
                         break;
                     } 
-                    console.log('currentRow',currentRow);
+                    //console.log('currentRow',currentRow);
                     
                 }
                 boardObject.uncover(minColumn);

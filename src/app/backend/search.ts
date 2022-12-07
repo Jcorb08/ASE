@@ -60,17 +60,18 @@ export class SearchObject{
     }
     public addToSolutions(tempSolution:number[][],boardObject:Board){
         // length 5 where 5 is height of pyramid
-        const solution:number[][] = [...boardObject.getEmptySolution()];
+        const solution:number[][] = boardObject.getEmptySolution().map(function(arr) { return arr.slice(); });
         const layersStart = [...boardObject.getLayersStart()];
         layersStart.pop();
+        //console.log('temp in add',tempSolution,solution);
         
         tempSolution.forEach((row :number[],i: number)=>{
-            var rowTemp = [...row]
+            const rowTemp = [...row]
             // work out logic of pyramid
-            var shapeID:number = boardObject.getShapeID(rowTemp.pop() as number);
+            const shapeID:number = boardObject.getShapeID(rowTemp.pop() as number);
             //console.log('shapeID',shapeID,row);
             rowTemp.forEach((col:number,index:number)=>{
-                var layers = layersStart.filter(x => (col - x) >= 0);
+                const layers = layersStart.filter(x => (col - x) >= 0);
                 // get all > 0 select first element that is the layer
                 //can be placed in that layer
                 //e.g. col=30 -> first true is where layersStart = 25 as x-col=5
