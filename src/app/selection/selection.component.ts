@@ -181,22 +181,24 @@ export class SelectionComponent implements OnInit {
             
             testPrePlace.push(new Array((layersStart.length-index)**2).fill(0))
         }
-    testPrePlace[0][0] = 11;
-    testPrePlace[0][5] = 11;
-    testPrePlace[0][6] = 11;
-    // let prePlaceTest = new Array()
-    // for (let index = 0; index < 5; index++) {
-    //     //const element = array[index];
-    //     var tempRow = [...new Array(11).fill(0)];
-    //     if (index == 0) {
-    //         tempRow[0] = 'K';
-    //     } else if(index == 1) {
-    //         tempRow[0] = 'K';
-    //         tempRow[1] = 'K';
-    //     }
-    //     prePlaceTest.push(tempRow);
-    // }
-    // console.log(prePlaceTest, 'prePlaceTest');
+    // testPrePlace[0][0] = 11;
+    //testPrePlace[0][5] = 11;
+    //testPrePlace[0][6] = 11;
+    //preplacing whole of bottom of level5 pyramid so we can solve for level 4
+    for (let index = 0; index < testPrePlace[0].length; index++) {
+      if ([6,7,8,11,13].includes(index)) {
+        testPrePlace[0][index] = 1;
+      } else if([18,19,22,23,24].includes(index)){
+        testPrePlace[0][index] = 6;
+      } else if([2,3,4,9,14].includes(index)){
+        testPrePlace[0][index] = 9;
+      } else if([0,1,5,10,15].includes(index)){
+        testPrePlace[0][index] = 10;
+      } else if([12,16,17,20,21].includes(index)){
+        testPrePlace[0][index] = 12;
+      }
+    }
+    console.log(testPrePlace, 'testPrePlace');
 
     //reset board before solve
     //this.boardObject.reset();
