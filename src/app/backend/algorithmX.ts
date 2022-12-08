@@ -47,7 +47,7 @@ export class Board {
     constructor(boardLength:number,layers:number){
         // 5 * 11
         this.boardLength = boardLength;
-        console.log('boardLength-aggggggggg',this.boardLength);
+        console.log('boardLength',this.boardLength);
         // level 5 etc.
         this.layers = layers;
         console.log('layers',this.layers);
@@ -263,7 +263,10 @@ function dancingLinks(boardObject:Board, searchObject:SearchObject,tempSolution:
         const startCol = boardObject.getBoard()[0].find(col => (col as ColumnHeader).getActivated());
         //3. if no activated columns success!
         if (startCol === undefined){
-            console.warn('push to temp','DFS',searchObject.getDFS(),searchObject,tempSolution);
+            if(searchObject.getSolutions().length % 10000 == 0){ 
+                console.warn('Push To Temp','DFS:',searchObject.getDFS(),'Current Solution Count:',searchObject.getSolutions().length,'Current Solution Before Push:',tempSolution);
+            }
+            //console.warn('push to temp','DFS',searchObject.getDFS(),searchObject,tempSolution);
             //returns empty array
             searchObject.addToSolutions([...tempSolution],boardObject);
         }

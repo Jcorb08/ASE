@@ -23,10 +23,10 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
     constructor(layers:number,boardLength:number,layersStart:number[]){
         // 5 * 11
         this.boardLength = boardLength;
-        console.log('boardLength-aggggggggg',this.boardLength);
+        //console.log('boardLength-aggggggggg',this.boardLength);
         // level 5 etc.
         this.layers = layers;
-        console.log('layers',this.layers);
+        //console.log('layers',this.layers);
         
         // 0 25 41 50 54 55
         this.layersStart = layersStart;
@@ -245,7 +245,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
     private setBoardRow(matrix:Node[][],shapeID:number,arrayToAdd:number[]): Node[][] {
         const tempRow = new Array((this.boardLength) + this.numOfIDColumns);
         //create Nodes for that row only in the spaces needed
-        console.log('current workplace',arrayToAdd,'shapeID - 55 means shape 1',shapeID);
+        console.warn('current workplace',arrayToAdd,'shapeID - 55 means shape 1',shapeID);
         arrayToAdd.forEach((element,index,array) => {
             
             //colCount increases each time so the placement of these will slowly move across the array
@@ -301,7 +301,7 @@ private right2right: number[] = [0,1,2,3,4,25,26,27,28,41,42,43,50,51,54];
         tempRow[shapeID].setBottom(matrix[0][shapeID]);
 
         matrix.push([...tempRow]);
-        console.log('matrix',matrix,'current Row',this.row);
+        console.warn('matrix',matrix,'current Row',this.row);
         return matrix;
     }
 

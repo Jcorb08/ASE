@@ -19,5 +19,5 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-        npm install
+        npm ci
         npm run ng -- deploy --base-href=/ASE/ --message="Automated Deploy to Github Pages" --no-silent --name="GH Action Bot" --email=gh.action@example.org
