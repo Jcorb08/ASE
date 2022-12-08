@@ -1,3 +1,5 @@
+[![Deploy to GitHub Pages via angular-cli-ghpages](https://github.com/Jcorb08/ASE/actions/workflows/push-to-pages.yml/badge.svg)](https://github.com/Jcorb08/ASE/actions/workflows/push-to-pages.yml)
+[![Testing Angular app through GitHub Actions](https://github.com/Jcorb08/ASE/actions/workflows/testing.yml/badge.svg)](https://github.com/Jcorb08/ASE/actions/workflows/testing.yml) 
 # ASE Project Plan
 
 Repository for Advanced Software Engineering Group 3.
