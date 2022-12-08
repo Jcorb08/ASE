@@ -18,7 +18,9 @@ Repository for Advanced Software Engineering Group 3.
 
 ## Sprints
 1. Create a solution to N Queens Problem - _completed_. See [here](https://users.sussex.ac.uk/~jc812/ase/task-2/).
-2. Create a solution to Pentomino Problem
+2. Create a solution to Pentomino Problem - _completed_.
+3. Create a solution to 3D Pentomino Problem - _completed_.
+4. Extend this solution - _completed_. See [here](https://jcorb08.github.io/ASE/).
 
 ## Organisation Plan
 - Group leader - Joseph Corbett
