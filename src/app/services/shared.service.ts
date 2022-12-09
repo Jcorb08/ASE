@@ -28,6 +28,7 @@ export class SharedService {
   private refresh: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private reset: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  private limit: BehaviorSubject<number> = new BehaviorSubject<number>(1000);
   private shape: BehaviorSubject<number> = new BehaviorSubject<number>(5);
   private plane: BehaviorSubject<number> = new BehaviorSubject<number>(5);
 
@@ -63,6 +64,14 @@ export class SharedService {
 
   public setShape(value: number): void {
     this.shape.next(value);
+  }
+
+  public getLimit(): Observable<number> {
+    return this.limit.asObservable();
+  }
+
+  public setLimit(value: number): void {
+    this.limit.next(value);
   }
 
   public getPlane(): Observable<number> {

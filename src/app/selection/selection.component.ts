@@ -19,6 +19,7 @@ export class SelectionComponent implements OnInit {
   private nextElement: ElementRef<HTMLCanvasElement>;
   alphabet = "abcdefghijklmnopqrstuvwxyz"
   next: Piece;
+  limit: number
   currentTetris: Piece;
   board: number[][];
   solution: number[][];
@@ -163,14 +164,13 @@ export class SelectionComponent implements OnInit {
   }
 
   solvePuzzle(){
-    this.sharedService.currentTetris.subscribe(piece =>{
-      if(piece) this.refinePreplace =  this.refinePrePlaceTest(piece.shape)
-    });
+    this.sharedService.currentTetris.subscribe(piece => { this.currentPiece = piece });
     this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
+    this.sharedService.getLimit().subscribe(limit => this.limit = limit);
     this.sharedService.setReset(true);
 
     this.boardObject = new Board(55,5);
-    var testPrePlace:number[][] = new Array();
+    var testPrePlace:number[][] = this.currentPiece ? this.currentPiece.shape : new Array();
     // var layersStart = [...this.boardObject.getLayersStart()];
     // layersStart.pop();
     // for (let index = 0; index < layersStart.length; index++) {
@@ -210,7 +210,7 @@ export class SelectionComponent implements OnInit {
         solutions = data as number[][][];
         console.log('solutions',solutions);
       };
-      worker.postMessage([55,5,testPrePlace,1000,0]);
+      worker.postMessage([55,5,testPrePlace,this.limit,0]);
     } else {
       // Web workers are not supported in this environment.
       // You should add a fallback so that your program still executes correctly.
@@ -234,7 +234,11 @@ export class SelectionComponent implements OnInit {
 
   }
 
-  refinePrePlaceTest(shape: number[][]){
+  printSolution(shape: number[][], plane: number){
+
+  }
+
+  refinePrePlaceTest_old(shape: number[][]){
     let refinePreplace = this.gameService.getEmptyNBoard(5);
     shape.forEach((row, y) => {
       row.forEach((value, x) => {

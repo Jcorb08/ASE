@@ -32,4 +32,9 @@ export class ManipulateComponent implements OnInit {
     this.sharedService.setReset(true);
   }
 
+  changeMaxLimit(e) {
+    this.sharedService.setLimit(e.target.value);
+    this.sharedService.setReset(true);
+  }
+
 }
