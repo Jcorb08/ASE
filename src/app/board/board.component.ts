@@ -141,6 +141,7 @@ export class BoardComponent implements OnInit {
     this.sharedService.currentTetris.subscribe(piece => this.piece = piece);
     this.sharedService.currentCtx.subscribe(board => this.ctx = board);
     this.sharedService.getBoard().subscribe(bd => this.board = bd);
+    this.sharedService.getPlane().subscribe(col => this.gridPlane = col);
     if (this.gameService.valid(p, this.board, this.gridPlane)) {
       this.piece.move(p);
       this.draw(this.piece)
