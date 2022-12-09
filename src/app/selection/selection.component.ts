@@ -64,7 +64,7 @@ export class SelectionComponent implements OnInit {
 
   rotateShape() {
     this.sharedService.currentShape.subscribe(piece => this.currentPiece = piece);
-    this.sharedService.currentCtxNext.subscribe(canvas => this.currentCtxNext = canvas);
+    this.sharedService.currentCtxNext.subscribe(canvas25 => this.currentCtxNext = canvas25);
 
     const p = this.sharedService.rotateShape(this.currentPiece)
     this.currentPiece.move(p);
@@ -75,7 +75,7 @@ export class SelectionComponent implements OnInit {
 
   generateNewShape(mode: string){
     this.sharedService.currentShape.subscribe(piece => this.currentPiece = piece);
-    this.sharedService.currentCtxNext.subscribe(canvas => this.currentCtxNext = canvas);
+    this.sharedService.currentCtxNext.subscribe(canvas25 => this.currentCtxNext = canvas25);
 
     // this.currentPiece = this.next ;
     this.next = new Piece(this.currentCtxNext, this.currentPiece, true, {s: mode, x: 0, y: 0});
@@ -86,7 +86,7 @@ export class SelectionComponent implements OnInit {
 
   flipShape(){
     this.sharedService.currentShape.subscribe(piece => this.currentPiece = piece);
-    this.sharedService.currentCtxNext.subscribe(canvas => this.currentCtxNext = canvas);
+    this.sharedService.currentCtxNext.subscribe(canvas25 => this.currentCtxNext = canvas25);
 
     const p = this.sharedService.flipShape(this.currentPiece)
     this.currentPiece.move(p);
@@ -97,9 +97,9 @@ export class SelectionComponent implements OnInit {
 
   submitShape(){
     this.sharedService.currentShape.subscribe(piece => this.currentPiece = piece);
-    this.sharedService.currentCtx.subscribe(canvas => this.currentCtx = canvas);
+    this.sharedService.currentCtx.subscribe(canvas25 => this.currentCtx = canvas25);
     this.sharedService.currentTetris.subscribe(piece => this.currentTetris = piece);
-    this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
+    this.sharedService.getBoard().subscribe(canvas25 => this.board = canvas25);
     this.sharedService.getGameSolved().subscribe(solve => this.gameOutcome = solve.solved);
 
     if (this.gameOutcome) this.resetGame()
@@ -156,9 +156,9 @@ export class SelectionComponent implements OnInit {
 
   submitPieces_old(){
     this.solutionPieces.forEach((row, y) => {
-      this.sharedService.currentCtx.subscribe(canvas => this.currentCtx = canvas);
+      this.sharedService.currentCtx.subscribe(canvas25 => this.currentCtx = canvas25);
       this.sharedService.currentTetris.subscribe(piece => this.currentTetris = piece);
-      this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
+      this.sharedService.getBoard().subscribe(canvas25 => this.board = canvas25);
 
       if (this.currentTetris) this.freezeLastShape()
       this.boardCompo.submitPieces(row, this.currentCtx)
@@ -169,7 +169,7 @@ export class SelectionComponent implements OnInit {
     this.sharedService.currentTetris.subscribe(piece =>{
       if(piece) this.refinePreplace =  this.refinePrePlaceTest(piece.shape)
     });
-    this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
+    this.sharedService.getBoard().subscribe(canvas25 => this.board = canvas25);
     this.sharedService.setReset(true);
 
     this.boardObject = new Board(55,5);
@@ -178,7 +178,7 @@ export class SelectionComponent implements OnInit {
     // layersStart.pop();
     // for (let index = 0; index < layersStart.length; index++) {
     //     //console.log(index,(layersStart.length-index)**2,layersStart.length-index);
-        
+
     //     testPrePlace.push(new Array((layersStart.length-index)**2).fill(0))
     // }
     // testPrePlace[0][0] = 11;
@@ -223,7 +223,7 @@ export class SelectionComponent implements OnInit {
       this.boardObject.setBoard(buildBoard.buildBoard());
       solutions = this.boardObject.solve(new Array(),1,0).getSolutions();
     }
-    
+
     // this.solution.forEach((row, y) => {
     //   row.forEach((value, x) => {
     //     Object.entries(value).forEach(([key, item]) => {
@@ -238,11 +238,11 @@ export class SelectionComponent implements OnInit {
   }
 
   refinePrePlaceTest(shape: number[][]){
-    let refinePreplace = this.gameService.getEmptyNBoard();
+    let refinePreplace = this.gameService.getEmptyNBoard(5);
     shape.forEach((row, y) => {
       row.forEach((value, x) => {
         //console.log(row,value);
-        
+
         if(value > 0){
           // refinePreplace[y][x] = this.alphabet[value-1].toUpperCase();
           refinePreplace[y][x] = value;

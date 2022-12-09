@@ -28,6 +28,9 @@ export class SharedService {
   private refresh: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private reset: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  private shape: BehaviorSubject<number> = new BehaviorSubject<number>(5);
+  private plane: BehaviorSubject<number> = new BehaviorSubject<number>(5);
+
 
   constructor(private gameService: GameService) {
     this.currentShape = this.shapePiece.asObservable();
@@ -52,6 +55,22 @@ export class SharedService {
 
   public setRefresh(value: boolean): void {
     this.refresh.next(value);
+  }
+
+  public getShape(): Observable<number> {
+    return this.shape.asObservable();
+  }
+
+  public setShape(value: number): void {
+    this.shape.next(value);
+  }
+
+  public getPlane(): Observable<number> {
+    return this.plane.asObservable();
+  }
+
+  public setPlane(value: number): void {
+    this.plane.next(value);
   }
 
   public getReset(): Observable<boolean> {

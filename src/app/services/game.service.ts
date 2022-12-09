@@ -88,15 +88,15 @@ export class GameService {
     return (level + 1) * lineClearPoints;
   }
 
-  getEmptyNBoard(): number[][] {
-    // return Array.from({ length: ROWS }, () => Array(COLS).fill(0));
-    let size = 0
-    let arr = Array();
-    for (var i = 0; i < ROWS; i++) {
-      size += STEPS[i]
-      arr[i] = Array(COLS).fill(0, 0, size);
-    }
-    return arr
+  getEmptyNBoard(size: number): number[][] {
+    return Array.from({ length: size }, () => Array(size).fill(0));
+    // let size = 0
+    // let arr = Array();
+    // for (var i = 0; i < ROWS; i++) {
+    //   size += STEPS[i]
+    //   arr[i] = Array(COLS).fill(0, 0, size);
+    // }
+    // return arr
   }
 
   getEmptySBoard(): string[][] {

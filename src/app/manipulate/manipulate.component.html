@@ -1,0 +1,45 @@
+<legend class="col-form-label col-sm-12 pt-0">Select pyramid shape</legend>
+<div class="col-sm-12">
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="gridShape" (change)="changeShape($event)" value="5" checked="">
+    <label class="form-check-label" for="grid5Shape">
+      5-shaped pyramid
+    </label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="gridShape" (change)="changeShape($event)" value="4">
+    <label class="form-check-label" for="grid4Shape">
+      4-shaped pyramid
+    </label>
+  </div>
+</div>
+<br/>
+<legend class="col-form-label col-sm-12 pt-0">Select default plane</legend>
+<div class="col-sm-12">
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="gridPlane" (change)="changePlane($event)" value="5" checked="">
+    <label class="form-check-label" for="gridPlane5">
+      5 by 5 plane
+    </label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="gridPlane" (change)="changePlane($event)" value="4">
+    <label class="form-check-label" for="gridPlane4">
+      4 by 4 plane
+    </label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="gridPlane" (change)="changePlane($event)" value="3">
+    <label class="form-check-label" for="gridPlane3">
+      3 by 3 plane
+    </label>
+  </div>
+  <div class="form-check">
+    <input class="form-check-input" type="radio" name="gridPlane" (change)="changePlane($event)" value="2">
+    <label class="form-check-label" for="gridPlane2">
+      2 by 2 plane
+    </label>
+  </div>
+</div>
+
+<br/>

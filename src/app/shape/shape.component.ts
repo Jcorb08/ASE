@@ -46,7 +46,7 @@ export class ShapeComponent implements OnInit {
     }
     this.ctxNext = res;
 
-    // Calculate size of canvas from constants.
+    // Calculate size of canvas25 from constants.
     // The + 2 is to allow for space to add the drop shadow to
     // the "next piece"
     this.ctxNext.canvas.width = 4 * BLOCK_SIZE + 2;
