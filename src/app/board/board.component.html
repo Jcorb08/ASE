@@ -3,7 +3,7 @@
   </mat-card-content>
 </mat-card> -->
 <div class="grid">
-  <canvas #board25 class="game-board" *ngIf="gridShape == 5"></canvas>
+  <canvas #board25 class="game-board" [hidden]="!(gridShape == 5)"></canvas>
   <canvas #board16 class="game-board"></canvas>
   <canvas #board9 class="game-board"></canvas>
   <canvas #board4 class="game-board"></canvas>

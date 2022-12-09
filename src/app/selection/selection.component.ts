@@ -6,9 +6,6 @@ import { HtmlElementService } from '../services/htmlElement.service';
 import { IPiece, Piece } from '../services/piece.component';
 import { SharedService } from '../services/shared.service';
 import { Board } from '../backend/algorithmX';
-import { Node } from '../backend/node';
-import { AnyCnameRecord } from 'dns';
-import { COLS, ROWS, STEPS } from '../services/constants';
 
 @Component({
   selector: 'app-selection',
@@ -64,7 +61,7 @@ export class SelectionComponent implements OnInit {
 
   rotateShape() {
     this.sharedService.currentShape.subscribe(piece => this.currentPiece = piece);
-    this.sharedService.currentCtxNext.subscribe(canvas25 => this.currentCtxNext = canvas25);
+    this.sharedService.currentCtxNext.subscribe(canvas => this.currentCtxNext = canvas);
 
     const p = this.sharedService.rotateShape(this.currentPiece)
     this.currentPiece.move(p);
@@ -75,7 +72,7 @@ export class SelectionComponent implements OnInit {
 
   generateNewShape(mode: string){
     this.sharedService.currentShape.subscribe(piece => this.currentPiece = piece);
-    this.sharedService.currentCtxNext.subscribe(canvas25 => this.currentCtxNext = canvas25);
+    this.sharedService.currentCtxNext.subscribe(canvas => this.currentCtxNext = canvas);
 
     // this.currentPiece = this.next ;
     this.next = new Piece(this.currentCtxNext, this.currentPiece, true, {s: mode, x: 0, y: 0});
@@ -86,7 +83,7 @@ export class SelectionComponent implements OnInit {
 
   flipShape(){
     this.sharedService.currentShape.subscribe(piece => this.currentPiece = piece);
-    this.sharedService.currentCtxNext.subscribe(canvas25 => this.currentCtxNext = canvas25);
+    this.sharedService.currentCtxNext.subscribe(canvas => this.currentCtxNext = canvas);
 
     const p = this.sharedService.flipShape(this.currentPiece)
     this.currentPiece.move(p);
@@ -97,9 +94,9 @@ export class SelectionComponent implements OnInit {
 
   submitShape(){
     this.sharedService.currentShape.subscribe(piece => this.currentPiece = piece);
-    this.sharedService.currentCtx.subscribe(canvas25 => this.currentCtx = canvas25);
+    this.sharedService.currentCtx.subscribe(canvas => this.currentCtx = canvas);
     this.sharedService.currentTetris.subscribe(piece => this.currentTetris = piece);
-    this.sharedService.getBoard().subscribe(canvas25 => this.board = canvas25);
+    this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
     this.sharedService.getGameSolved().subscribe(solve => this.gameOutcome = solve.solved);
 
     if (this.gameOutcome) this.resetGame()
@@ -156,9 +153,9 @@ export class SelectionComponent implements OnInit {
 
   submitPieces_old(){
     this.solutionPieces.forEach((row, y) => {
-      this.sharedService.currentCtx.subscribe(canvas25 => this.currentCtx = canvas25);
+      this.sharedService.currentCtx.subscribe(canvas => this.currentCtx = canvas);
       this.sharedService.currentTetris.subscribe(piece => this.currentTetris = piece);
-      this.sharedService.getBoard().subscribe(canvas25 => this.board = canvas25);
+      this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
 
       if (this.currentTetris) this.freezeLastShape()
       this.boardCompo.submitPieces(row, this.currentCtx)
@@ -169,7 +166,7 @@ export class SelectionComponent implements OnInit {
     this.sharedService.currentTetris.subscribe(piece =>{
       if(piece) this.refinePreplace =  this.refinePrePlaceTest(piece.shape)
     });
-    this.sharedService.getBoard().subscribe(canvas25 => this.board = canvas25);
+    this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
     this.sharedService.setReset(true);
 
     this.boardObject = new Board(55,5);

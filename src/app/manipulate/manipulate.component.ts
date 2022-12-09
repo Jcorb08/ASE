@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Piece } from '../services/piece.component';
 import { SharedService } from '../services/shared.service';
 
 @Component({
@@ -19,13 +20,16 @@ export class ManipulateComponent implements OnInit {
   changePlane(e) {
     this.gridPlane = e.target.value
     this.sharedService.setPlane(this.gridPlane);
-    this.sharedService.setReset(true)
+    this.sharedService.updateTetris(null as unknown as Piece)
+    this.sharedService.setReset(true);
   }
 
   changeShape(e) {
     this.gridShape = e.target.value
+    if (this.gridShape == 4) this.changePlane(e)
     this.sharedService.setShape(this.gridShape);
-    this.sharedService.setReset(true)
+    this.sharedService.updateTetris(null as unknown as Piece)
+    this.sharedService.setReset(true);
   }
 
 }

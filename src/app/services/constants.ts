@@ -1,6 +1,6 @@
-export const STEPS = [1, 2, 3, 4, 5];
-export const ROWS = STEPS[0];
-export const COLS = STEPS.reduce((tmp, itm) => tmp + itm, 0);
+// export const STEPS = [1, 2, 3, 4, 5];
+// export const ROWS = STEPS[0];
+// export const COLS = STEPS.reduce((tmp, itm) => tmp + itm, 0);
 export const BLOCK_SIZE = 50;
 export const LINES_PER_LEVEL = 2;
 export const COLORS = [

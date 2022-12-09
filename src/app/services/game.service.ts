@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IPiece, Piece } from './piece.component';
-import { COLS, ROWS, STEPS, POINTS } from './constants';
+import { POINTS } from './constants';
 import { SharedService } from './shared.service';
 
 @Injectable({
@@ -12,15 +12,15 @@ export class GameService {
 
   constructor(){}
 
-  valid(p: IPiece, board: number[][]): boolean {
+  valid(p: IPiece, board: number[][], size: number): boolean {
     return p.shape.every((row, dy) => {
       return row.every((value, dx) => {
         let x = p.x + dx;
         let y = p.y + dy;
         return (
           this.isEmpty(value) ||
-          (this.insideWalls(x) &&
-            this.aboveFloor(y) &&
+          (this.insideWalls(x, size) &&
+            this.aboveFloor(y, size) &&
             this.notOccupied(board, x, y))
         );
       });
@@ -31,11 +31,11 @@ export class GameService {
     return value === 0;
   }
 
-  insideWalls(x: number): boolean {
+  insideWalls(x: number, COLS: number): boolean {
     return x >= 0 && x < COLS;
   }
 
-  aboveFloor(y: number): boolean {
+  aboveFloor(y: number, ROWS: number): boolean {
     return y <= ROWS;
   }
 
@@ -99,14 +99,14 @@ export class GameService {
     // return arr
   }
 
-  getEmptySBoard(): string[][] {
-    // return Array.from({ length: ROWS }, () => Array(COLS).fill(0));
-    let size = 0
-    let arr = Array();
-    for (var i = 0; i < ROWS; i++) {
-      size += STEPS[i]
-      arr[i] = Array(COLS).fill(0, 0, size);
-    }
-    return arr
+  getEmptySBoard(size: number): string[][] {
+    return Array.from({ length: size }, () => Array(size).fill(0));
+    // let size = 0
+    // let arr = Array();
+    // for (var i = 0; i < ROWS; i++) {
+    //   size += STEPS[i]
+    //   arr[i] = Array(COLS).fill(0, 0, size);
+    // }
+    // return arr
   }
 }

@@ -4,7 +4,7 @@ import { BoardComponent } from '../board/board.component';
 import { HtmlElementService } from '../services/htmlElement.service';
 import { Piece } from '../services/piece.component';
 import { SharedService } from '../services/shared.service';
-import { BLOCK_SIZE, COLORS, COLORSDARKER, COLORSLIGHTER, COLS, ROWS } from './../services/constants';
+import { BLOCK_SIZE } from './../services/constants';
 
 @Component({
   selector: 'app-shape',

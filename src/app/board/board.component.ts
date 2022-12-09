@@ -6,9 +6,7 @@ import {
   OnInit
 } from '@angular/core';
 import {
-  COLS,
   BLOCK_SIZE,
-  ROWS,
   COLORS,
   COLORSLIGHTER,
   COLORSDARKER
@@ -24,13 +22,13 @@ import { SharedService } from '../services/shared.service';
   styleUrls: ['./board.component.css']
 })
 export class BoardComponent implements OnInit {
-  // @ViewChild('board25', { static: true }) canvas25: ElementRef<HTMLCanvasElement>;
-  private canvas25: ElementRef<HTMLCanvasElement>;;
-  @ViewChild('board25') set content(content: ElementRef) {
-     if(content) { // initially setter gets called with undefined
-         this.canvas25 = content;
-     }
-  }
+  @ViewChild('board25', { static: false }) canvas25: ElementRef<HTMLCanvasElement>;
+  // private canvas25: ElementRef<HTMLCanvasElement>;;
+  // @ViewChild('board25') set content(content: ElementRef) {
+  //    if(content) { // initially setter gets called with undefined
+  //        this.canvas25 = content;
+  //    }
+  // }
   @ViewChild('board16', { static: true }) canvas16: ElementRef<HTMLCanvasElement>;
   @ViewChild('board9', { static: true }) canvas9: ElementRef<HTMLCanvasElement>;
   @ViewChild('board4', { static: true }) canvas4: ElementRef<HTMLCanvasElement>;
@@ -38,11 +36,13 @@ export class BoardComponent implements OnInit {
 
   allPlanes: ElementRef<HTMLCanvasElement>[]
   allCtx: CanvasRenderingContext2D[] = []
+  ctx: CanvasRenderingContext2D;
   ctxNext: CanvasRenderingContext2D;
   boards: (number[][])[] = []
   board: number[][];
   STEPS: number[];
   gridShape: number
+  gridPlane: number
   _piece: Piece;
   piece: Piece;
   next: Piece;
@@ -65,16 +65,15 @@ export class BoardComponent implements OnInit {
   }
 
   initialiseSteps(){
-    this.sharedService.getShape().subscribe((num) => {
-      this.gridShape = num
-      this.STEPS = Array.from({length:num}, (v, i) => i+1);
-    })
+    this.sharedService.getShape().subscribe((num) => { this.gridShape = num });
+    this.sharedService.getPlane().subscribe((num) => { this.gridPlane = num });
+    this.STEPS = Array.from({length:this.gridShape}, (v, i) => i+1);
   }
 
   initBoards(){
     this.sharedService.setGameSolved(false, false);
     this.STEPS.forEach((item, index) => {
-      this.initBoard(item, index, this.allPlanes[index])
+      this.initBoard(item, index, this.allPlanes.slice(0, this.gridShape)[index])
       this.boards[index] = this.gameService.getEmptyNBoard(item);
       this.addOutlines(this.allCtx[index], item);
     });
@@ -89,50 +88,50 @@ export class BoardComponent implements OnInit {
     ctx.canvas.width = size * BLOCK_SIZE;
     ctx.canvas.height = size * BLOCK_SIZE;
     ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
-
     this.allCtx[index] = ctx
-    // this.sharedService.updateCtx(this.allCtx[STEPS.length])
+    this.sharedService.updateCtx(this.allCtx[this.gridShape-1])
   }
 
   play() {
     this.resetGame();
   }
 
-  submit(piece: Piece, ctx: CanvasRenderingContext2D){
+  submit(piece: Piece, ctx: CanvasRenderingContext2D, plane: number = this.gridPlane){
     this.sharedService.currentTetris.subscribe(piece => this.piece = piece);
     this.sharedService.getBoard().subscribe(bd => this.board = bd);
-    this.allCtx[this.STEPS.length] = ctx;
+    this.sharedService.getPlane().subscribe(col => this.gridPlane = col);
+    this.ctx = ctx;
     this.piece = new Piece(ctx, piece, false)
-    if(this.gameService.valid(this.piece, this.board)) {
+    if(this.gameService.valid(this.piece, this.board, this.gridPlane)) {
       this.draw(this.piece)
       this.sharedService.setRefresh(true);
       this.sharedService.updateTetris(this.piece)
-      this.sharedService.updateCtx(this.allCtx[this.STEPS.length])
+      this.sharedService.updateCtx(this.ctx)
     }
 
   }
 
   submitPieces(piece: Piece, ctx: CanvasRenderingContext2D){
     // this.sharedService.currentTetris.subscribe(piece => this.piece = piece);
-    this.allCtx[this.STEPS.length] = ctx;
+    this.ctx = ctx;
     this.piece = piece
     let counter = 0
 
     this.sharedService.getBoard().subscribe(bd => this.board = bd);
-    while (this.gameService.valid(this.piece, this.board) == false) {
+    while (this.gameService.valid(this.piece, this.board, this.gridPlane) == false) {
       const p = this.sharedService.rotateShape(this.piece)
       this.piece.move(p);
       if(counter++ == 1000) break;
     }
-    if(this.gameService.valid(this.piece, this.board)) {
+    if(this.gameService.valid(this.piece, this.board, this.gridPlane)) {
       this.draw(this.piece)
       this.sharedService.updateTetris(this.piece)
-      this.sharedService.updateCtx(this.allCtx[this.STEPS.length])
+      this.sharedService.updateCtx(this.ctx)
     }
   }
 
   draw(piece: Piece) {
-    this.allCtx[this.STEPS.length].clearRect(0, 0, this.allCtx[this.STEPS.length].canvas.width, this.allCtx[this.STEPS.length].canvas.height);
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     piece.draw();
     this.drawBoard();
     this.sharedService.setBoard(this.board);
@@ -140,19 +139,19 @@ export class BoardComponent implements OnInit {
 
   control(p: IPiece){
     this.sharedService.currentTetris.subscribe(piece => this.piece = piece);
-    this.sharedService.currentCtx.subscribe(board => this.allCtx[this.STEPS.length] = board);
+    this.sharedService.currentCtx.subscribe(board => this.ctx = board);
     this.sharedService.getBoard().subscribe(bd => this.board = bd);
-    if (this.gameService.valid(p, this.board)) {
+    if (this.gameService.valid(p, this.board, this.gridPlane)) {
       this.piece.move(p);
       this.draw(this.piece)
     }
     this.sharedService.updateTetris(this.piece)
-    this.sharedService.updateCtx(this.allCtx[this.STEPS.length])
+    this.sharedService.updateCtx(this.ctx)
   }
 
   drop(piece: Piece) {
     let p = this.gameService.moveDown(piece)
-    if (this.gameService.valid(p, this.board)) {
+    if (this.gameService.valid(p, this.board, this.gridPlane)) {
       piece.move(p);
     } else {
       // this.freeze();
@@ -162,15 +161,19 @@ export class BoardComponent implements OnInit {
         return false;
       }
       piece = this.next;
-      this.next = new Piece(this.allCtx[this.STEPS.length]);
+      this.next = new Piece(this.ctx);
       this.next.drawNext(this.ctxNext);
     }
   }
 
   resetGame() {
-    // this.board = this.gameService.getEmptyNBoard();
+    if(this.boards.length == 0) this.initBoards();
+    this.boards.forEach((item, index) => {
+      return this.gameService.getEmptyNBoard(item.length);
+    })
     // this.addOutlines();
-    this.sharedService.setBoard(this.board);
+    this.sharedService.setBoard(this.boards[this.gridPlane-1]);
+    this.sharedService.updateCtx(this.allCtx[this.gridPlane-1]);
   }
 
 
@@ -180,7 +183,7 @@ export class BoardComponent implements OnInit {
       if (row.every(value => value !== 0)) {
         lines++;
         this.board.splice(y, 1);
-        this.board.unshift(Array(COLS).fill(0));
+        this.board.unshift(Array(this.gridShape).fill(0));
       }
     });
     this.sharedService.setBoard(this.board);
@@ -188,43 +191,43 @@ export class BoardComponent implements OnInit {
 
   private add3D(x: number, y: number, color: number): void {
     //Darker Color
-    this.allCtx[this.STEPS.length].fillStyle = COLORSDARKER[color];
+    this.ctx.fillStyle = COLORSDARKER[color];
     // Vertical
-    this.allCtx[this.STEPS.length].fillRect(x + .9, y, .1, 1);
+    this.ctx.fillRect(x + .9, y, .1, 1);
     // Horizontal
-    this.allCtx[this.STEPS.length].fillRect(x, y + .9, 1, .1);
+    this.ctx.fillRect(x, y + .9, 1, .1);
 
     //Darker Color - Inner
     // Vertical
-    this.allCtx[this.STEPS.length].fillRect(x + .65, y + .3, .05, .3);
+    this.ctx.fillRect(x + .65, y + .3, .05, .3);
     // Horizontal
-    this.allCtx[this.STEPS.length].fillRect(x + .3, y + .6, .4, .05);
+    this.ctx.fillRect(x + .3, y + .6, .4, .05);
 
     // Lighter Color - Outer
-    this.allCtx[this.STEPS.length].fillStyle = COLORSLIGHTER[color];
+    this.ctx.fillStyle = COLORSLIGHTER[color];
 
     // Lighter Color - Inner
     // Vertical
-    this.allCtx[this.STEPS.length].fillRect(x + .3, y + .3, .05, .3);
+    this.ctx.fillRect(x + .3, y + .3, .05, .3);
     // Horizontal
-    this.allCtx[this.STEPS.length].fillRect(x + .3, y + .3, .4, .05);
+    this.ctx.fillRect(x + .3, y + .3, .4, .05);
 
     // Lighter Color - Outer
     // Vertical
-    this.allCtx[this.STEPS.length].fillRect(x, y, .05, 1);
-    this.allCtx[this.STEPS.length].fillRect(x, y, .1, .95);
+    this.ctx.fillRect(x, y, .05, 1);
+    this.ctx.fillRect(x, y, .1, .95);
     // Horizontal
-    this.allCtx[this.STEPS.length].fillRect(x, y, 1 , .05);
-    this.allCtx[this.STEPS.length].fillRect(x, y, .95, .1);
+    this.ctx.fillRect(x, y, 1 , .05);
+    this.ctx.fillRect(x, y, .95, .1);
   }
 
   private addOutlines(ctx: CanvasRenderingContext2D, size: number) {
-    for(let index = 1; index < size; index++) {
+    for(let index = 1; index <= size; index++) {
       ctx.fillStyle = 'black';
       ctx.fillRect(index, 0, .025, ctx.canvas.height);
     }
 
-    for(let index = 1; index < size; index++) {
+    for(let index = 1; index <= size; index++) {
       ctx.fillStyle = 'black';
       ctx.fillRect(0, index, ctx.canvas.width, .025);
     }
@@ -232,22 +235,23 @@ export class BoardComponent implements OnInit {
 
   drawBoard() {
     if(!this.board) this.sharedService.getBoard().subscribe((board) => this.board = board);
-    if(!this.allCtx[this.STEPS.length]) this.sharedService.currentCtx.subscribe(canvas25 => this.allCtx[this.STEPS.length] = canvas25);
+    if(!this.ctx) this.sharedService.currentCtx.subscribe(canvas => this.ctx = canvas);
+    if(!this.gridPlane) this.sharedService.getPlane().subscribe(col => this.gridPlane = col);
     this.board.forEach((row, y) => {
       row.forEach((value, x) => {
         if (value > 0) {
-          this.allCtx[this.STEPS.length].fillStyle = COLORS[value];
-          this.allCtx[this.STEPS.length].fillRect(x, y, 1, 1);
+          this.ctx.fillStyle = COLORS[value];
+          this.ctx.fillRect(x, y, 1, 1);
           this.add3D(x, y, value);
         }
       });
     });
-    // this.addOutlines();
+
+    this.addOutlines(this.ctx, this.gridPlane);
   }
 
   public ngAfterViewInit(): void {
     this.allPlanes =  [this.canvas1, this.canvas4, this.canvas9, this.canvas16, this.canvas25]
-    if (this.gridShape == 4) this.allPlanes.pop()
     this.initBoards();
     this.play()
     this.htmlService.set('board', this.canvas25.nativeElement );
