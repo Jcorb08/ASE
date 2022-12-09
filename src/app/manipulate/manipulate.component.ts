@@ -1,0 +1,31 @@
+import { Component, OnInit } from '@angular/core';
+import { SharedService } from '../services/shared.service';
+
+@Component({
+  selector: 'app-manipulate',
+  templateUrl: './manipulate.component.html',
+  styleUrls: ['./manipulate.component.css']
+})
+export class ManipulateComponent implements OnInit {
+
+  gridShape: number = 5
+  gridPlane: number = 5
+
+  constructor(private sharedService: SharedService) { }
+
+  ngOnInit(): void {
+  }
+
+  changePlane(e) {
+    this.gridPlane = e.target.value
+    this.sharedService.setPlane(this.gridPlane);
+    this.sharedService.setReset(true)
+  }
+
+  changeShape(e) {
+    this.gridShape = e.target.value
+    this.sharedService.setShape(this.gridShape);
+    this.sharedService.setReset(true)
+  }
+
+}
