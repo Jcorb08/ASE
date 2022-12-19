@@ -22,7 +22,7 @@ export class SelectionComponent implements OnInit {
   limit: number
   currentTetris: Piece;
   board: number[][];
-  solution: number[][];
+  solutions : number[][][] = [];
   refinePreplace: number[][];
   solutionPieces: Piece[] = [];
   currentPiece: Piece;
@@ -98,9 +98,9 @@ export class SelectionComponent implements OnInit {
     this.sharedService.currentCtx.subscribe(canvas => this.currentCtx = canvas);
     this.sharedService.currentTetris.subscribe(piece => this.currentTetris = piece);
     this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
-    this.sharedService.getGameSolved().subscribe(solve => this.gameOutcome = solve.solved);
+    this.sharedService.getGameSolved().subscribe(solve => this.gameOutcome = solve);
 
-    if (this.gameOutcome) this.resetGame()
+    if (this.gameOutcome.solved) this.resetGame()
     if (this.currentTetris) this.freezeLastShape()
     this.boardCompo.submit(this.currentPiece, this.currentCtx)
   }
@@ -118,49 +118,10 @@ export class SelectionComponent implements OnInit {
   }
 
   resetGame(){
+    this.sharedService.setSolutions([]);
+    this.sharedService.setGameSolved(false, false);
     this.sharedService.updateTetris(null as unknown as Piece)
     this.sharedService.setReset(true);
-  }
-
-  solvePuzzle_old(){
-    let alphabet = "abcdefghijklmnopqrstuvwxyz"
-    let foundPieces: string[] = [] ;
-    this.solutionPieces = [];
-    this.sharedService.currentCtx.subscribe(board => this.currentCtx = board);
-
-    this.resetGame();
-    this.solution = [[]];
-    //solveX(undefined,1,undefined);
-    console.log(this.solution, 'this.board')
-    this.solution.forEach((row, y) => {
-      row.forEach((value, x) => {
-        Object.entries(value).forEach(([key, item]) => {
-          if(foundPieces.indexOf(item) == -1){
-            this.solutionPieces.push(
-              new Piece(
-                this.currentCtx,
-                {},
-                true,
-                {s: (alphabet.indexOf(item.toLowerCase())+1).toString(), x: Number(key), y: x}
-              )
-            )
-            foundPieces.push(item)
-          }
-        });
-      });
-    });
-    this.submitPieces_old();
-  }
-
-  submitPieces_old(){
-    this.solutionPieces.forEach((row, y) => {
-      this.sharedService.currentCtx.subscribe(canvas => this.currentCtx = canvas);
-      this.sharedService.currentTetris.subscribe(piece => this.currentTetris = piece);
-      this.sharedService.getBoard().subscribe(canvas => this.board = canvas);
-
-      if (this.currentTetris) this.freezeLastShape()
-      this.boardCompo.submitPieces(row, this.currentCtx)
-    });
   }
 
   solvePuzzle(){
@@ -199,7 +160,6 @@ export class SelectionComponent implements OnInit {
 
     //reset board before solve
     //this.boardObject.reset();
-    var solutions : number[][][] = [];
     //console.log('BoardObject Board Length', this.boardObject.getBoardLength());
     if (typeof Worker !== 'undefined') {
       // Create a new
@@ -207,8 +167,10 @@ export class SelectionComponent implements OnInit {
       worker.onmessage = ({ data }) => {
         //console.log(`Solve: ${data}`);
         //this.boardObject = (data as Board);
-        solutions = data as number[][][];
-        console.log('solutions',solutions);
+        this.solutions = data as number[][][];
+        console.log('solutions',this.solutions);
+        this.sharedService.setSolutions(this.solutions)
+        this.sharedService.setReset(true)
       };
       worker.postMessage([55,5,testPrePlace,this.limit,0]);
     } else {
@@ -218,51 +180,10 @@ export class SelectionComponent implements OnInit {
       this.boardObject = new Board(55,5);
       var buildBoard = new buildBoard(this.boardObject.getLayers(),this.boardObject.getBoardLength(),this.boardObject.getLayersStart())
       this.boardObject.setBoard(buildBoard.buildBoard());
-      solutions = this.boardObject.solve(new Array(),1,0).getSolutions();
+      this.solutions = this.boardObject.solve(new Array(),1,0).getSolutions();
+      this.sharedService.setSolutions(this.solutions)
+      this.sharedService.setReset(true)
     }
-
-    // this.solution.forEach((row, y) => {
-    //   row.forEach((value, x) => {
-    //     Object.entries(value).forEach(([key, item]) => {
-    //       this.board[x][Number(key)] = this.alphabet.indexOf(item.toLowerCase())+1;
-    //     });
-    //   });
-    // });
-    // this.sharedService.setBoard(this.board)
-    // new BoardComponent(this.gameService, this.htmlService, this.sharedService).drawBoard()
-    // this.sharedService.setGameSolved(true)
-
   }
-
-  printSolution(shape: number[][], plane: number){
-
-  }
-
-  refinePrePlaceTest_old(shape: number[][]){
-    let refinePreplace = this.gameService.getEmptyNBoard(5);
-    shape.forEach((row, y) => {
-      row.forEach((value, x) => {
-        //console.log(row,value);
-
-        if(value > 0){
-          // refinePreplace[y][x] = this.alphabet[value-1].toUpperCase();
-          refinePreplace[y][x] = value;
-        }
-      });
-    });
-    return refinePreplace;
-  }
-
-  // removeZeroLineColumn(shape: any){
-  //   let pivot = (a: any) => a[0].map((_: any, i: any) => a.map((b: any) => b[i]))
-  //   let rotated = pivot(shape)
-  //   let filtered = rotated.filter((row: any) => !row.every((v: any) => v == 0 || v == '0'))
-  //   return pivot(filtered)
-  // }
-
-  // removeZeroLineRow(shape: any){
-  //   let filtered = shape.filter((row: any) => !row.every((v: any) => v == 0 || v == '0'))
-  //   return filtered
-  // }
 
 }

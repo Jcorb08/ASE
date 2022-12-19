@@ -15,6 +15,9 @@ import { SelectionComponent } from './selection/selection.component';
 import { BoardComponent } from './board/board.component';
 import { ControlComponent } from './control/control.component';
 import { ManipulateComponent } from './manipulate/manipulate.component';
+import { ShowResultsComponent } from './show-results/show-results.component';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { ThreeDBoardComponent } from './three-d-board/three-d-board.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +26,9 @@ import { ManipulateComponent } from './manipulate/manipulate.component';
     SelectionComponent,
     BoardComponent,
     ControlComponent,
-    ManipulateComponent
+    ManipulateComponent,
+    ShowResultsComponent,
+    ThreeDBoardComponent
   ],
   imports: [
     BrowserModule,
@@ -32,6 +37,7 @@ import { ManipulateComponent } from './manipulate/manipulate.component';
     MatCardModule,
     MatToolbarModule,
     MatButtonModule,
+    MatButtonToggleModule,
     FlexLayoutModule,
     NgbModule,
   ],

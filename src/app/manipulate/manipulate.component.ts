@@ -18,7 +18,7 @@ export class ManipulateComponent implements OnInit {
   }
 
   changePlane(e) {
-    this.gridPlane = e.target.value
+    this.gridPlane = e.target.value || this.gridShape
     this.sharedService.setPlane(this.gridPlane);
     this.sharedService.updateTetris(null as unknown as Piece)
     this.sharedService.setReset(true);
@@ -26,8 +26,8 @@ export class ManipulateComponent implements OnInit {
 
   changeShape(e) {
     this.gridShape = e.target.value
-    if (this.gridShape == 4) this.changePlane(e)
     this.sharedService.setShape(this.gridShape);
+    this.changePlane(e); return; //if (this.gridShape == 4) { this.changePlane(e); return; }
     this.sharedService.updateTetris(null as unknown as Piece)
     this.sharedService.setReset(true);
   }

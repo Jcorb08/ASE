@@ -33,10 +33,12 @@ export class BoardComponent implements OnInit {
   @ViewChild('board9', { static: true }) canvas9: ElementRef<HTMLCanvasElement>;
   @ViewChild('board4', { static: true }) canvas4: ElementRef<HTMLCanvasElement>;
   @ViewChild('board1', { static: true }) canvas1: ElementRef<HTMLCanvasElement>;
+  // @ViewChild('resultCanvas', { static: true }) resultCanvas: ElementRef<HTMLCanvasElement>;
 
   allPlanes: ElementRef<HTMLCanvasElement>[]
   allCtx: CanvasRenderingContext2D[] = []
   ctx: CanvasRenderingContext2D;
+  resultContext: CanvasRenderingContext2D
   ctxNext: CanvasRenderingContext2D;
   boards: (number[][])[] = []
   board: number[][];
@@ -47,18 +49,26 @@ export class BoardComponent implements OnInit {
   piece: Piece;
   next: Piece;
   gameOutcome = {solved: false, solution: false};
+  gameResult: number[][][] = []
 
   constructor(private gameService: GameService,
     private htmlService: HtmlElementService,
     private sharedService: SharedService) {
-    }
+  }
 
   ngOnInit() {
     this.sharedService.getReset().subscribe((value: boolean) => {
-      if(value) {
+      this.sharedService.getSolutions().subscribe(solutions => this.gameResult = solutions);
+      if(value && this.gameResult.length == 0) {
         this.initialiseSteps()
         this.initBoards()
         this.play()
+      } 
+      else {
+        this.sharedService.getLimit().subscribe((limit) => {
+          this.sharedService.setGameSolved(true, this.gameResult.length == limit)
+          this.sharedService.getGameSolved().subscribe(stat => this.gameOutcome = stat)
+        });
       }
     })
     this.initialiseSteps();
@@ -257,6 +267,7 @@ export class BoardComponent implements OnInit {
     this.play()
     this.htmlService.set('board', this.canvas25.nativeElement );
     this.sharedService.getGameSolved().subscribe(out => this.gameOutcome = out);
+
   }
 
   // Don't forget the include clean-up code within the ngOnDestroy() event.

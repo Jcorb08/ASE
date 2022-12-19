@@ -20,6 +20,19 @@
     <div fxFlex="20%" style="text-align: center;">
       <app-control></app-control>
     </div>
+    <div fxFlex="100%" style="text-align: center;" [hidden]="gameResult == undefined">
+      <mat-button-toggle-group [value]="toggle" #repToggleGroup="matButtonToggleGroup" (change)="toggleView($event)">
+        <mat-button-toggle [value]="true">
+            2D Representation
+        </mat-button-toggle>
+        <mat-button-toggle [value]="false">
+            3D Representation
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+      <br />
+      <app-three-d-board  [hidden]="repToggleGroup.value"></app-three-d-board>
+      <app-show-results  [hidden]="!repToggleGroup.value"></app-show-results>
+    </div>
   </div>
 </div>
 

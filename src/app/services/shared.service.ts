@@ -24,7 +24,7 @@ export class SharedService {
 
   private board: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
-  private gameOutcome: BehaviorSubject<any> = new BehaviorSubject<any>({solved: false, solution: false});
+  private gameOutcome: BehaviorSubject<any> = new BehaviorSubject<{}>({solved: false, solution: false});
   private refresh: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private reset: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -32,6 +32,7 @@ export class SharedService {
   private shape: BehaviorSubject<number> = new BehaviorSubject<number>(5);
   private plane: BehaviorSubject<number> = new BehaviorSubject<number>(5);
 
+  private solutions: BehaviorSubject<number[][][]> = new BehaviorSubject<number[][][]>([]);
 
   constructor(private gameService: GameService) {
     this.currentShape = this.shapePiece.asObservable();
@@ -40,7 +41,7 @@ export class SharedService {
     this.currentCtxNext = this.shapeCtxNext.asObservable();
   }
 
-  public getGameSolved(): Observable<any> {
+  public getGameSolved(): Observable<{solved: boolean, solution: boolean}> {
     return this.gameOutcome.asObservable();
   }
 
@@ -80,6 +81,14 @@ export class SharedService {
 
   public setPlane(value: number): void {
     this.plane.next(value);
+  }
+
+  public getSolutions(): Observable<number[][][]> {
+    return this.solutions.asObservable();
+  }
+
+  public setSolutions(value: number[][][]): void {
+    this.solutions.next(value);
   }
 
   public getReset(): Observable<boolean> {
